@@ -1,0 +1,15 @@
+[package]
+name = "apmpkg"
+version = "0.1.0-beta"
+authors = ["kedap <dxhqezk@hi2.in>"]
+edition = "2018"
+description = "Un administrador de paquetes universal para linux como modelo: PKGBUILD"
+readme = "README.md"
+repository = "https://github.com/Kedap/apmpkg"
+license = "Apache-2.0"
+keywords = ["package-manager", "linux", "pkgbuild"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+colored = "2"

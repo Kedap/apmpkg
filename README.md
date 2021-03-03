@@ -1,2 +1,2 @@
 # apmpkg
-Un manejador de paquetes apartir de un modelo PKGBUILD (archlinux)
+Un administrador de paquetes universal para linux como modelo: PKGBUILD

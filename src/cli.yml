@@ -1,0 +1,36 @@
+name: amppkg
+version: "0.1.0-beta"
+author: Kedap. <dxhqezk@hi2.in>
+about: Un administrador de paquetes universal para linux como modelo PKGBUILD
+args:
+    - verbose:
+        short: v
+        multiple: true
+        help: Mostrar la salida (modo verbose)
+subcommands:
+    - instalar:
+        about: Instala un paquete
+        args:
+            - paquete:
+                help: "Nombre y/o ruta del archivo apm"
+                index: 1
+            - url:
+                short: u
+                long: url
+                help: "Direccion URL del archivo apm"
+    - dinstal:
+        about: Desinstala un paquete
+        args:
+            - paquete:
+                help: "Nombre del paquete a desinstalar"
+                index: 1
+    - actualizar:
+        about: Actualiza un paquete ya instalado
+        args:
+            - paquete_act:
+                help: "Nombre y/o ruta del archivo apm para actualizar"
+                index: 1
+            - url:
+                short: u
+                long: url
+                help: "Direccion URL del archivo apm para actualizar"

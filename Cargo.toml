@@ -13,3 +13,4 @@ keywords = ["package-manager", "linux", "pkgbuild"]
 
 [dependencies]
 colored = "2"
+clap = {version = "~2.27.0", features = ["yaml"]}

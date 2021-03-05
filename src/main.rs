@@ -8,35 +8,28 @@
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 
-//use 
+//use y modulos
 
-use std::env;
-use colored::*;
-use std::process;
+mod core_funcions;
+//use colored::*;
+//use std::env;
+//use std::process;
+#[macro_use]
+extern crate clap;
 
+fn print_banner() {
+	println!(" 
+	\t _______ _______ __   __ _______ ___   _ _______ 
+	\t|       |       |  |_|  |       |   | | |       |
+	\t|   _   |    _  |       |    _  |   |_| |    ___|
+	\t|  |_|  |   |_| |       |   |_| |      _|   | __ 
+	\t|       |    ___|       |    ___|     |_|   ||  |
+	\t|   _   |   |   | ||_|| |   |   |    _  |   |_| |
+	\t|__| |__|___|   |_|   |_|___|   |___| |_|_______|
+	");
+}
 
 fn main(){
-	let argumentos: Vec<String> = env::args().collect();
-	let comando = &argumentos[1];
-	let confir = comando.is_empty();
-	if confir == true {
-		println!("Prueba con: apmpkg help");process::exit(0x0100);
-	}
-	match &comando[..] {
-		"help" => help_menu(),
-		"version" => version_print(),
-		_ => {println!("Prueba con: apmpkg help");process::exit(0x0100);}
-	}
-	
-}
-
-fn help_menu(){
-	println!("Uso: apmpkg [Comando] <argumentos...>
-	\nComandos:
-	version:	Imprimir la version
-	help:		Imprimir este menu");
-}
-
-fn version_print(){
-	println!("{}", "apmpkg 0.1.0-beta".blue());
+	print_banner();
+	core_funcions::leer_argumentos();
 }

@@ -18,6 +18,7 @@ subcommands:
                 short: u
                 long: url
                 help: "Direccion URL del archivo apm"
+                takes_value: true
     - dinstal:
         about: Desinstala un paquete
         args:
@@ -34,3 +35,4 @@ subcommands:
                 short: u
                 long: url
                 help: "Direccion URL del archivo apm para actualizar"
+                takes_value: true

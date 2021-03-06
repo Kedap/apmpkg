@@ -1,27 +1,77 @@
 // Archivo con las funciones principales y necesarias
 
 //uses
-use clap::App;
+use {
+	crate::estructuras::Argumentos,
+	clap::{load_yaml,App}};
 
-pub fn leer_argumentos() {
+pub fn leer_argumentos() -> Argumentos {
 	let yaml = load_yaml!("cli.yml");
 	let matches = App::from_yaml(yaml).get_matches();
 
-	if let Some(matches) = matches.subcommand_matches("instalar") {
-		if matches.is_present("url") {
-			let link = matches.value_of("url").unwrap();
-			println!("Descargando desde la URL: {}", link);
+	// Structura de los argumentos
+	Argumentos {
+		verbose: if matches.is_present("verbose") {
+			true
 		}
 		else {
-			let pack = matches.value_of("paquete").unwrap();
-			println!("Instalando {}...",pack);
+			false
+		},
+
+		instalar: if let Some(matches) = matches.subcommand_matches("instalar") {
+			if matches.is_present("paquete") {
+				matches.value_of("paquete").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
+		},
+
+		instalar_url: if let Some(matches) = matches.subcommand_matches("instalar") {
+			if matches.is_present("url") {
+				matches.value_of("url").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
+		},
+
+		dinstal: if let Some(matches) = matches.subcommand_matches("dinstal") {
+			if matches.is_present("paquete") {
+				matches.value_of("paquete").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
+		},
+
+		actualizar: if let Some(matches) = matches.subcommand_matches("actualizar") {
+			if matches.is_present("paquete_act") {
+				matches.value_of("paquete_act").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
+		},
+
+		url_act: if let Some(matches) = matches.subcommand_matches("actualizar") {
+			if matches.is_present("url") {
+				matches.value_of("url").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
 		}
 	}
 
-	if let Some(matches) = matches.subcommand_matches("dinstal") {
-		if matches.is_present("paquete") {
-			let pack = matches.value_of("paquete").unwrap();
-			println!("Desinstalando {}...", pack);
-		}
-	}
 }

@@ -9,13 +9,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 //use y modulos
-
-mod core_funcions;
-//use colored::*;
+use {apmpkg::core_funcions,
+	colored::*};
 //use std::env;
 //use std::process;
-#[macro_use]
-extern crate clap;
 
 fn print_banner() {
 	println!(" 
@@ -29,7 +26,23 @@ fn print_banner() {
 	");
 }
 
+//fn instalar(name: &str) {
+//	println!("Instalando mi pai el archivo {}", name);
+//}
+//
+//fn dinstalar(name: &str) {
+//	println!("Desinatalando el archivo {}", name);
+//}
+//
+//fn actualizar(name: &str) {
+//	println!("Actualizando {}", name);
+//}
+
 fn main(){
 	print_banner();
-	core_funcions::leer_argumentos();
+	let info_arg = core_funcions::leer_argumentos();
+	println!("{:?}", info_arg);
+	if info_arg.verbose == true {
+		println!("{}", "Modo verbose: Activado".blue());
+	}
 }

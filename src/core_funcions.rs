@@ -3,7 +3,10 @@
 //uses
 use {
 	crate::estructuras::Argumentos,
-	clap::{load_yaml,App}};
+	std::io::{stdout, Write},
+	std::fs,
+	clap::{load_yaml,App},
+	curl::easy::Easy};
 
 pub fn leer_argumentos() -> Argumentos {
 	let yaml = load_yaml!("cli.yml");
@@ -95,4 +98,23 @@ pub fn check_args(input: Argumentos) -> String {
 	else {
 		"nope".to_string()
 	}
+}
+
+pub fn web_req(url: &str) {
+	let mut easy = Easy::new();
+    easy.url(url).unwrap();
+    easy.write_function(|data| {
+        stdout().write_all(data).unwrap();
+        Ok(data.len())
+    }).unwrap();
+    easy.perform().unwrap();
+
+    println!("{}", easy.response_code().unwrap());
+}
+
+pub fn read_f(file: &str) {
+	println!("file contains {}", file);
+    let filedata = fs::read_to_string(file)
+    	.expect("Archivo no encontrado!!! ");
+    println!("content of file sample data:\n{}", filedata);
 }

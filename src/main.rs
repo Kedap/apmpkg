@@ -30,11 +30,12 @@ fn print_banner() {
 
 fn instalar(name: &str) {
 	println!("Instalando mi pai el archivo {}", name);
+	core_funcions::read_f(name);
 }
 
 fn instalar_url(name: &str) {
 	println!("Iniciando instalacion apartir de la URL: {}", name);
-	
+	core_funcions::web_req(name);
 }
 
 fn dinstalar(name: &str) {

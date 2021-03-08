@@ -10,8 +10,7 @@
 
 //use y modulos
 use {apmpkg::{
-		core_funcions,
-		estructuras::Argumentos},
+		core_funcions},
 	colored::*};
 //use std::env;
 //use std::process;
@@ -28,33 +27,14 @@ fn print_banner() {
 	");
 }
 
-fn check_args(input: Argumentos) -> String {
-	if input.instalar != "" {
-		"instalar".to_string()
-	}
-	else if input.instalar_url != "" {
-		"instalar_url".to_string()
-	}
-	else if input.dinstal != "" {
-		"dinstal".to_string()
-	}
-	else if input.actualizar != "" {
-		"actualizar".to_string()
-	}
-	else if input.url_act != "" {
-		"url_act".to_string()
-	}
-	else {
-		"nope".to_string()
-	}
-}
 
 fn instalar(name: &str) {
 	println!("Instalando mi pai el archivo {}", name);
 }
 
 fn instalar_url(name: &str) {
-	println!("Instalando mi pai la URL: {}", name);
+	println!("Iniciando instalacion apartir de la URL: {}", name);
+	
 }
 
 fn dinstalar(name: &str) {
@@ -79,13 +59,13 @@ fn main(){
 	}
 
 	// Separador:
-	let argu = check_args(info_arg.clone());
+	let argu = core_funcions::check_args(info_arg.clone());
 	match &argu [..] {
 		"instalar" => instalar(&info_arg.instalar),
 		"instalar_url" => instalar_url(&info_arg.instalar_url),
 		"dinstal" => dinstalar(&info_arg.dinstal),
 		"actualizar" => actualizar(&info_arg.actualizar),
 		"url_act" => url_act(&info_arg.url_act),
-		_ => println!("Nope"),
+		_ => println!("Intenta con: apmpkg -h o apmpkg --help"),
 	}
 }

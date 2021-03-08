@@ -75,3 +75,24 @@ pub fn leer_argumentos() -> Argumentos {
 	}
 
 }
+
+pub fn check_args(input: Argumentos) -> String {
+	if input.instalar != "" {
+		"instalar".to_string()
+	}
+	else if input.instalar_url != "" {
+		"instalar_url".to_string()
+	}
+	else if input.dinstal != "" {
+		"dinstal".to_string()
+	}
+	else if input.actualizar != "" {
+		"actualizar".to_string()
+	}
+	else if input.url_act != "" {
+		"url_act".to_string()
+	}
+	else {
+		"nope".to_string()
+	}
+}

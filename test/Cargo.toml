@@ -1,0 +1,10 @@
+[package]
+name = "apmpkg_test_zone"
+version = "0.1.0"
+authors = ["kedap <dxhqezk@hi2.in>"]
+edition = "2018"
+description = "TESTING"
+license = "Apache-2.0"
+
+[dependencies]
+curl = "0.4.34"

@@ -1,0 +1,30 @@
+[paquete]
+
+nombre = "tool-ac"
+version = "1.1.0-beta"
+rama = "estable"
+descrip = "Multi-Herramientas para la obtencion o creacion de cuentas"
+pagina = "https://github.com/y4ot3t1/Tool-AC"
+licensia = "GPL-V3"
+depedencias.bundle = "/ConsolaV/Gemfile"
+conflicto = "/opt/tool-ac/"
+
+[descarga]
+
+url = "https://github.com/y4ot3t1/Tool-AC/archive/Beta.tar.gz"
+url.1 = "https://github.com/y4ot3t1/Tool-AC/releases/download/Beta/Tool-AC_1.1.0-beta.zip"
+extraer = true
+sha256sum = "cb346d5c0ccf75aba9031e4e94813c9132513ced2554f0b3a65230b167fbfbb8"
+#pgp = ""
+
+[compilado]
+
+bash = ["bundle install", "bundle --help"]
+
+[checar]
+
+bash = ["cargo check"]
+
+[instalacion]
+
+path = {"toac"="/usr/bin/", "core"="/opt/"}

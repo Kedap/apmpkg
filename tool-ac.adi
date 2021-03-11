@@ -1,0 +1,24 @@
+[paquete]
+
+nombre = "tool-ac"
+version = "1.1.0-beta"
+rama = "estable"
+descrip = "Multi-Herramientas para la obtencion o creacion de cuentas"
+pagina = "https://github.com/y4ot3t1/Tool-AC"
+licensia = "GPL-V3"
+dependencias = ["ruby"]
+conflicto = "/opt/tool-ac/"
+
+[bundle]
+
+archivo = true
+file = "ConsolaV/Gemfile"
+
+[descarga]
+
+url = "https://github.com/y4ot3t1/Tool-AC/archive/Beta.tar.gz"
+sha256sum = "cb346d5c0ccf75aba9031e4e94813c9132513ced2554f0b3a65230b167fbfbb8"
+
+[instalacion]
+
+path = {"ConsolaV/main.rb" = "/usr/bin/toac"}

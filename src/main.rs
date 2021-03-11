@@ -29,8 +29,10 @@ fn print_banner() {
 
 
 fn instalar(name: &str) {
-	println!("Instalando mi pai el archivo {}", name);
-	core_funcions::read_f(name);
+	println!("Instalando desde el archivo {}", name);
+	let toml = core_funcions::read_f(name);
+	let meta = core_funcions::read_adi(&toml);
+	println!("Nombre del paquete {}\nVersion {}", meta.nombre, meta.version);
 }
 
 fn instalar_url(name: &str) {

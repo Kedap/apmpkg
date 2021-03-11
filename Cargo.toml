@@ -15,3 +15,4 @@ keywords = ["package-manager", "linux", "pkgbuild"]
 colored = "2"
 clap = {version = "~2.27.0", features = ["yaml"]}
 curl = "0.4.34"
+toml = "0.5"

@@ -19,6 +19,10 @@ subcommands:
                 long: url
                 help: "Direccion URL del archivo apm"
                 takes_value: true
+            - binario:
+                short: b
+                long: binario
+                help: "Creacion de un binario apartir de un adi o abc"
     - dinstal:
         about: Desinstala un paquete
         args:

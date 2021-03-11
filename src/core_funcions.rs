@@ -2,9 +2,10 @@
 
 //uses
 use {
-	crate::estructuras::Argumentos,
+	crate::estructuras::{Argumentos, AdiPaquete},
 	std::io::{stdout, Write},
-	std::fs,
+	std::{fs, process},
+	toml::Value,
 	clap::{load_yaml,App},
 	curl::easy::Easy};
 
@@ -112,9 +113,35 @@ pub fn web_req(url: &str) {
     println!("{}", easy.response_code().unwrap());
 }
 
-pub fn read_f(file: &str) {
-	println!("file contains {}", file);
+pub fn read_f(file: &str) -> String {
+	println!("Leyendo el archivo {}...", file);
     let filedata = fs::read_to_string(file)
     	.expect("Archivo no encontrado!!! ");
-    println!("content of file sample data:\n{}", filedata);
+    filedata
+}
+
+pub fn read_adi(file: &str) -> AdiPaquete{
+	let tomy: Value = toml::from_str(file).unwrap();
+	let adi = tomy.as_table().unwrap();
+	if !adi.contains_key("paquete") || !adi.contains_key("descarga") || !adi.contains_key("instalacion") {
+		println!("Douh, eso no parece un archivo .adi");
+		process::exit(0x0100);
+	}
+	let paking = put_adi_paque(tomy);
+	paking
+}
+
+fn put_adi_paque(key_toml: Value) -> AdiPaquete {
+	let toms = key_toml.as_table().unwrap();
+	let pack = &toms["paquete"];
+	AdiPaquete{
+		nombre: pack["nombre"].to_string(),
+		version: pack["version"].to_string(),
+		rama: pack["rama"].to_string(),
+		descrip: pack["descrip"].to_string(),
+		pagina: pack["pagina"].to_string(),
+		licensia: pack["licensia"].to_string(),
+		dependencias: pack["dependencias"].to_string(),
+		conflicto: pack["conflicto"].to_string(),
+	}
 }

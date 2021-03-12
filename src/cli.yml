@@ -12,12 +12,12 @@ subcommands:
         about: Instala un paquete
         args:
             - paquete:
-                help: "Nombre y/o ruta del archivo apm"
+                help: "Nombre y/o ruta del archivo adi o abc"
                 index: 1
             - url:
                 short: u
                 long: url
-                help: "Direccion URL del archivo apm"
+                help: "Direccion URL del archivo adi o abc"
                 takes_value: true
             - binario:
                 short: b

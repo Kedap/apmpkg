@@ -1,8 +1,7 @@
 // Estructuras
 
-//use serde_derive::Deserialize;
-
 #[derive(Clone, Debug)]
+
 pub struct Argumentos {
 	pub verbose: bool,
 	pub instalar: String,
@@ -21,7 +20,6 @@ pub struct AdiPaquete {
 	pub descrip: String,
 	pub pagina: String,
 	pub licensia: String,
-	pub dependencias: String,
 	pub conflicto: String,
 }
 

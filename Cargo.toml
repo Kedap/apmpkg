@@ -9,10 +9,9 @@ repository = "https://github.com/Kedap/apmpkg"
 license = "Apache-2.0"
 keywords = ["package-manager", "linux", "pkgbuild"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 colored = "2"
 clap = {version = "~2.27.0", features = ["yaml"]}
 curl = "0.4.34"
 toml = "0.5"
+read_input = "0.8"

@@ -4,8 +4,10 @@
 use {
 	crate::estructuras::{Argumentos, AdiPaquete},
 	std::io::{stdout, Write},
-	std::{fs, process},
+	std::{fs, process, any::type_name},
 	toml::Value,
+	read_input::prelude::*,
+	colored::*,
 	clap::{load_yaml,App},
 	curl::easy::Easy};
 
@@ -120,28 +122,62 @@ pub fn read_f(file: &str) -> String {
     filedata
 }
 
-pub fn read_adi(file: &str) -> AdiPaquete{
-	let tomy: Value = toml::from_str(file).unwrap();
+pub fn print_metapkg(pkg: AdiPaquete) {
+	println!("
+	\t\t        Paquete: {}
+	\t\t           Rama: {} 
+	\t\t Version actual: {}
+	\t\t    Descripcion: {}
+	\n\n", pkg.nombre, pkg.rama, pkg.version, pkg.descrip);
+}
+pub fn read_adi(file: &str) -> AdiPaquete {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();
 	if !adi.contains_key("paquete") || !adi.contains_key("descarga") || !adi.contains_key("instalacion") {
 		println!("Douh, eso no parece un archivo .adi");
 		process::exit(0x0100);
 	}
-	let paking = put_adi_paque(tomy);
-	paking
+	let adi_f = put_adi_pack(tomy);
+	adi_f
 }
 
-fn put_adi_paque(key_toml: Value) -> AdiPaquete {
-	let toms = key_toml.as_table().unwrap();
-	let pack = &toms["paquete"];
+fn put_adi_pack(adi: Value) -> AdiPaquete {
 	AdiPaquete{
-		nombre: pack["nombre"].to_string(),
-		version: pack["version"].to_string(),
-		rama: pack["rama"].to_string(),
-		descrip: pack["descrip"].to_string(),
-		pagina: pack["pagina"].to_string(),
-		licensia: pack["licensia"].to_string(),
-		dependencias: pack["dependencias"].to_string(),
-		conflicto: pack["conflicto"].to_string(),
+		nombre: adi["paquete"]["nombre"].as_str().unwrap().to_string(),
+		version: adi["paquete"]["version"].as_str().unwrap().to_string(),
+		rama: adi["paquete"]["rama"].as_str().unwrap().to_string(),
+		descrip: adi["paquete"]["descrip"].as_str().unwrap().to_string(),
+		pagina: adi["paquete"]["pagina"].as_str().unwrap().to_string(),
+		licensia: adi["paquete"]["licensia"].as_str().unwrap().to_string(),
+		conflicto: adi["paquete"]["conflicto"].as_str().unwrap().to_string(),
 	}
+}
+
+pub fn pkg_depen(file: &str) {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	let depen = &adi["paquete"]["dependencias"].to_string();
+	println!("Las dependencias {}", depen);
+}
+
+pub fn clear() {
+	print!("\x1B[2J");
+}
+
+pub fn quess(texto: &str) -> bool {
+	let mut aviso = String::from("[?] ");
+	aviso.push_str(texto);
+	aviso.push_str(" [S/n]");
+	println!("{}", aviso.yellow());
+	let opc: String = input().get();
+	match &opc[..] {
+		"S"|"s" => true,
+		_ => false,
+	}
+}
+
+/* Puede ayudar en casos de un programador que apenas se adentra en rust
+Un ejemplo: yo*/
+pub fn type_of<T>(_: T) -> &'static str {
+    type_name::<T>()
 }

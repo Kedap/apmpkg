@@ -11,9 +11,9 @@
 //use y modulos
 use {apmpkg::{
 		core_funcions},
+	std::{process},
 	colored::*};
 //use std::env;
-//use std::process;
 
 fn print_banner() {
 	println!(" 
@@ -29,10 +29,21 @@ fn print_banner() {
 
 
 fn instalar(name: &str) {
-	println!("Instalando desde el archivo {}", name);
+	println!("Iniciando instalacion/creacion del paquete desde el archivo: {}", name);
 	let toml = core_funcions::read_f(name);
 	let meta = core_funcions::read_adi(&toml);
-	println!("Nombre del paquete {}\nVersion {}", meta.nombre, meta.version);
+	core_funcions::clear();
+	print_banner();
+	core_funcions::print_metapkg(meta);
+	let confirm = core_funcions::quess("Deseas seguir con la instalacion?");
+	if confirm == true {
+		println!("instalando...");
+	}
+	else {
+		println!("{}", "abortando!".red());
+		process::exit(0x0100);
+	}
+	core_funcions::pkg_depen(&toml);
 }
 
 fn instalar_url(name: &str) {
@@ -69,6 +80,6 @@ fn main(){
 		"dinstal" => dinstalar(&info_arg.dinstal),
 		"actualizar" => actualizar(&info_arg.actualizar),
 		"url_act" => url_act(&info_arg.url_act),
-		_ => println!("Intenta con: apmpkg -h o apmpkg --help"),
+		_ => {println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green()); process::exit(0x0100);},
 	}
 }

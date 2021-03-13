@@ -153,11 +153,17 @@ fn put_adi_pack(adi: Value) -> AdiPaquete {
 	}
 }
 
-pub fn pkg_depen(file: &str) {
+pub fn print_pkg_depen(file: &str) {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();
-	let depen = &adi["paquete"]["dependencias"].to_string();
-	println!("Las dependencias {}", depen);
+	let depen = &adi["paquete"]["dependencias"].as_array().unwrap();
+	let mut depen_str = String::new();
+	for i in 0..depen.len() {
+		depen_str.push_str(&depen[i].as_str().unwrap());
+		depen_str.push_str(" ");
+	}
+	println!("Cargando dependencias...
+	\t\t   Dependencias: {}", depen_str);
 }
 
 pub fn clear() {

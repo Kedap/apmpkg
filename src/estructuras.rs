@@ -34,8 +34,3 @@ pub struct AdiDescarga {
 	pub url: String,
 	pub sha256sum: String,
 }
-
-#[derive(Clone, Debug)]
-struct AdiInstalacion {
-	path: toml::value::Array,
-}

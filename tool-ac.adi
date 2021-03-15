@@ -6,7 +6,7 @@ rama = "estable"
 descrip = "Multi-Herramientas para la obtencion o creacion de cuentas"
 pagina = "https://github.com/y4ot3t1/Tool-AC"
 licensia = "GPL-V3"
-dependencias = ["ruby", "python"]
+dependencias = ["ruby", "sqlmap"]
 conflicto = "/opt/tool-ac/"
 
 [bundle]

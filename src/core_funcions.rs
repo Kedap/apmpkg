@@ -2,9 +2,9 @@
 
 //uses
 use {
-	crate::estructuras::{Argumentos, AdiPaquete},
+	crate::estructuras::{Argumentos, AdiPaquete, PackageManager},
 	std::io::{stdout, Write},
-	std::{fs, process, any::type_name},
+	std::{fs, process, any::type_name, process::Command},
 	toml::Value,
 	read_input::prelude::*,
 	colored::*,
@@ -128,7 +128,8 @@ pub fn print_metapkg(pkg: AdiPaquete) {
 	\t\t           Rama: {} 
 	\t\t Version actual: {}
 	\t\t    Descripcion: {}
-	\n\n", pkg.nombre, pkg.rama, pkg.version, pkg.descrip);
+	\t\t   Dependencias: {}
+	\n\n", pkg.nombre, pkg.rama, pkg.version, pkg.descrip, pkg.depen);
 }
 pub fn read_adi(file: &str) -> AdiPaquete {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
@@ -137,7 +138,8 @@ pub fn read_adi(file: &str) -> AdiPaquete {
 		println!("Douh, eso no parece un archivo .adi");
 		process::exit(0x0100);
 	}
-	let adi_f = put_adi_pack(tomy);
+	let mut adi_f = put_adi_pack(tomy);
+	adi_f.depen = pkg_depen(file);
 	adi_f
 }
 
@@ -149,21 +151,27 @@ fn put_adi_pack(adi: Value) -> AdiPaquete {
 		descrip: adi["paquete"]["descrip"].as_str().unwrap().to_string(),
 		pagina: adi["paquete"]["pagina"].as_str().unwrap().to_string(),
 		licensia: adi["paquete"]["licensia"].as_str().unwrap().to_string(),
+		depen: String::new(),
 		conflicto: adi["paquete"]["conflicto"].as_str().unwrap().to_string(),
 	}
 }
 
-pub fn print_pkg_depen(file: &str) {
+pub fn pkg_depen(file: &str) -> String {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();
 	let depen = &adi["paquete"]["dependencias"].as_array().unwrap();
 	let mut depen_str = String::new();
+	let ultimo = depen.len();
 	for i in 0..depen.len() {
 		depen_str.push_str(&depen[i].as_str().unwrap());
-		depen_str.push_str(" ");
+		if i == ultimo {
+			let _ = String::new();
+		}
+		else {
+			depen_str.push_str(" ");
+		}
 	}
-	println!("Cargando dependencias...
-	\t\t   Dependencias: {}", depen_str);
+	depen_str
 }
 
 pub fn clear() {
@@ -179,6 +187,140 @@ pub fn quess(texto: &str) -> bool {
 	match &opc[..] {
 		"S"|"s" => true,
 		_ => false,
+	}
+}
+
+pub fn install_depen(file_toml: &str) {
+	println!("Administrando dependencias...");
+	let cata = ["apt", "pacman", "dnf", "snap", "flatpak", "zypper"];
+	let mut manpack = Vec::new();
+
+	for i in 0..cata.len() {
+		let comando = Command::new("bash")
+                     .arg("-c")
+                     .arg(cata[i])
+                     .output()
+                     .expect("Algo fallo en install depen");
+        if comando.status.to_string() == "exit code: 1" {
+        	let hi = {let tmp = cata[i];tmp.to_string()};
+        	manpack.push(hi);
+        }
+	}
+
+	let tomy: Value = toml::from_str(file_toml).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	let depen_arr = &adi["paquete"]["dependencias"].as_array().unwrap();
+	
+	for i in 0..manpack.len() {
+		println!("Se a dectectado {}", manpack[i]);
+	}
+	println!("Procediendo con la descarga e instalacion de dependencias... ");
+	let mut contador = 0;
+	loop {
+		for i in 0..depen_arr.len() {
+			let pack_less = manager(manpack[contador].to_string());
+			let _instalar_comando = Command::new(pack_less.comando)
+                     .arg(pack_less.intalacion)
+                     .arg(depen_arr[i].as_str().unwrap())
+                     .arg(pack_less.confirmacion)
+                     .output()
+                     .expect("Algo fallo en install depen");
+		}
+        let mut ready = false;
+
+
+		for i in 0..depen_arr.len() {
+			let check_depn = Command::new("bash")
+                     .arg("-c")
+                     .arg(depen_arr[i].as_str().unwrap())
+                     .output()
+                     .expect("Algo fallo en install depen");
+            println!("Comprobando que {} se haya instalado", depen_arr[i].as_str().unwrap().to_string());
+			if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+				ready = true;
+			}
+			else {
+				ready = false;
+				println!("Algo fallo, al parecer no se encuentra en los repositorios");
+			}					
+		}
+
+
+		if ready == true {
+			println!("Se han terminado de instalar las dependencias correctamente");
+			break;
+		}
+		else {
+			contador += 1;
+		}
+	}
+}
+
+fn manager(pack: String) -> PackageManager {
+	match &pack[..] {
+		"apt" => {PackageManager {
+			comando: "apt".to_string(),
+        	buscar: "search".to_string(),
+        	intalacion: "install".to_string(),
+        	dinstalacion: "uninstall".to_string(),
+        	paquete: String::new(),
+        	confirmacion: "-y".to_string(),
+        	root: true,
+		}},
+		"pacman" => {PackageManager {
+			comando: "pacman".to_string(),
+        	buscar: "-Ss".to_string(),
+        	intalacion: "-S".to_string(),
+        	dinstalacion: "-R".to_string(),
+        	paquete: String::new(),
+        	confirmacion: "--noconfirm".to_string(),
+        	root: true,
+		}},
+		"dnf" => {PackageManager{
+			comando: "dnf".to_string(),
+        	buscar: "search".to_string(),
+        	intalacion: "install".to_string(),
+        	dinstalacion: "uninstall".to_string(),
+        	paquete: String::new(),
+        	confirmacion: "-y".to_string(),
+        	root: true,
+		}},
+		"snap" => {PackageManager{
+			comando: "snap".to_string(),
+        	buscar: "find".to_string(),
+        	intalacion: "install".to_string(),
+        	dinstalacion: "remove".to_string(),
+        	paquete: String::new(),
+        	confirmacion: String::new(),
+        	root: false,
+		}},
+		"flatpak" => {PackageManager{
+			comando: "flatpak".to_string(),
+        	buscar: "search".to_string(),
+        	intalacion: "install".to_string(),
+        	dinstalacion: "uninstall".to_string(),
+        	paquete: String::new(),
+        	confirmacion: String::new(),
+        	root: false,
+		}},
+		"zypper" => {PackageManager {
+			comando: "zypper".to_string(),
+        	buscar: "search".to_string(),
+        	intalacion: "search".to_string(),
+        	dinstalacion: "remove".to_string(),
+        	paquete: String::new(),
+        	confirmacion: "--non-interactive".to_string(),
+        	root: true,
+		}},
+		_ => {PackageManager {
+			comando: "apmpkg".to_string(),
+        	buscar: String::new(),
+        	intalacion: "instalar".to_string(),
+        	dinstalacion: "dinstal".to_string(),
+        	paquete: String::new(),
+        	confirmacion: "-v".to_string(),
+        	root: true,
+		}},
 	}
 }
 

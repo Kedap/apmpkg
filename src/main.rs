@@ -34,15 +34,15 @@ fn instalar(name: &str) {
 	core_funcions::clear();
 	print_banner();
 	core_funcions::print_metapkg(meta);
-	core_funcions::print_pkg_depen(&toml);
 	let confirm = core_funcions::quess("Deseas seguir con la instalacion?");
 	if confirm == true {
-		println!("instalando...");
+		println!("Iniciando proceso de instalacion");
 	}
 	else {
 		println!("{}", "abortando!".red());
 		process::exit(0x0100);
 	}
+	core_funcions::install_depen(&toml);
 }
 
 fn instalar_url(name: &str) {

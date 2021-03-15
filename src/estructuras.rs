@@ -20,6 +20,7 @@ pub struct AdiPaquete {
 	pub descrip: String,
 	pub pagina: String,
 	pub licensia: String,
+	pub depen: String,
 	pub conflicto: String,
 }
 
@@ -33,4 +34,18 @@ pub struct AdiBundle {
 pub struct AdiDescarga {
 	pub url: String,
 	pub sha256sum: String,
+}
+
+
+//PACKAGE MANAGERS LINUX 
+
+#[derive(Clone, Debug)]
+pub struct PackageManager {
+	pub comando: String,
+	pub buscar: String,
+	pub intalacion: String,
+	pub dinstalacion: String,
+	pub paquete: String,
+	pub confirmacion: String,
+	pub root: bool,
 }

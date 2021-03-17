@@ -3,13 +3,11 @@
 //uses
 use {
 	crate::estructuras::{Argumentos, AdiPaquete, PackageManager},
-	std::io::{stdout, Write},
 	std::{fs, process, any::type_name, process::Command},
 	toml::Value,
 	read_input::prelude::*,
 	colored::*,
-	clap::{load_yaml,App},
-	curl::easy::Easy};
+	clap::{load_yaml,App}};
 
 pub fn leer_argumentos() -> Argumentos {
 	let yaml = load_yaml!("cli.yml");
@@ -103,16 +101,18 @@ pub fn check_args(input: Argumentos) -> String {
 	}
 }
 
-pub fn web_req(url: &str) {
-	let mut easy = Easy::new();
-    easy.url(url).unwrap();
-    easy.write_function(|data| {
-        stdout().write_all(data).unwrap();
-        Ok(data.len())
-    }).unwrap();
-    easy.perform().unwrap();
-
-    println!("{}", easy.response_code().unwrap());
+#[tokio::main]
+pub async fn web_requets(url: &str, flag: &str) -> Result<(), Box<dyn std::error::Error>> {
+	let cuerpo = reqwest::get(url)
+    .await?
+    .text()
+    .await?;
+    match &flag[..] {
+    	"check" => println!("ok"),
+    	"print" => println!("{}", cuerpo.to_string()),
+    	_ => println!("nope"),
+    }
+    Ok(())
 }
 
 pub fn read_f(file: &str) -> String {

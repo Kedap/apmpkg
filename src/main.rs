@@ -47,7 +47,11 @@ fn instalar(name: &str) {
 
 fn instalar_url(name: &str) {
 	println!("Iniciando instalacion apartir de la URL: {}", name);
-	core_funcions::web_req(name);
+	let f = core_funcions::web_requets(name, "print");
+	match f {
+		Ok(_f) => println!("Analizando el archivo"),
+		Err(_e) => {println!("{}", "Ocurrio un error al hacer la peticion, intenta de nuevo".red()); process::exit(0x0100);}
+	}
 }
 
 fn dinstalar(name: &str) {

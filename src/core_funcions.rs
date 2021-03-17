@@ -201,7 +201,7 @@ pub fn install_depen(file_toml: &str) {
                      .arg(cata[i])
                      .output()
                      .expect("Algo fallo en install depen");
-        if comando.status.to_string() == "exit code: 1" {
+        if comando.status.to_string() == "exit code: 1" || comando.status.to_string() == "exit code: 0" {
         	let hi = {let tmp = cata[i];tmp.to_string()};
         	manpack.push(hi);
         }

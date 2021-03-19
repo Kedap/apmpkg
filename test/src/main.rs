@@ -3,24 +3,37 @@
 //use curl::easy::Easy;
 //use core::any::type_name;
 //use std::process::Command;
-
-
-#[tokio::main]
-async fn peti(url: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let _ = reqwest::get(url)
-    .await?
-    .text()
-    .await?;
-    Ok(())
-}
+//use std::fs::File;
+//use std::io::prelude::*;
+use pbr::ProgressBar;
+use std::thread;
 
 fn main() {
-    println!("Iniciando....");
-    let http = "https://raw.githubusercontent.com/y4ot3t1/Tool-AC/master/.gitignore";
-    let lol = peti(http);
-    println!("{:?}", lol);
-
+    let count = 10;
+    let mut pb = ProgressBar::new(count);
+    pb.format("(->.)");
+    for _ in 0..count {
+        pb.inc();
+        thread::sleep_ms(1);
+    }
+    //pb.finish_print("done");
 }
+
+//#[tokio::main]
+//async fn peti(url: &str) -> Result<(), Box<dyn std::error::Error>> {
+//    let body = reqwest::get(url)
+//    .await?
+//    .text()
+//    .await?;
+//    let mut salida = File::create("toac.tap").expect("Eror al crear el archivo");
+//    salida.write_all(body.as_bytes())?;
+//    Ok(())
+//}
+//fn main() {
+//    println!("Iniciando....");
+//    let http = "https://raw.githubusercontent.com/y4ot3t1/Tool-AC/master/.gitignore";
+//    let _ = peti(http);
+//}
 //fn type_of<T>(_: T) -> &'static str {
 //    type_name::<T>()
 //}

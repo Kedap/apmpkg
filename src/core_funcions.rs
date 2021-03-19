@@ -2,8 +2,8 @@
 
 //uses
 use {
-	crate::estructuras::{Argumentos, AdiPaquete, PackageManager},
-	std::{fs, process, any::type_name, process::Command},
+	crate::estructuras::{Argumentos, AdiPaquete, PackageManager, AdiDescarga},
+	std::{fs, process, any::type_name, process::Command, fs::File, io},
 	toml::Value,
 	read_input::prelude::*,
 	colored::*,
@@ -108,11 +108,25 @@ pub async fn web_requets(url: &str, flag: &str) -> Result<(), Box<dyn std::error
     .text()
     .await?;
     match &flag[..] {
-    	"check" => println!("ok"),
-    	"print" => println!("{}", cuerpo.to_string()),
+    	"check" => println!("ok! "),
+    	"print" => println!("{} ", cuerpo.to_string()),
     	_ => println!("nope"),
     }
     Ok(())
+}
+
+#[tokio::main]
+pub async fn download(url: &str, name: &str) -> Result<(), Box<dyn std::error::Error>> {
+	let cuerpo = reqwest::get(url)
+    .await?
+    .bytes()
+    .await?;
+	let f = write_f(name, &cuerpo);
+    match f {
+		Ok(_f) => println!("Correcto"),
+		Err(_e) => {println!("{}", "Ocurrio un error al hacer la peticion, intenta de nuevo".red()); process::exit(0x0100);}
+	}
+	Ok(())
 }
 
 pub fn read_f(file: &str) -> String {
@@ -120,6 +134,14 @@ pub fn read_f(file: &str) -> String {
     let filedata = fs::read_to_string(file)
     	.expect("Archivo no encontrado!!! ");
     filedata
+}
+
+pub fn write_f(name: &str ,file: &[u8]) -> io::Result<()>{
+	let mut salida = File::create(name).expect("Algo fallo al crear el archivo");
+	let mut conte = file;
+	io::copy(&mut conte, &mut salida)?;
+	println!("El archivo {} fue creado correctamente", name);
+	Ok(())
 }
 
 pub fn print_metapkg(pkg: AdiPaquete) {
@@ -130,6 +152,22 @@ pub fn print_metapkg(pkg: AdiPaquete) {
 	\t\t    Descripcion: {}
 	\t\t   Dependencias: {}
 	\n\n", pkg.nombre, pkg.rama, pkg.version, pkg.descrip, pkg.depen);
+}
+
+pub fn read_adi_down(file: &str) -> AdiDescarga {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	if !adi.contains_key("paquete") || !adi.contains_key("descarga") || !adi.contains_key("instalacion") {
+		println!("Douh, eso no parece un archivo .adi");
+		process::exit(0x0100);
+	}
+	let source = {
+		AdiDescarga{
+			url: tomy["descarga"]["url"].as_str().unwrap().to_string(),
+			sha256sum: tomy["descarga"]["sha256sum"].as_str().unwrap().to_string()
+		}
+	};
+	source
 }
 pub fn read_adi(file: &str) -> AdiPaquete {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
@@ -280,7 +318,7 @@ fn manager(pack: String) -> PackageManager {
 			comando: "dnf".to_string(),
         	buscar: "search".to_string(),
         	intalacion: "install".to_string(),
-        	dinstalacion: "uninstall".to_string(),
+        	dinstalacion: "remove".to_string(),
         	paquete: String::new(),
         	confirmacion: "-y".to_string(),
         	root: true,

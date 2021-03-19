@@ -10,8 +10,9 @@
 
 //use y modulos
 use {apmpkg::{
-		core_funcions},
-	std::{process},
+	core_funcions},
+	std::{process, thread},
+	pbr::ProgressBar,
 	colored::*};
 
 fn print_banner() {
@@ -33,7 +34,7 @@ fn instalar(name: &str) {
 	let meta = core_funcions::read_adi(&toml);
 	core_funcions::clear();
 	print_banner();
-	core_funcions::print_metapkg(meta);
+	core_funcions::print_metapkg(meta.clone());
 	let confirm = core_funcions::quess("Deseas seguir con la instalacion?");
 	if confirm == true {
 		println!("Iniciando proceso de instalacion");
@@ -42,7 +43,25 @@ fn instalar(name: &str) {
 		println!("{}", "abortando!".red());
 		process::exit(0x0100);
 	}
-	core_funcions::install_depen(&toml);
+	// Progres barr
+	let contador_bar = 2; let mut pb = ProgressBar::new(contador_bar);
+	pb.format("(->.)");
+	pb.inc();
+
+	core_funcions::install_depen(&toml);thread::sleep_ms(1);
+	let des = core_funcions::read_adi_down(&toml);thread::sleep_ms(1);
+	pb.inc();
+	println!("{}", "iniciando la descarga del tarball...".green());thread::sleep_ms(1);
+	let mut pack_ver = String::new();thread::sleep_ms(1);
+	pack_ver.push_str(&meta.nombre); pack_ver.push_str("-");thread::sleep_ms(1);
+	pack_ver.push_str(&meta.version); pack_ver.push_str(".acd.tar");thread::sleep_ms(1);
+	let f = core_funcions::download(&des.url, &pack_ver);thread::sleep_ms(1);
+	match f {
+		Ok(_f) => println!("Correcto"),
+		Err(_e) => {println!("{}", "Ocurrio un error al hacer la peticion, intenta de nuevo".red()); process::exit(0x0100);}
+	}
+	thread::sleep_ms(1);
+	println!("Se termino la descarga");
 }
 
 fn instalar_url(name: &str) {

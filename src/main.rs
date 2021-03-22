@@ -10,8 +10,8 @@
 
 //use y modulos
 use {apmpkg::{
-	core_funcions},
-	std::{process, thread},
+	core_funcions, archivos},
+	std::{process,time::Duration,thread},
 	pbr::ProgressBar,
 	colored::*};
 
@@ -30,12 +30,19 @@ fn print_banner() {
 
 fn instalar(name: &str) {
 	println!("Iniciando instalacion/creacion del paquete desde el archivo: {}", name);
-	let toml = core_funcions::read_f(name);
-	let meta = core_funcions::read_adi(&toml);
+	let toml = archivos::read_f(name);
+	let meta = archivos::read_adi(&toml);
 	core_funcions::clear();
 	print_banner();
 	core_funcions::print_metapkg(meta.clone());
 	let confirm = core_funcions::quess("Deseas seguir con la instalacion?");
+
+	// Progres barr
+	let contador_bar = 5; let mut pb = ProgressBar::new(contador_bar);
+	pb.format("(->.)");
+	pb.inc();
+	thread::sleep(Duration::from_secs(1));
+
 	if confirm == true {
 		println!("Iniciando proceso de instalacion");
 	}
@@ -43,25 +50,51 @@ fn instalar(name: &str) {
 		println!("{}", "abortando!".red());
 		process::exit(0x0100);
 	}
-	// Progres barr
-	let contador_bar = 2; let mut pb = ProgressBar::new(contador_bar);
-	pb.format("(->.)");
+
+	pb.inc();
+	let mut dir = String::new();
+	dir.push_str(&meta.nombre);
+	dir.push_str(".d");
+	let a = archivos::new_dir(&dir);
+	match a {
+		Ok(_a) => println!("Creacion del directorio es correcto"),
+		Err(_e) => {println!("{}", "Ocurrio un error al crear el directorio".red()); process::exit(0x0100);}
+	}
+
+	core_funcions::install_depen(&toml);
+	let des = archivos::read_adi_down(&toml);
 	pb.inc();
 
-	core_funcions::install_depen(&toml);thread::sleep_ms(1);
-	let des = core_funcions::read_adi_down(&toml);thread::sleep_ms(1);
-	pb.inc();
-	println!("{}", "iniciando la descarga del tarball...".green());thread::sleep_ms(1);
-	let mut pack_ver = String::new();thread::sleep_ms(1);
-	pack_ver.push_str(&meta.nombre); pack_ver.push_str("-");thread::sleep_ms(1);
-	pack_ver.push_str(&meta.version); pack_ver.push_str(".acd.tar");thread::sleep_ms(1);
-	let f = core_funcions::download(&des.url, &pack_ver);thread::sleep_ms(1);
+	println!("{}", "iniciando la descarga del tarball...".green());
+	let mut pack_ver = String::new();
+	pack_ver.push_str(&dir);pack_ver.push_str("/");
+	pack_ver.push_str(&meta.nombre); pack_ver.push_str("-");
+	pack_ver.push_str(&meta.version); pack_ver.push_str(".acd.tar");
+	let f = archivos::download(&des.url, &pack_ver);
 	match f {
 		Ok(_f) => println!("Correcto"),
 		Err(_e) => {println!("{}", "Ocurrio un error al hacer la peticion, intenta de nuevo".red()); process::exit(0x0100);}
 	}
-	thread::sleep_ms(1);
 	println!("Se termino la descarga");
+	pb.inc();
+
+	println!("Extrayendo el tarball");
+	let tempo = des.url;
+	let tempo_url: Vec<&str> = tempo.split('/').collect();
+	let mut ulti = 0;
+	for i in 0..tempo_url.len() {
+		ulti = i;
+	}
+	let tar_name = tempo_url[ulti];
+	let taa = archivos::e_tar(&pack_ver);
+	match taa {
+		Ok(_taa) => println!("El tarball se descomprimio con exito"),
+		Err(_e) => {println!("{}", "Ocurrio un error al descomprimir el tarball".red()); process::exit(0x0100);}
+	}
+	archivos::move_dd(tar_name, &dir);
+
+	pb.inc();
+	pb.finish_print("Se realizo con exito la instalacion!");
 }
 
 fn instalar_url(name: &str) {

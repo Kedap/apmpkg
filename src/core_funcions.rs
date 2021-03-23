@@ -141,6 +141,29 @@ pub fn quess(texto: &str) -> bool {
 	}
 }
 
+pub fn local_depen(file_toml: &str) -> bool {
+	let tomy: Value = toml::from_str(file_toml).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	let depen_arr = &adi["paquete"]["dependencias"].as_array().unwrap();
+	let mut ready = false;
+	for i in 0..depen_arr.len() {
+		let check_depn = Command::new("bash")
+                    .arg("-c")
+                    .arg(depen_arr[i].as_str().unwrap())
+                    .output()
+                    .expect("Algo fallo en install depen");
+        println!("Comprobando que {} este instalado", depen_arr[i].as_str().unwrap().to_string());
+		if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+			ready = true;
+		}
+		else {
+			println!("Al parecer no, porque no lo instalamos");
+			ready = false;
+		}					
+	}
+	ready
+}
+
 pub fn install_depen(file_toml: &str) {
 	println!("Administrando dependencias...");
 	let cata = ["apt", "pacman", "dnf", "snap", "flatpak", "zypper"];

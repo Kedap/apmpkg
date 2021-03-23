@@ -10,7 +10,7 @@
 
 //use y modulos
 use {apmpkg::{
-	core_funcions, archivos},
+	core_funcions, archivos, lang_managers},
 	std::{process,time::Duration,thread},
 	pbr::ProgressBar,
 	colored::*};
@@ -30,7 +30,7 @@ fn print_banner() {
 
 fn instalar(name: &str) {
 	println!("Iniciando instalacion/creacion del paquete desde el archivo: {}", name);
-	let toml = archivos::read_f(name);
+	let toml = archivos::read_fs(name);
 	let meta = archivos::read_adi(&toml);
 	core_funcions::clear();
 	print_banner();
@@ -38,7 +38,7 @@ fn instalar(name: &str) {
 	let confirm = core_funcions::quess("Deseas seguir con la instalacion?");
 
 	// Progres barr
-	let contador_bar = 5; let mut pb = ProgressBar::new(contador_bar);
+	let contador_bar = 8; let mut pb = ProgressBar::new(contador_bar);
 	pb.format("(->.)");
 	pb.inc();
 	thread::sleep(Duration::from_secs(1));
@@ -55,13 +55,23 @@ fn instalar(name: &str) {
 	let mut dir = String::new();
 	dir.push_str(&meta.nombre);
 	dir.push_str(".d");
+
+	let mut dir0 = String::new();
+	dir0.push_str(&meta.nombre);
+	dir0.push_str(".d");
 	let a = archivos::new_dir(&dir);
 	match a {
 		Ok(_a) => println!("Creacion del directorio es correcto"),
 		Err(_e) => {println!("{}", "Ocurrio un error al crear el directorio".red()); process::exit(0x0100);}
 	}
 
-	core_funcions::install_depen(&toml);
+	let ya_install = core_funcions::local_depen(&toml);
+	if ya_install == true {
+		println!("Yeah, ya tienes las dependencias instaladas!!!!");
+	}
+	else {
+		core_funcions::install_depen(&toml);
+	}
 	let des = archivos::read_adi_down(&toml);
 	pb.inc();
 
@@ -78,21 +88,39 @@ fn instalar(name: &str) {
 	println!("Se termino la descarga");
 	pb.inc();
 
-	println!("Extrayendo el tarball");
-	let tempo = des.url;
-	let tempo_url: Vec<&str> = tempo.split('/').collect();
-	let mut ulti = 0;
-	for i in 0..tempo_url.len() {
-		ulti = i;
+	println!("Verificando la integridad del archivo...");
+	let suma = archivos::hash_sum(&pack_ver, &des.sha256sum);
+	if suma == true {
+		println!("{}", "Verificacion correcta".green());
 	}
-	let tar_name = tempo_url[ulti];
-	let taa = archivos::e_tar(&pack_ver);
+	else {
+		println!("{}", "La verificacion no coinside, vuelve intentar".red());
+		process::exit(0x0100);
+	}
+	pb.inc();
+
+	println!("Extrayendo el tarball");
+	let taa = archivos::e_tar(&pack_ver, &dir);
 	match taa {
 		Ok(_taa) => println!("El tarball se descomprimio con exito"),
 		Err(_e) => {println!("{}", "Ocurrio un error al descomprimir el tarball".red()); process::exit(0x0100);}
 	}
-	archivos::move_dd(tar_name, &dir);
+	pb.inc();
 
+	println!("Iniciando la instalacion de archivos de depenencias del proyecto");
+	let mut src_path = dir; src_path.push_str("/"); src_path.push_str(&des.src);
+	let mut src_path0 = dir0; src_path0.push_str("/"); src_path0.push_str(&des.src);
+	let bundlee = archivos::read_bundle(&toml); src_path.push_str("/");
+	src_path0.push_str("/");
+	if bundlee.archivo == true {
+		println!("{}", "Se ha dectectado un archivo gemfile!".yellow());
+		let mut fgem = src_path; fgem.push_str(&bundlee.file);
+		lang_managers::install_gem(&fgem);
+	}
+	pb.inc();
+
+	println!("Iniciando instalacion");
+	archivos::install_path(&toml, &src_path0);
 	pb.inc();
 	pb.finish_print("Se realizo con exito la instalacion!");
 }

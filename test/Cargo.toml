@@ -7,4 +7,3 @@ description = "TESTING"
 license = "Apache-2.0"
 
 [dependencies]
-pbr = "1.0.4"

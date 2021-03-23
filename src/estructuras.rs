@@ -33,6 +33,7 @@ pub struct AdiBundle {
 #[derive(Clone, Debug)]
 pub struct AdiDescarga {
 	pub url: String,
+	pub src: String,
 	pub sha256sum: String,
 }
 

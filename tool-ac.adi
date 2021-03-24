@@ -17,8 +17,10 @@ file = "ConsolaV/Gemfile"
 [descarga]
 
 url = "https://github.com/y4ot3t1/Tool-AC/archive/Beta.tar.gz"
+carpeta = "Tool-AC-Beta"
 sha256sum = "cb346d5c0ccf75aba9031e4e94813c9132513ced2554f0b3a65230b167fbfbb8"
 
 [instalacion]
 
-path = {"ConsolaV/main.rb" = "/usr/bin/toac"}
+files = ["ConsolaV/main.rb" , "ConsolaV/commands.sh"]
+ruta = ["/usr/bin/toac", "/opt/comandos.sh"]

@@ -1,7 +1,9 @@
 // Manejador de archivos
 
 //uses
-use {crate::estructuras::{AdiDescarga, AdiPaquete, AdiBundle},
+use {crate::{
+	lang_managers,
+	estructuras::{AdiDescarga, AdiPaquete, AdiGem, AdiPip}},
 	toml::Value,
 	colored::*,
 	flate2::read::GzDecoder,
@@ -38,21 +40,33 @@ pub fn write_f(name: &str ,file: &[u8]) -> io::Result<()>{
 	Ok(())
 }
 
-pub fn read_adi_down(file: &str) -> AdiDescarga {
+pub fn read_adi_down(file: &str, gito: bool) -> AdiDescarga {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();
 	if !adi.contains_key("paquete") || !adi.contains_key("descarga") || !adi.contains_key("instalacion") {
 		println!("Douh, eso no parece un archivo .adi");
 		process::exit(0x0100);
 	}
-	let source = {
-		AdiDescarga{
-			url: tomy["descarga"]["url"].as_str().unwrap().to_string(),
-			src: tomy["descarga"]["carpeta"].as_str().unwrap().to_string(),
-			sha256sum: tomy["descarga"]["sha256sum"].as_str().unwrap().to_string()
-		}
-	};
-	source
+	if gito == true {
+		let source = {
+			AdiDescarga{
+				url: String::new(),
+				src: tomy["descarga"]["carpeta"].as_str().unwrap().to_string(),
+				sha256sum: tomy["descarga"]["sha256sum"].as_str().unwrap().to_string()
+			}
+		};
+		source
+	}
+	else {
+		let source = {
+			AdiDescarga{
+				url: tomy["descarga"]["url"].as_str().unwrap().to_string(),
+				src: tomy["descarga"]["carpeta"].as_str().unwrap().to_string(),
+				sha256sum: tomy["descarga"]["sha256sum"].as_str().unwrap().to_string()
+			}
+		};
+		source
+	}
 }
 pub fn read_adi(file: &str) -> AdiPaquete {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
@@ -66,21 +80,83 @@ pub fn read_adi(file: &str) -> AdiPaquete {
 	adi_f
 }
 
-pub fn read_bundle(file: &str) -> AdiBundle {
+pub fn extern_depen(file: &str, path_src: &str) {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-	let adi = tomy.as_table().unwrap();
-	if !adi.contains_key("paquete") || !adi.contains_key("descarga") || !adi.contains_key("instalacion") {
-		println!("Douh, eso no parece un archivo .adi");
-		process::exit(0x0100);
-	}
-	let out = {
-		AdiBundle{
-			archivo: tomy["bundle"]["archivo"].as_bool().unwrap(),
-			file: tomy["bundle"]["file"].as_str().unwrap().to_string(),
-		}
-	};
-	out
+    let adi = tomy.as_table().unwrap();
+    let null_arr = adi["paquete"]["dependencias"].as_array().unwrap();
+
+    // Probando con gem/bundle o pip
+    if adi.contains_key("gem") {
+    	println!("{}", "Se han dectectados gemas de ruby!".yellow());
+    	let gemm = adi["gem"]["gemfile"].as_bool().expect("Eso no es un booleano");
+    	if gemm == true {
+    		let payload = {
+    			AdiGem{
+    				gemfile: gemm,
+					file: adi["gem"]["file"].as_str().expect("wtf?").to_string(),
+					gemas: null_arr.to_vec(),
+    			}
+    		};
+    		println!("Instalando desde un Gemfile");
+    		lang_managers::analized_gem(payload, path_src);
+    	}
+    	else {
+    		let gemas = adi["gem"]["gemas"].as_array().expect("Debe de ser un array!");
+    		let payload = {
+    			AdiGem{
+    				gemfile: false,
+    				file: String::new(),
+    				gemas: gemas.to_vec(),
+    			}
+    		};
+    		println!("Instalando gemas...");
+    		lang_managers::analized_gem(payload, path_src);
+    	}
+    }
+    else if adi.contains_key("pip") {
+    	println!("{}", "Se ha dectectado paquetes python por instalar!".yellow());
+    	let version = adi["pip"]["version"].as_integer().expect("Eso no es un numero");
+    	let null_arr = adi["paquete"]["dependencias"].as_array().unwrap();
+
+    	match version {
+    		2 => println!("Instalando con pip2"),
+    		3 => println!("Instalando con pip3"),
+    		_ => {println!("{}", "Douh, esa version no la conosco, beep boop".red());process::exit(0x0100);},
+    	}
+    	let archivo = adi["pip"]["requirements"].as_bool().expect("Cuantico?");
+
+    	if archivo == true {
+    		println!("Instalando desde un archivo requirements.txt");
+    		let payload = {
+    			AdiPip{
+    				version: version,
+					requirements: archivo,
+					file: adi["pip"]["file"].as_str().expect("?").to_string(),
+					packages: null_arr.to_vec(),
+    			}
+    		};
+    		lang_managers::analized_pip(payload, path_src);
+    	}
+    	else {
+    		println!("Instalando packages de python");
+    		let pack = adi["pip"]["packages"].as_array().expect("Eso no es un array");
+    		println!("Instalando paquetes de python");
+    		let payload = {
+    			AdiPip{
+    				version: version,
+					requirements: archivo,
+					file: adi["pip"]["file"].as_str().expect("?").to_string(),
+					packages: pack.to_vec(),
+    			}
+    		};
+    		lang_managers::analized_pip(payload, path_src);
+    	}
+    }
+    else {
+    	println!("{}", "Al parecer no hay archivos para pip o bundle/gem. Yeah, si nada que hacer aqui".green());
+    }
 }
+
 fn put_adi_pack(adi: Value) -> AdiPaquete {
 	AdiPaquete{
 		nombre: adi["paquete"]["nombre"].as_str().unwrap().to_string(),
@@ -171,5 +247,36 @@ pub fn install_path(file: &str, root_src: &str) {
 		aak.push_str(&select[i].as_str().unwrap().to_string());
 		copy_dd(&aak, &insta[i].as_str().unwrap().to_string());
 	}
-	println!("Instalacion terminada!");
+}
+
+pub fn source_git_q(file: &str) -> bool {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	let fuente = &adi["descarga"].as_table().unwrap();
+	if fuente.contains_key("git") {
+		true
+	}
+	else {
+		false
+	}
+}
+
+pub fn read_git(file: &str) -> String {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	adi["descarga"]["git"].as_str().unwrap().to_string()
+}
+
+pub fn git_clone(url_git: &str, target: &str) {
+	let mut child = Command::new("git")
+								.arg("clone")
+								.arg(url_git)
+								.arg(target)
+								.spawn()
+								.expect("No tenis git?");
+	let _result = child.wait().unwrap();
+}
+
+pub fn remove_dd(dir: &str) {
+	fs::remove_dir_all(dir).expect("Ocurrio un error al borrar el archivo");
 }

@@ -1,7 +1,7 @@
 // Estructuras
+use toml::Value;
 
 #[derive(Clone, Debug)]
-
 pub struct Argumentos {
 	pub verbose: bool,
 	pub instalar: String,
@@ -25,9 +25,18 @@ pub struct AdiPaquete {
 }
 
 #[derive(Clone, Debug)]
-pub struct AdiBundle {
-	pub archivo: bool,
+pub struct AdiGem {
+	pub gemfile: bool,
 	pub file: String,
+	pub gemas: Vec<Value>,
+}
+
+#[derive(Clone, Debug)]
+pub struct AdiPip {
+	pub version: i64,
+	pub requirements: bool,
+	pub file: String,
+	pub packages: Vec<Value>
 }
 
 #[derive(Clone, Debug)]

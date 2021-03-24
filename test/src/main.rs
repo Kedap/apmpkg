@@ -1,8 +1,8 @@
 //use std::io::{stdout, Write};
-//use std::fs;
+use std::fs;
 //use curl::easy::Easy;
 //use core::any::type_name;
-use std::process::Command;
+//use std::process::Command;
 //use std::fs::File;
 //use std::io::prelude::*;
 //use pbr::ProgressBar;
@@ -14,16 +14,62 @@ use std::process::Command;
 //use sha2::Sha256;
 //use std::fs::File;
 //use std::io::copy;
+use toml::Value;
 
 fn main() {
-    let path = "aaa/Tool-AC-Beta/ConsolaV/Gemfile";
-    let mut gem = String::from("--gemfile="); gem.push_str(path);
-    Command::new("bundle")
-                .arg("install")
-                .arg(gem)
-                .spawn()
-                .expect("No tenis el bundle");
+    let file = "testing.tap";
+    println!("Leyendo el archivo {}...", file);
+    let filedata = fs::read_to_string(file)
+        .expect("Archivo no encontrado!!! ");
+    let tomy: Value = toml::from_str(&filedata).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+    let adi = tomy.as_table().unwrap();
+    
+    if adi.contains_key("gem") {
+        println!("Instalando dependencias de ruby");
+        let archivo = adi["gem"]["gemfile"].as_bool().unwrap();
+        if archivo == true {
+            println!("Instalando con bundle el Gemfile");
+        }
+        else {
+            let gemas = adi["gem"]["gemas"].as_array().unwrap();
+            println!("instalando solo con gem: {}", gemas[0]);
+        }
+    }
+
+    else if adi.contains_key("pip") {
+        println!("Se instalara con pip");
+        let version = adi["pip"]["version"].as_integer().expect("No es un numero:l");
+        match version {
+            2 => println!("Instalando con pip2"),
+            3 => println!("Instalando con pip3"),
+            _ => println!("Esa version ni existe"),
+        }
+        let archivo = adi["pip"]["requirements"].as_bool().unwrap();
+        if archivo == true {
+            println!("Instalando desde requirements.txt");
+        }
+        else {
+            let pack = adi["pip"]["packages"].as_array().expect("Nope");
+            println!("Instalando {}", pack[0]);
+        }
+    }
+
+    else {
+        println!("Derecho mi pai");
+    }
+
+    println!("ok!");
 }
+
+//fn main() {
+//    let path = "aaa/Tool-AC-Beta/ConsolaV/Gemfile";
+//    let mut gem = String::from("--gemfile="); gem.push_str(path);
+//    Command::new("bundle")
+//                .arg("install")
+//                .arg(gem)
+//                .spawn()
+//                .expect("No tenis el bundle");
+//}
 
 //fn main() {
 //    let mut file = File::open("Beta.tar.gz").expect("Un error al leer");

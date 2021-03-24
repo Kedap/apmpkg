@@ -1,0 +1,27 @@
+[paquete]
+
+nombre = "beef-cerberus"
+version = "1.0-beta"
+rama = "git"
+descrip = "Herramienta para automatizar BeEF fuera de LAN!"
+pagina = "https://github.com/tony23x/beef-for-cerberus"
+licensia = "GPL-V3"
+dependencias = ["python3", "curl", "sqlmap", "php", "wget", "openssh", "unzip"]
+conflicto = "/opt/tool-ac/"
+
+[pip]
+
+version = 3
+requirements = true
+file = "requirements.txt"
+
+[descarga]
+
+git = "https://github.com/tony23x/beef-for-cerberus"
+carpeta = "beef-for-cerberus"
+sha256sum = "SALTAR"
+
+[instalacion]
+
+files = ["ConsolaV/main.rb" , "ConsolaV/commands.sh"]
+ruta = ["/usr/bin/toac", "/opt/comandos.sh"]

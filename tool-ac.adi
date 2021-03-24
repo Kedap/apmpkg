@@ -9,9 +9,9 @@ licensia = "GPL-V3"
 dependencias = ["ruby", "sqlmap"]
 conflicto = "/opt/tool-ac/"
 
-[bundle]
+[gem]
 
-archivo = true
+gemfile = true
 file = "ConsolaV/Gemfile"
 
 [descarga]

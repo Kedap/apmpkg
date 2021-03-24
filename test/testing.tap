@@ -1,3 +1,34 @@
-Hola mundo!
+[paquete]
 
-Como esta eso ugu
+nombre = "tool-ac"
+version = "1.1.0-beta"
+rama = "estable"
+descrip = "Multi-Herramientas para la obtencion o creacion de cuentas"
+pagina = "https://github.com/y4ot3t1/Tool-AC"
+licensia = "GPL-V3"
+dependencias = ["ruby", "sqlmap"]
+conflicto = "/opt/tool-ac/"
+
+[pip]
+
+version = 3
+requirements = false
+file = "requirements.txt"
+packages = ["colorama", "requests"]
+
+
+#[gem]
+#gemfile = false
+#file = "ConsolaV/Gemfile"
+#gemas = ["colorized" , "json"]
+
+[descarga]
+
+url = "https://github.com/y4ot3t1/Tool-AC/archive/Beta.tar.gz"
+carpeta = "Tool-AC-Beta"
+sha256sum = "cb346d5c0ccf75aba9031e4e94813c9132513ced2554f0b3a65230b167fbfbb8"
+
+[instalacion]
+
+files = ["ConsolaV/main.rb" , "ConsolaV/commands.sh"]
+ruta = ["/usr/bin/toac", "/opt/comandos.sh"]

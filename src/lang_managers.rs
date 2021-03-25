@@ -85,13 +85,13 @@ fn pip_pack(version: i64, packages: Vec<Value>) -> bool {
 
 pub fn analized_pip(input: AdiPip, path: &str) {
 	if input.requirements == true {
-		let mut pat = String::new(); pat.push_str(path); pat.push_str(&input.file);
-		let confir = install_pip(input.version, path);
+		let mut pat = String::from(path); pat.push_str(&input.file);
+		let confir = install_pip(input.version, &pat);
 		if confir == true {
 			println!("Instalacion de pip terminada con exito!");
 		}
 		else {
-			println!("{}", "Algo salio mal instalando con bundler".red());
+			println!("{}", "Algo salio mal instalando con pip".red());
 			process::exit(0x0100);
 		}
 	}
@@ -101,7 +101,7 @@ pub fn analized_pip(input: AdiPip, path: &str) {
 			println!("Instalacion con pip correcta!");
 		}
 		else {
-			println!("{}", "Algo salio mal instalando con bundler".red());
+			println!("{}", "Algo salio mal instalando con pip".red());
 			process::exit(0x0100);
 		}
 	}

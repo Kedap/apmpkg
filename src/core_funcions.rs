@@ -144,24 +144,48 @@ pub fn quess(texto: &str) -> bool {
 pub fn local_depen(file_toml: &str) -> bool {
 	let tomy: Value = toml::from_str(file_toml).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();
-	let depen_arr = &adi["paquete"]["dependencias"].as_array().unwrap();
+	let depen_table = adi["paquete"].as_table().expect("Douh, no se un .adi");
 	let mut ready = false;
-	for i in 0..depen_arr.len() {
-		let check_depn = Command::new("bash")
-                    .arg("-c")
-                    .arg(depen_arr[i].as_str().unwrap())
-                    .output()
-                    .expect("Algo fallo en install depen");
-        println!("Comprobando que {} este instalado", depen_arr[i].as_str().unwrap().to_string());
-		if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
-			ready = true;
+
+	if depen_table.contains_key("cmd_depen") {
+		let depen_arr = &adi["paquete"]["cmd_depen"].as_array().unwrap();
+		for i in 0..depen_arr.len() {
+			let check_depn = Command::new("bash")
+    	                .arg("-c")
+    	                .arg(depen_arr[i].as_str().unwrap())
+    	                .output()
+    	                .expect("Algo fallo en install depen");
+    	    println!("Comprobando que {} este instalado", depen_arr[i].as_str().unwrap().to_string());
+			if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+				ready = true;
+			}
+			else {
+				println!("Al parecer no, porque no lo instalamos");
+				ready = false;
+			}					
 		}
-		else {
-			println!("Al parecer no, porque no lo instalamos");
-			ready = false;
-		}					
+		ready
 	}
-	ready
+
+	else {
+		let depen_arr = &adi["paquete"]["dependencias"].as_array().unwrap();
+		for i in 0..depen_arr.len() {
+			let check_depn = Command::new("bash")
+    	                .arg("-c")
+    	                .arg(depen_arr[i].as_str().unwrap())
+    	                .output()
+    	                .expect("Algo fallo en install depen");
+    	    println!("Comprobando que {} este instalado", depen_arr[i].as_str().unwrap().to_string());
+			if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+				ready = true;
+			}
+			else {
+				println!("Al parecer no, porque no lo instalamos");
+				ready = false;
+			}					
+		}
+		ready
+	}
 }
 
 pub fn install_depen(file_toml: &str) {
@@ -203,20 +227,41 @@ pub fn install_depen(file_toml: &str) {
         let mut ready = false;
 
 
-		for i in 0..depen_arr.len() {
+		let depen = &adi["paquete"].as_table().unwrap();
+		if depen.contains_key("cmd_depen") {
+			let cmd_arr = &adi["paquete"]["cmd_depen"].as_array().unwrap();
+			for i in 0..cmd_arr.len() {
 			let check_depn = Command::new("bash")
-                     .arg("-c")
-                     .arg(depen_arr[i].as_str().unwrap())
-                     .output()
-                     .expect("Algo fallo en install depen");
-            println!("Comprobando que {} se haya instalado", depen_arr[i].as_str().unwrap().to_string());
-			if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
-				ready = true;
+        	            .arg("-c")
+        	            .arg(cmd_arr[i].as_str().unwrap())
+        	            .output()
+        	            .expect("Algo fallo en install depen");
+        	println!("Comprobando que {} se haya instalado", cmd_arr[i].as_str().unwrap().to_string());
+				if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+					ready = true;
+				}
+				else {
+					ready = false;
+					println!("Algo fallo, al parecer no se encuentra en los repositorios");
+				}					
 			}
-			else {
-				ready = false;
-				println!("Algo fallo, al parecer no se encuentra en los repositorios");
-			}					
+		}
+		else {
+				for i in 0..depen_arr.len() {
+				let check_depn = Command::new("bash")
+        	             .arg("-c")
+        	             .arg(depen_arr[i].as_str().unwrap())
+        	             .output()
+        	             .expect("Algo fallo en install depen");
+        	    println!("Comprobando que {} se haya instalado", depen_arr[i].as_str().unwrap().to_string());
+				if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+					ready = true;
+				}
+				else {
+					ready = false;
+					println!("Algo fallo, al parecer no se encuentra en los repositorios");
+				}					
+			}
 		}
 
 
@@ -295,6 +340,15 @@ fn manager(pack: String) -> PackageManager {
         	confirmacion: "-v".to_string(),
         	root: true,
 		}},
+	}
+}
+
+pub fn msg_end(file: &str) {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	let des = adi["instalacion"].as_table().unwrap();
+	if des.contains_key("mensaje") {
+		println!("{}", des["mensaje"].as_str().unwrap());
 	}
 }
 /* Puede ayudar en casos de un programador que apenas se adentra en rust

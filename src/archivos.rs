@@ -245,7 +245,18 @@ pub fn install_path(file: &str, root_src: &str) {
 	for i in 0..select.len() {
 		let mut aak = String::new(); aak.push_str(root_src);
 		aak.push_str(&select[i].as_str().unwrap().to_string());
-		copy_dd(&aak, &insta[i].as_str().unwrap().to_string());
+		if i == 0 {
+			Command::new("install")
+								.arg("-Dm")
+								.arg("755")
+								.arg(aak)
+								.arg(&insta[i].as_str().unwrap())
+								.spawn()
+								.expect("Install?");
+		}
+		else {
+			copy_dd(&aak, &insta[i].as_str().unwrap().to_string());
+		}
 	}
 }
 
@@ -279,4 +290,19 @@ pub fn git_clone(url_git: &str, target: &str) {
 
 pub fn remove_dd(dir: &str) {
 	fs::remove_dir_all(dir).expect("Ocurrio un error al borrar el archivo");
+}
+
+pub fn opt_src(file:&str, dir: &str) {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	let insta = adi["instalacion"].as_table().unwrap();
+	if insta.contains_key("opt_src") {
+		let si = insta["opt_src"].as_bool().unwrap();
+		if si == true {
+			move_dd(dir, "/opt/");
+		}
+		else {
+			let _h = true;
+		}
+	}
 }

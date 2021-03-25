@@ -152,6 +152,7 @@ fn instalar(name: &str) {
 
 	println!("Iniciando instalacion");
 	archivos::install_path(&toml, &src_path0);
+	archivos::opt_src(&toml, &src_path);
 	pb.inc();
 
 	println!("Borrando y limpiando los archivos de compilacion y fuentes");
@@ -161,6 +162,7 @@ fn instalar(name: &str) {
 	archivos::remove_dd(&dirc);
 	pb.inc();
 	pb.finish_print("Se realizo con exito la instalacion!");
+	core_funcions::msg_end(&toml);
 }
 
 fn instalar_url(name: &str) {

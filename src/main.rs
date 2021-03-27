@@ -28,21 +28,26 @@ fn print_banner() {
 }
 
 
-fn instalar(name: &str) {
+fn instalar(name: &str, no_user: bool) {
 	println!("Iniciando instalacion/creacion del paquete desde el archivo: {}", name);
 	let toml = archivos::read_fs(name);
 	let meta = archivos::read_adi(&toml);
 	core_funcions::clear();
 	print_banner();
 	core_funcions::print_metapkg(meta.clone());
-	let confirm = core_funcions::quess("Deseas seguir con la instalacion?");
-
-	if confirm == true {
-		println!("Iniciando proceso de instalacion");
+	if no_user == true {
+		println!("{}", "Omitiendo la confirmacion...".yellow());
 	}
 	else {
-		println!("{}", "abortando!".red());
-		process::exit(0x0100);
+		let confirm = core_funcions::quess("Deseas seguir con la instalacion?");
+
+			if confirm == true {
+				println!("Iniciando proceso de instalacion");
+			}
+			else {
+				println!("{}", "abortando!".red());
+				process::exit(0x0100);
+			}
 	}
 
 	// Progres barr
@@ -160,30 +165,59 @@ fn instalar(name: &str) {
 	dirc.push_str(&meta.nombre);
 	dirc.push_str(".d");
 	archivos::remove_dd(&dirc);
+	
+	println!("Ejecutando los ultimos disparadores para la instalacion...");
+	let mut pack_db = String::new(); pack_db.push_str("/etc/apmpkg/paquetes/");
+	pack_db.push_str(&meta.nombre); pack_db.push_str(".adi");
+	archivos::copy_dd(name,&pack_db);
+
 	pb.inc();
 	pb.finish_print("Se realizo con exito la instalacion!");
 	core_funcions::msg_end(&toml);
 }
 
-fn instalar_url(name: &str) {
-	println!("Iniciando instalacion apartir de la URL: {}", name);
-	let f = core_funcions::web_requets(name, "print");
+fn instalar_url(name: &str, user: bool) {
+	println!("Descargando desde la direccion {}", name);
+	let f = archivos::download(name, "file.adi");
 	match f {
-		Ok(_f) => println!("Analizando el archivo"),
+		Ok(_f) => println!("La descarga se realizo con exito!"),
 		Err(_e) => {println!("{}", "Ocurrio un error al hacer la peticion, intenta de nuevo".red()); process::exit(0x0100);}
 	}
+	instalar("file.adi", user);
+	archivos::remove_df("file.adi");
 }
 
-fn dinstalar(name: &str) {
-	println!("Desinatalando el archivo {}", name);
-}
+fn dinstalar(name: &str, no_user: bool) {
+	println!("Desinstalando el paquete {}", name);
+	let mut adi_file = String::new(); adi_file.push_str("/etc/apmpkg/paquetes/"); 
+	adi_file.push_str(name); adi_file.push_str(".adi");
+	let toml = archivos::read_fs(&adi_file);
+	let meta = archivos::read_adi(&toml);
+	core_funcions::clear();
+	print_banner();
+	core_funcions::print_metapkg(meta.clone());
 
-fn actualizar(name: &str) {
-	println!("Actualizando {}", name);
-}
+	if no_user == true {
+		println!("{}", "Omitiendo la confirmacion".yellow());
+	}
+	else {
+		let confirm = core_funcions::quess("Deseas seguir con la desinstalacion?");
+			if confirm == true {
+				println!("Iniciando con el proceso de desinstalacion");
+			}
+			else {
+				println!("{}", "abortando!".red());
+				process::exit(0x0100);
+			}
+	}
 
-fn url_act(name: &str) {
-	println!("Actualizando desde la URL: {}", name);
+	println!("Removiendo los archivos...");
+	archivos::dinstall_path(&toml);
+	archivos::opt_remove(&toml);
+	let mut file_db = String::new(); file_db.push_str("/etc/apmpkg/paquetes/");
+	file_db.push_str(&meta.nombre); file_db.push_str(".adi");
+	archivos::remove_df(&file_db);
+	println!("La desinstalacion se realizo con exito!");
 }
 
 fn main(){
@@ -198,11 +232,9 @@ fn main(){
 	// Separador:
 	let argu = core_funcions::check_args(info_arg.clone());
 	match &argu [..] {
-		"instalar" => instalar(&info_arg.instalar),
-		"instalar_url" => instalar_url(&info_arg.instalar_url),
-		"dinstal" => dinstalar(&info_arg.dinstal),
-		"actualizar" => actualizar(&info_arg.actualizar),
-		"url_act" => url_act(&info_arg.url_act),
+		"instalar" => instalar(&info_arg.instalar, info_arg.confirmar),
+		"instalar_url" => instalar_url(&info_arg.instalar_url, info_arg.confirmar),
+		"remover" => dinstalar(&info_arg.dinstal, info_arg.dinstal_confi),
 		_ => {println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green()); process::exit(0x0100);},
 	}
 }

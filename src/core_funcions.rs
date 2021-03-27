@@ -33,6 +33,17 @@ pub fn leer_argumentos() -> Argumentos {
 			String::new()
 		},
 
+		confirmar: if let Some(matches) = matches.subcommand_matches("instalar") {
+			if matches.is_present("confirmar") {
+				true
+			} else {
+				false
+			}
+		}
+		else {
+			false
+		},
+
 		instalar_url: if let Some(matches) = matches.subcommand_matches("instalar") {
 			if matches.is_present("url") {
 				matches.value_of("url").unwrap().to_string()
@@ -44,7 +55,7 @@ pub fn leer_argumentos() -> Argumentos {
 			String::new()
 		},
 
-		dinstal: if let Some(matches) = matches.subcommand_matches("dinstal") {
+		dinstal: if let Some(matches) = matches.subcommand_matches("remover") {
 			if matches.is_present("paquete") {
 				matches.value_of("paquete").unwrap().to_string()
 			} else {
@@ -55,27 +66,17 @@ pub fn leer_argumentos() -> Argumentos {
 			String::new()
 		},
 
-		actualizar: if let Some(matches) = matches.subcommand_matches("actualizar") {
-			if matches.is_present("paquete_act") {
-				matches.value_of("paquete_act").unwrap().to_string()
-			} else {
-				String::new()
+		dinstal_confi: if let Some(matches) = matches.subcommand_matches("remover") {
+			if matches.is_present("confirmar") {
+				true
+			}
+			else {
+				false
 			}
 		}
 		else {
-			String::new()
+			false
 		},
-
-		url_act: if let Some(matches) = matches.subcommand_matches("actualizar") {
-			if matches.is_present("url") {
-				matches.value_of("url").unwrap().to_string()
-			} else {
-				String::new()
-			}
-		}
-		else {
-			String::new()
-		}
 	}
 
 }
@@ -88,13 +89,7 @@ pub fn check_args(input: Argumentos) -> String {
 		"instalar_url".to_string()
 	}
 	else if input.dinstal != "" {
-		"dinstal".to_string()
-	}
-	else if input.actualizar != "" {
-		"actualizar".to_string()
-	}
-	else if input.url_act != "" {
-		"url_act".to_string()
+		"remover".to_string()
 	}
 	else {
 		"nope".to_string()

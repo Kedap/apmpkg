@@ -260,6 +260,44 @@ pub fn install_path(file: &str, root_src: &str) {
 	}
 }
 
+pub fn remove_df(path: &str) {
+	let mut child = Command::new("rm")
+								.arg(path)
+								.spawn()
+								.expect("Algo raro sucedio ejecutando rm");
+	let _result = child.wait().unwrap();
+}
+
+pub fn dinstall_path(file: &str) {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+
+	let remove = &adi["instalacion"]["ruta"].as_array().unwrap();
+
+	for i in 0..remove.len() {
+		//println!("Borrando el archivo {}", remove[i]);
+		remove_df(&remove[i].as_str().unwrap().to_string());
+	}
+}
+
+pub fn opt_remove(file:&str) {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	let insta = adi["instalacion"].as_table().unwrap();
+
+	if insta.contains_key("opt_src") {
+		let si = insta["opt_src"].as_bool().unwrap();
+		if si == true {
+			let carpeta = adi["descarga"]["carpeta"].as_str().unwrap().to_string();
+			let mut opt_src = String::new(); opt_src.push_str("/opt/") ;opt_src.push_str(&carpeta);
+			remove_dd(&carpeta);
+		}
+		else {
+			let _h = true;
+		}
+	}
+}
+
 pub fn source_git_q(file: &str) -> bool {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();

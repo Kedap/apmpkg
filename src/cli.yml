@@ -9,11 +9,15 @@ args:
         help: Mostrar la salida (modo verbose)
 subcommands:
     - instalar:
-        about: Instala un paquete
+        about: Instala/actualiza un paquete
         args:
             - paquete:
                 help: "Nombre y/o ruta del archivo adi o abc"
                 index: 1
+            - confirmar:
+                short: c 
+                long: confirmar
+                help: "No se interactua con el usuario en la confirmacion"
             - url:
                 short: u
                 long: url
@@ -23,20 +27,13 @@ subcommands:
                 short: b
                 long: binario
                 help: "Creacion de un binario apartir de un adi o abc"
-    - dinstal:
+    - remover:
         about: Desinstala un paquete
         args:
             - paquete:
                 help: "Nombre del paquete a desinstalar"
                 index: 1
-    - actualizar:
-        about: Actualiza un paquete ya instalado
-        args:
-            - paquete_act:
-                help: "Nombre y/o ruta del archivo apm para actualizar"
-                index: 1
-            - url:
-                short: u
-                long: url
-                help: "Direccion URL del archivo apm para actualizar"
-                takes_value: true
+            - confirmar:
+                short: c 
+                long: confirmar
+                help: "No se interactua con el usuario en la confirmacion"

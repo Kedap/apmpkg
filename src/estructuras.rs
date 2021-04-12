@@ -6,6 +6,7 @@ pub struct Argumentos {
 	pub verbose: bool,
 	pub instalar: String,
 	pub confirmar: bool,
+	pub instalar_bin: bool,
 	pub instalar_url: String,
 	pub dinstal: String,
 	pub dinstal_confi: bool,

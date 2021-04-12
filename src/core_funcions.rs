@@ -44,6 +44,18 @@ pub fn leer_argumentos() -> Argumentos {
 			false
 		},
 
+		instalar_bin: if let Some(matches) = matches.subcommand_matches("instalar") {
+			if matches.is_present("binario") {
+				true
+			}
+			else {
+				false
+			}
+		}
+		else {
+			false
+		},
+
 		instalar_url: if let Some(matches) = matches.subcommand_matches("instalar") {
 			if matches.is_present("url") {
 				matches.value_of("url").unwrap().to_string()
@@ -346,6 +358,7 @@ pub fn msg_end(file: &str) {
 		println!("{}", des["mensaje"].as_str().unwrap());
 	}
 }
+
 /* Puede ayudar en casos de un programador que apenas se adentra en rust
 Un ejemplo: yo*/
 pub fn type_of<T>(_: T) -> &'static str {

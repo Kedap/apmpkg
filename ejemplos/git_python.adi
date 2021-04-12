@@ -1,0 +1,29 @@
+[paquete]
+
+nombre = "PhishingSpammer"
+version = "beta"
+rama = "git"
+descrip = "PhisingSpammer is an automated bot that spam phising sites just by a few clicks!"
+pagina = "https://github.com/tony23x/beef-for-cerberus"
+licensia = ""
+dependencias = ["python3"]
+conflicto = "/opt/PhishingSpammer"
+
+[pip]
+
+version = 3
+requirements = false
+packages = ["requests", "pytest-shutil", "objdict"]
+
+[descarga]
+
+git = "https://github.com/v3lip/PhishingSpammer"
+carpeta = "PhishingSpammer"
+sha256sum = "SALTAR"
+
+[instalacion]
+
+opt_src = true
+files = ["spammer.py", "settings-generator.py"]
+ruta = ["/usr/bin/phispammer", "/usr/bin/settings-generator-phi.py"]
+mensaje = "Para abrir, ejecuta: phispammer"

@@ -6,7 +6,7 @@ use {crate::{
 	estructuras::{AdiDescarga, AdiPaquete, AdiGem, AdiPip}},
 	toml::Value,
 	colored::*,
-	flate2::read::GzDecoder,
+	flate2::{read::GzDecoder,Compression,write::GzEncoder},
 	tar::Archive,
 	sha2::{Sha256, Digest},
 	std::{fs, process, fs::File, io, process::Command}};
@@ -145,7 +145,7 @@ pub fn extern_depen(file: &str, path_src: &str) {
     			AdiPip{
     				version: version,
 					requirements: archivo,
-					file: adi["pip"]["file"].as_str().expect("?").to_string(),
+					file: String::new(),
 					packages: pack.to_vec(),
     			}
     		};
@@ -268,6 +268,15 @@ pub fn remove_df(path: &str) {
 	let _result = child.wait().unwrap();
 }
 
+pub fn remove_ddf(path: &str) {
+	let mut child = Command::new("rm")
+								.arg("-r")
+								.arg(path)
+								.spawn()
+								.expect("Algo muy raro sucedio con RM -R");
+	let _result = child.wait().unwrap();
+}
+
 pub fn dinstall_path(file: &str) {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();
@@ -275,7 +284,6 @@ pub fn dinstall_path(file: &str) {
 	let remove = &adi["instalacion"]["ruta"].as_array().unwrap();
 
 	for i in 0..remove.len() {
-		//println!("Borrando el archivo {}", remove[i]);
 		remove_df(&remove[i].as_str().unwrap().to_string());
 	}
 }
@@ -290,7 +298,7 @@ pub fn opt_remove(file:&str) {
 		if si == true {
 			let carpeta = adi["descarga"]["carpeta"].as_str().unwrap().to_string();
 			let mut opt_src = String::new(); opt_src.push_str("/opt/") ;opt_src.push_str(&carpeta);
-			remove_dd(&carpeta);
+			remove_ddf(&opt_src);
 		}
 		else {
 			let _h = true;
@@ -343,4 +351,16 @@ pub fn opt_src(file:&str, dir: &str) {
 			let _h = true;
 		}
 	}
+}
+
+// Funcion para crear un binario apartir de un .ADI
+pub fn crate_bin(path: &str, nombre:&str) {
+	println!("Iniciando la creacion de un Archivos Binario de Instalacion...");
+
+	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar");
+	let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
+    let enc = GzEncoder::new(tar_gz, Compression::default());
+    let mut tar = tar::Builder::new(enc);
+    tar.append_dir_all(".", path).expect("Fallo en dir_all");
+    println!("Creacion del binario a sido de manera exitosa!!!");
 }

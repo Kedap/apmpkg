@@ -28,7 +28,7 @@ fn print_banner() {
 }
 
 
-fn instalar(name: &str, no_user: bool) {
+fn instalar(name: &str, no_user: bool, bin: bool) {
 	println!("Iniciando instalacion/creacion del paquete desde el archivo: {}", name);
 	let toml = archivos::read_fs(name);
 	let meta = archivos::read_adi(&toml);
@@ -68,6 +68,10 @@ fn instalar(name: &str, no_user: bool) {
 	let mut dirg = String::new();
 	dirg.push_str(&meta.nombre);
 	dirg.push_str(".d");
+
+	let mut copy_install = String::new();
+	copy_install.push_str(&meta.nombre);
+	copy_install.push_str(".d");
 
 	let exist: bool = Path::new(&dir).exists();
 	if exist == true {
@@ -164,7 +168,18 @@ fn instalar(name: &str, no_user: bool) {
 	let mut dirc = String::new();
 	dirc.push_str(&meta.nombre);
 	dirc.push_str(".d");
-	archivos::remove_dd(&dirc);
+	// Antes de limpiar...
+	if bin == true {
+		archivos::copy_dd(name, &copy_install);
+		let nombre_bin = meta.nombre.clone();
+		archivos::crate_bin(&dirc, &nombre_bin);
+		println!("Limpiando...");
+		archivos::remove_dd(&dirc);
+	}
+	else {
+		println!("Limpiando...");
+		archivos::remove_dd(&dirc);
+	}
 	
 	println!("Ejecutando los ultimos disparadores para la instalacion...");
 	let mut pack_db = String::new(); pack_db.push_str("/etc/apmpkg/paquetes/");
@@ -176,14 +191,14 @@ fn instalar(name: &str, no_user: bool) {
 	core_funcions::msg_end(&toml);
 }
 
-fn instalar_url(name: &str, user: bool) {
+fn instalar_url(name: &str, user: bool, bin_bool:bool) {
 	println!("Descargando desde la direccion {}", name);
 	let f = archivos::download(name, "file.adi");
 	match f {
 		Ok(_f) => println!("La descarga se realizo con exito!"),
 		Err(_e) => {println!("{}", "Ocurrio un error al hacer la peticion, intenta de nuevo".red()); process::exit(0x0100);}
 	}
-	instalar("file.adi", user);
+	instalar("file.adi", user, bin_bool);
 	archivos::remove_df("file.adi");
 }
 
@@ -232,8 +247,8 @@ fn main(){
 	// Separador:
 	let argu = core_funcions::check_args(info_arg.clone());
 	match &argu [..] {
-		"instalar" => instalar(&info_arg.instalar, info_arg.confirmar),
-		"instalar_url" => instalar_url(&info_arg.instalar_url, info_arg.confirmar),
+		"instalar" => instalar(&info_arg.instalar, info_arg.confirmar, info_arg.instalar_bin),
+		"instalar_url" => instalar_url(&info_arg.instalar_url, info_arg.confirmar, info_arg.instalar_bin),
 		"remover" => dinstalar(&info_arg.dinstal, info_arg.dinstal_confi),
 		_ => {println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green()); process::exit(0x0100);},
 	}

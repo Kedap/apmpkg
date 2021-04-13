@@ -354,13 +354,64 @@ pub fn opt_src(file:&str, dir: &str) {
 }
 
 // Funcion para crear un binario apartir de un .ADI
-pub fn crate_bin(path: &str, nombre:&str) {
+pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
 	println!("Iniciando la creacion de un Archivos Binario de Instalacion...");
 
-	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar");
-	let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
-    let enc = GzEncoder::new(tar_gz, Compression::default());
-    let mut tar = tar::Builder::new(enc);
-    tar.append_dir_all(".", path).expect("Fallo en dir_all");
+	let tomy: Value = toml::from_str(meta_file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+    let adi = tomy.as_table().unwrap();
+    let mut conservar_src_dir = false;
+    let insta = adi["instalacion"].as_table().unwrap();
+    let gito = source_git_q(&meta_file);
+
+    if adi.contains_key("gem") || adi.contains_key("pip") {
+    	conservar_src_dir = true;
+    }
+    else if insta.contains_key("opt_src") {
+    	let boleano = insta["opt_src"].as_bool().unwrap();
+    	if boleano == true {
+    		conservar_src_dir = true;
+    	}
+    	else {
+    		conservar_src_dir = false;
+    	}
+    }
+    else if gito == true {
+    	conservar_src_dir = true;
+    }
+
+    if conservar_src_dir == true {
+    	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar");
+		let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
+    	let enc = GzEncoder::new(tar_gz, Compression::default());
+    	let mut tar = tar::Builder::new(enc);
+    	tar.append_dir_all(".", path).expect("Fallo en dir_all");
+    }
+    else {
+    	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar");
+		let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
+    	let enc = GzEncoder::new(tar_gz, Compression::default());
+    	let mut tar = tar::Builder::new(enc);
+
+    	let des = read_adi_down(meta_file, false);
+    	let mut dirc = String::new(); dirc.push_str(path);
+    	dirc.push_str(&des.src); dirc.push_str("/");
+
+    	let archivos = &adi["instalacion"]["files"].as_array().unwrap();
+    	for i in 0..archivos.len() {
+    		let mut archivo = String::new(); archivo.push_str(&dirc);
+			archivo.push_str(&archivos[i].as_str().unwrap().to_string());
+			tar.append_path(archivo).unwrap();
+    	}
+
+    	let mut out_adi = String::new(); out_adi.push_str(adi["paquete"]["nombre"].as_str().unwrap());
+    	out_adi.push_str(".adi");
+    	let f = write_f(&out_adi, meta_file.as_bytes());
+    	match f {
+			Ok(_f) => println!("Es archivo .adi se copio con exito"),
+			Err(_e) => {println!("{}", "Ocurrio un error al copiar el archivo .adi al binario".red()); process::exit(0x0100);}
+		}
+		tar.append_path(out_adi).unwrap();
+    }
+
     println!("Creacion del binario a sido de manera exitosa!!!");
 }

@@ -71,7 +71,8 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
 
 	let mut copy_install = String::new();
 	copy_install.push_str(&meta.nombre);
-	copy_install.push_str(".d");
+	copy_install.push_str(".d/"); copy_install.push_str(&meta.nombre);
+	copy_install.push_str(".adi");
 
 	let exist: bool = Path::new(&dir).exists();
 	if exist == true {
@@ -167,12 +168,13 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
 	println!("Borrando y limpiando los archivos de compilacion y fuentes");
 	let mut dirc = String::new();
 	dirc.push_str(&meta.nombre);
-	dirc.push_str(".d");
+	dirc.push_str(".d"); dirc.push_str("/");
 	// Antes de limpiar...
 	if bin == true {
 		archivos::copy_dd(name, &copy_install);
-		let nombre_bin = meta.nombre.clone();
-		archivos::crate_bin(&dirc, &nombre_bin);
+		let mut nombre_bin = String::new(); nombre_bin.push_str(&meta.nombre);
+		nombre_bin.push_str("-"); nombre_bin.push_str(&meta.version);
+		archivos::crate_bin(&dirc, &nombre_bin, &toml);
 		println!("Limpiando...");
 		archivos::remove_dd(&dirc);
 	}

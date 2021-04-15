@@ -9,6 +9,19 @@ use {
 	colored::*,
 	clap::{load_yaml,App}};
 
+
+pub fn print_banner() {
+	println!(" 
+	\t _______ _______ __   __ _______ ___   _ _______ 
+	\t|       |       |  |_|  |       |   | | |       |
+	\t|   _   |    _  |       |    _  |   |_| |    ___|
+	\t|  |_|  |   |_| |       |   |_| |      _|   | __ 
+	\t|       |    ___|       |    ___|     |_|   ||  |
+	\t|   _   |   |   | ||_|| |   |   |    _  |   |_| |
+	\t|__| |__|___|   |_|   |_|___|   |___| |_|_______|
+	");
+}
+
 pub fn leer_argumentos() -> Argumentos {
 	let yaml = load_yaml!("cli.yml");
 	let matches = App::from_yaml(yaml).get_matches();

@@ -403,15 +403,63 @@ pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
 			tar.append_path(archivo).unwrap();
     	}
 
-    	let mut out_adi = String::new(); out_adi.push_str(adi["paquete"]["nombre"].as_str().unwrap());
-    	out_adi.push_str(".adi");
+    	let out_adi = String::from("apkg.adi");
     	let f = write_f(&out_adi, meta_file.as_bytes());
     	match f {
 			Ok(_f) => println!("Es archivo .adi se copio con exito"),
 			Err(_e) => {println!("{}", "Ocurrio un error al copiar el archivo .adi al binario".red()); process::exit(0x0100);}
 		}
-		tar.append_path(out_adi).unwrap();
+		tar.append_path(&out_adi).unwrap();
+
+		println!("{}", "Limpiando...".yellow());
+		remove_df(&out_adi);
     }
 
     println!("Creacion del binario a sido de manera exitosa!!!");
+}
+
+pub fn es_abi(path: &str) -> bool {
+	let comando_file = Command::new("file")
+							.arg(path)
+							.output()
+							.expect("Ocurrio un error al ejecutar el comando file");
+	let comando_salida = String::from_utf8_lossy(&comando_file.stdout);
+
+	// Tipo de salidas segun los soportados 
+	let mut adi_file = String::new(); adi_file.push_str(path); adi_file.push_str(": ASCII text\n");
+	let mut abi_file = String::new(); abi_file.push_str(path); 
+	abi_file.push_str(": gzip compressed data, original size modulo 2^32 25088\n");
+
+	if comando_salida == abi_file {
+		println!("El archivo es soportado!!!");
+		true
+	}
+	else if comando_salida == adi_file {
+		println!("El archivo es soportado!!!");
+		false
+	}
+	else {
+		println!("{}", "El archivo no es soportado, prueba con otro".red());
+		process::exit(0x0100);
+	}
+}
+
+pub fn es_abc(path: &str) -> bool {
+	let comando_iiabc = Command::new("bash")
+									.arg("/etc/apmpkg/iiabc.sh")
+									.arg("-abc")
+									.arg(path)
+									.output()
+									.expect("Exite el archivo /etc/apmpkg/iiabc.sh");
+	let comando_salida = String::from_utf8_lossy(&comando_iiabc.stdout);
+
+	// Tipo de salidas segun si es abc
+	let abc_salida = String::from("true\n");
+	if comando_salida == abc_salida {
+		println!("Se a dectectado un archivo .abc");
+		true
+	}
+	else {
+		false
+	}
 }

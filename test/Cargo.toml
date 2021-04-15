@@ -8,4 +8,5 @@ license = "Apache-2.0"
 
 [dependencies]
 
-toml = "0.5.8"
+#toml = "0.5.8"
+infer = "0.3"

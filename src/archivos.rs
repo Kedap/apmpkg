@@ -420,15 +420,16 @@ pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
 
 pub fn es_abi(path: &str) -> bool {
 	let comando_file = Command::new("file")
+							.arg("-i")
 							.arg(path)
 							.output()
 							.expect("Ocurrio un error al ejecutar el comando file");
 	let comando_salida = String::from_utf8_lossy(&comando_file.stdout);
 
 	// Tipo de salidas segun los soportados 
-	let mut adi_file = String::new(); adi_file.push_str(path); adi_file.push_str(": ASCII text\n");
+	let mut adi_file = String::new(); adi_file.push_str(path); adi_file.push_str(": text/plain; charset=us-ascii\n");
 	let mut abi_file = String::new(); abi_file.push_str(path); 
-	abi_file.push_str(": gzip compressed data, original size modulo 2^32 25088\n");
+	abi_file.push_str(": application/gzip; charset=binary\n");
 
 	if comando_salida == abi_file {
 		println!("El archivo es soportado!!!");

@@ -55,8 +55,7 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
 
 	let mut copy_install = String::new();
 	copy_install.push_str(&meta.nombre);
-	copy_install.push_str(".d/"); copy_install.push_str(&meta.nombre);
-	copy_install.push_str(".adi");
+	copy_install.push_str(".d/"); copy_install.push_str("apkg.adi");
 
 	let exist: bool = Path::new(&dir).exists();
 	if exist == true {
@@ -172,6 +171,90 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
 	pack_db.push_str(&meta.nombre); pack_db.push_str(".adi");
 	archivos::copy_dd(name,&pack_db);
 
+	pb.inc();
+	pb.finish_print("Se realizo con exito la instalacion!");
+	core_funcions::msg_end(&toml);
+}
+
+// Instalacion apartir de un archivo .abi.tar
+pub fn instalar_abi(path: &str, no_user: bool) {
+	println!("Iniciando instalacion desde el binario: {}", path);
+	println!("Desempaquetando el binario....");
+	let resultado_e_tar = archivos::e_tar(path, "install.d/");
+	match resultado_e_tar {
+		Ok(_resultado_e_tar) => println!("El tarball se descomprimio con exito"),
+		Err(_e) => {println!("{}", "Ocurrio un error al descomprimir el tarball".red()); process::exit(0x0100);}
+	}
+
+	//Creacion del progress bar
+	let contador_bar = 7; let mut pb = ProgressBar::new(contador_bar);
+	pb.format("(->.)");
+	thread::sleep(Duration::from_secs(1));
+
+	// Leyendo metadata y confrmirmacion
+	let toml = archivos::read_fs("install.d/apkg.adi");
+	let meta = archivos::read_adi(&toml);
+	core_funcions::clear();
+	core_funcions::print_banner();
+	core_funcions::print_metapkg(meta.clone());
+	// Preguntando a por la confirmacion
+	if no_user == true {
+		println!("{}", "Omitiendo la confirmacion...".yellow());
+	}
+	else {
+		let confirm = core_funcions::quess("Deseas seguir con la instalacion?");
+
+			if confirm == true {
+				println!("Iniciando proceso de instalacion");
+			}
+			else {
+				println!("Limpiando...");
+				archivos::remove_dd("install.d/");
+				println!("{}", "abortando!".red());
+				process::exit(0x0100);
+			}
+	}
+	pb.inc();
+
+	//Checando dependencias
+	println!("Leyendo dependencias");
+	let ya_install = core_funcions::local_depen(&toml);
+	if ya_install == true {
+		println!("Yeah, ya tienes las dependencias instaladas!!!!");
+	}
+	else {
+		core_funcions::install_depen(&toml);
+	}
+	pb.inc();
+
+	//Analizando el codigo extraido
+	println!("Instalacion de librerias extras...");
+	let es_git = archivos::source_git_q(&toml);
+	let descarga_meta = archivos::read_adi_down(&toml, es_git);
+	let mut src_path = String::from("install.d/"); src_path.push_str(&descarga_meta.src);
+	src_path.push_str("/");
+	archivos::extern_depen(&toml, &src_path);
+	pb.inc();
+
+	//Colocando los archivos en los lugares deseados
+	println!("Procediendo con la instalacion");
+	archivos::install_path(&toml, &src_path);
+	archivos::opt_src(&toml, &src_path);
+	pb.inc();
+
+	//Colocando en /etc/apmpkg/paquetes
+	println!("Ejecutando los ultimos disparadores para la instalacion...");
+	let mut pack_db = String::from("/etc/apmpkg/paquetes/");
+	pack_db.push_str(&meta.nombre); pack_db.push_str(".adi");
+	archivos::copy_dd("install.d/apkg.adi",&pack_db);
+	pb.inc();
+	
+	//Borrando el directorio install.d
+	println!("Limpiando las fuentes de instalacion");
+	archivos::remove_dd("install.d/");
+	pb.inc();
+
+	//Mensaje de desarrollador
 	pb.inc();
 	pb.finish_print("Se realizo con exito la instalacion!");
 	core_funcions::msg_end(&toml);

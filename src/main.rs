@@ -19,7 +19,7 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
 	println!("{}", "Iniciando instalacion!".green());
 	let abi = archivos::es_abi(name);
 	if abi == true {
-		println!("Es un archivo .abi");
+		metodos_de_instalacion::instalar_abi(name, no_user);
 	}
 	else {
 		let abc = archivos::es_abc(name);

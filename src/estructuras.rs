@@ -10,6 +10,7 @@ pub struct Argumentos {
 	pub instalar_url: String,
 	pub dinstal: String,
 	pub dinstal_confi: bool,
+	pub instalar_depen: String,
 }
 
 // ADI TOML archivo 

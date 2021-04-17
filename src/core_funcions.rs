@@ -102,6 +102,13 @@ pub fn leer_argumentos() -> Argumentos {
 		else {
 			false
 		},
+
+		instalar_depen: if matches.is_present("instalard") {
+			matches.value_of("instalard").unwrap().to_string()
+		}
+		else {
+			String::new()
+		},
 	}
 
 }
@@ -115,6 +122,9 @@ pub fn check_args(input: Argumentos) -> String {
 	}
 	else if input.dinstal != "" {
 		"remover".to_string()
+	}
+	else if input.instalar_depen != "" {
+		"instalar_depen".to_string()
 	}
 	else {
 		"nope".to_string()

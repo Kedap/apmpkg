@@ -7,6 +7,11 @@ args:
         short: v
         multiple: true
         help: Mostrar la salida (modo verbose)
+    - instalard:
+        short: di
+        long: Instalar_dependencia
+        help: Instala la dependencia especificada
+        takes_value: true
 subcommands:
     - instalar:
         about: Instala/actualiza un paquete

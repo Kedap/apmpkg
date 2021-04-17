@@ -76,6 +76,16 @@ fn dinstalar(name: &str, no_user: bool) {
 	println!("La desinstalacion se realizo con exito!");
 }
 
+fn instalar_depen(depen: &str) {
+	core_funcions::clear();
+	println!("Instalando el paquete {}", depen);
+	let mut toml_str = String::from("
+		[paquete]
+		dependencias = ['");
+	toml_str.push_str(depen); toml_str.push_str("']");
+	core_funcions::install_depen(&toml_str);
+}
+
 fn main(){
 	core_funcions::print_banner();
 	let info_arg = core_funcions::leer_argumentos();
@@ -91,6 +101,7 @@ fn main(){
 		"instalar" => instalar(&info_arg.instalar, info_arg.confirmar, info_arg.instalar_bin),
 		"instalar_url" => instalar_url(&info_arg.instalar_url, info_arg.confirmar, info_arg.instalar_bin),
 		"remover" => dinstalar(&info_arg.dinstal, info_arg.dinstal_confi),
+		"instalar_depen" => instalar_depen(&info_arg.instalar_depen),
 		_ => {println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green()); process::exit(0x0100);},
 	}
 }

@@ -234,6 +234,16 @@ pub fn hash_sum(path: &str, check: &str) -> bool {
 	}
 }
 
+pub fn copy_df(source: &str, target: &str) {
+	let mut child = Command::new("cp")
+								.arg("-r")
+								.arg(source)
+								.arg(target)
+								.spawn()
+								.expect("Algo a fallado al copiar los directorios");
+	let _result = child.wait().unwrap();
+}
+
 pub fn install_path(file: &str, root_src: &str) {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();
@@ -255,7 +265,7 @@ pub fn install_path(file: &str, root_src: &str) {
 								.expect("Install?");
 		}
 		else {
-			copy_dd(&aak, &insta[i].as_str().unwrap().to_string());
+			copy_df(&aak, &insta[i].as_str().unwrap().to_string());
 		}
 	}
 }

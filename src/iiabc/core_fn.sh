@@ -99,3 +99,28 @@ check_makedepen(){
 descargar_fuentes_curl(){
 	curl $1 -o $src_dir/source.tar.gz
 }
+
+check_arch(){
+	if [ "$arch" == 'any' ]; then
+		msg1 "Requisitos cumplidos"
+	else
+
+		for archi in "${arch[@]}"; do
+			bool_arch=0
+
+			if [ "$(uname -m)" == "$archi" ]; then
+				bool_arch=1
+				break
+			else
+				bool_arch=0
+			fi
+		done
+
+		if [[ $bool_arch -eq 1 ]]; then
+			msg1 "Requisitos cumplidos"
+		else
+			error "Requisitos no cumplidos"
+			exit 1
+		fi
+	fi
+}

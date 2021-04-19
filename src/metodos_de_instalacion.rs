@@ -259,3 +259,15 @@ pub fn instalar_abi(path: &str, no_user: bool) {
 	pb.finish_print("Se realizo con exito la instalacion!");
 	core_funcions::msg_end(&toml);
 }
+
+// Instalacion apartir de un archivo .abc
+pub fn instalar_abc(path: &str) {
+	println!("Iniciando desde un .abc");
+	let mut child = process::Command::new("bash")
+										.arg("/etc/apmpkg/iiabc/iiabc.sh")
+										.arg("-i")
+										.arg(path)
+										.spawn()
+										.expect("Al parecer no tienes iiabc, algo anda mal");
+	let _result = child.wait().unwrap();
+}

@@ -457,7 +457,7 @@ pub fn es_abi(path: &str) -> bool {
 
 pub fn es_abc(path: &str) -> bool {
 	let comando_iiabc = Command::new("bash")
-									.arg("/etc/apmpkg/iiabc.sh")
+									.arg("/etc/apmpkg/iiabc/iiabc.sh")
 									.arg("-abc")
 									.arg(path)
 									.output()
@@ -467,7 +467,6 @@ pub fn es_abc(path: &str) -> bool {
 	// Tipo de salidas segun si es abc
 	let abc_salida = String::from("true\n");
 	if comando_salida == abc_salida {
-		println!("Se a dectectado un archivo .abc");
 		true
 	}
 	else {

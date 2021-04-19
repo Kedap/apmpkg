@@ -24,7 +24,7 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
 	else {
 		let abc = archivos::es_abc(name);
 		if abc == true {
-			println!("Iniciando instalacion desde un .abc");
+			metodos_de_instalacion::instalar_abc(name);
 		}
 		else {
 			metodos_de_instalacion::instalar_adi(name, no_user, bin);

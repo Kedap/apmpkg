@@ -13,7 +13,11 @@
 #                                                              #
 ################################################################
 
-source /etc/apmpkg/iiabc/core_fn.sh
+source /etc/apmpkg/iiabc/core_fn.sh > /dev/null 2>&1
+if [ $? -eq 1 ]; then
+	echo "Al parecer no se encuentra el archivo /etc/apmpkg/iiabc/core_fn.sh!!!"
+	exit 1
+fi
 
 
 if [ -z "$1" ]
@@ -38,6 +42,9 @@ install_abi(){
 		exit 1
 	fi
 
+	# Procesador
+	check_arch
+
 	# Dependencias...
 	msg1 "Verificando dependencias para crear..."
 	check_makedepen
@@ -52,14 +59,57 @@ install_abi(){
 	# Descargando
 	msg1 "Obteniendo fuentes..."
 	descargar_fuentes_curl "$source"
-	msg1 "Extrayendo fuentes..."
-	cd $src_dir
-	tar -xf source.tar.gz
+
+	# Sumas
+	if [ "$sha256sums" == "SKIP" ]; then
+		warn "Omitiendo la suma sha256"
+	else
+		msg1 "Verificando la integridad de los archivos..."
+		echo $sha256sums $pkgname.d/source.tar.gz | sha256sum -c > /dev/null 2>&1
+		if [ $? -eq 1 ]; then
+			error "Las sumas no coinciden..."
+			exit 1
+		else
+			msg1 "Las sumas coinciden!"
+		fi
+	fi
+
+	# Extrayendo?
+	if [ -z "$noextract" ]; then
+		msg1 "Extrayendo fuentes..."
+		cd $src_dir
+		tar -xf source.tar.gz
+	else
+		warn "No se extraen las fuentes..."
+	fi
+
+	# Prepare
+	msg1 "iniciando prepare()..."
+	prepare > /dev/null 2>&1
+	if [ $? -eq 1 ]; then
+		msg1 "Saltando a la siguiente funcion"
+	else
+		cd ..
+	fi
 
 	# Ejecutando las funciones...
 	msg1 "Iniciando build()..."
-	build
-	cd ..
+	build > /dev/null 2>&1
+	if [ $? -eq 1 ]; then
+		msg1 "Saltando a la siguiente funcion"
+	else
+		cd ..
+	fi
+
+	# Check
+	msg1 "Iniciando package()..."
+	package > /dev/null 2>&1
+	if [ $? -eq 1 ]; then
+		msg1 "Saltando a la siguiente funcion"
+	else
+		cd ..
+	fi
+	
 	# La instalacion se debe de instalar como root, aqui
 	msg1 "Iniciando package()..."
 	if [ "$(id -u)" != '0' ]; then
@@ -87,6 +137,7 @@ if [ "$1" == "-abc" ]; then
 	fi
 fi
 
+# Iniciando instalacion aparitir de un .abc
 if [ "$1" == "-i" ]; then
 	echo "Iniciando instalacion..."
 	install_abi $2

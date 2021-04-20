@@ -10,7 +10,7 @@ url="https://github.com/y4ot3t1/Tool-AC"
 license=('GPL')
 depends=('ruby' 'curl' 'php')
 makedepends=('ruby')
-source=("https://codeload.github.com/y4ot3t1/$pkgname/tar.gz/Beta")
+source=('https://codeload.github.com/y4ot3t1/Tool-AC/tar.gz/Beta ')
 sha256sums=('cb346d5c0ccf75aba9031e4e94813c9132513ced2554f0b3a65230b167fbfbb8')
 
 build() {

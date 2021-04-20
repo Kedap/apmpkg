@@ -55,10 +55,27 @@ install_abi(){
 	msg1 "Creando el paquete $pkgname..."
 	pwd_dir= pwd > /dev/null 
 	src_dir="$pwd_dir$pkgname.d/"
-	mkdir -p $src_dir
+	mkdir $src_dir > /dev/null 2>&1
+	if [ $? -eq 1 ]; then
+		pregunta "El archivo de trabajo ya existe, desea borrarlo? [S/n]"
+		if [ $bool_pregunta -eq 1 ]; then
+			warn "Borrando directorio $pkgname.d..."
+			rm -r $pkgname.d
+			mkdir $src_dir > /dev/null 2>&1
+		else
+			error "Es necesario borrarlo"
+			exit 1
+		fi
+	fi
 	# Descargando
 	msg1 "Obteniendo fuentes..."
-	descargar_fuentes_curl "$source"
+	echo $source | grep git+ > /dev/null 2>&1
+	if [ $? -eq 1 ]; then
+		descargar_fuentes_curl "$source"
+	else
+		cd $src_dir
+		git_clone
+	fi
 
 	# Sumas
 	if [ "$sha256sums" == "SKIP" ]; then
@@ -71,42 +88,47 @@ install_abi(){
 			exit 1
 		else
 			msg1 "Las sumas coinciden!"
+			if [ -z "$noextract" ]; then
+				msg1 "Extrayendo fuentes..."
+				cd $src_dir
+				tar -xf source.tar.gz
+				cd ..
+			else
+				warn "No se extraen las fuentes..."
+			fi
 		fi
 	fi
 
-	# Extrayendo?
-	if [ -z "$noextract" ]; then
-		msg1 "Extrayendo fuentes..."
-		cd $src_dir
-		tar -xf source.tar.gz
-	else
-		warn "No se extraen las fuentes..."
-	fi
-
 	# Prepare
-	msg1 "iniciando prepare()..."
-	prepare > /dev/null 2>&1
+	LC_ALL=C type prepare > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		msg1 "Saltando a la siguiente funcion"
 	else
+		msg1 "iniciando prepare()..."
+		cd "$pkgname.d"
+		prepare 
 		cd ..
 	fi
 
 	# Ejecutando las funciones...
-	msg1 "Iniciando build()..."
-	build > /dev/null 2>&1
+	LC_ALL=C type build > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		msg1 "Saltando a la siguiente funcion"
 	else
+		msg1 "Iniciando build()..."
+		cd "$pkgname.d"
+		build 
 		cd ..
 	fi
 
 	# Check
-	msg1 "Iniciando package()..."
-	package > /dev/null 2>&1
+	LC_ALL=C type check > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		msg1 "Saltando a la siguiente funcion"
 	else
+		msg1 "Iniciando check()..."
+		cd "$pkgname.d"
+		check
 		cd ..
 	fi
 	
@@ -118,10 +140,22 @@ install_abi(){
 	else
 		package
 	fi
+
+	# Copiando a la base de datos...
+	msg1 "Ejecutando los ultimos disparadores..."
+	cd ..
+	cd ..
+	cp $1 /etc/apmpkg/paquetes
+
+	# Binario
+	if [ "$2" == "binario" ]; then
+		msg1 "Creando binario..."
+		cp $1 $pkgname.d/apkg.abi
+		tar -czf $pkgname-$pkgver.abi.tar $pkgname.d
+	fi
+
 	#Limpiando...
 	warn "Borrando archivos fuente..."
-	cd ..
-	cd ..
 	rm -r $src_dir
 }
 
@@ -141,4 +175,9 @@ fi
 if [ "$1" == "-i" ]; then
 	echo "Iniciando instalacion..."
 	install_abi $2
+fi
+
+if [ "$1" == "-ib" ]; then
+	echo "Iniciando instalacion..."
+	install_abi $2 "binario"
 fi

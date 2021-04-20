@@ -14,6 +14,8 @@ BLANCO='\033[0m'
 
 # Variables necesarias
 src_dir=''
+bool_pregunta=0
+pkgdir=''
 
 
 # Funciones primarias
@@ -52,6 +54,16 @@ msg2(){
 
 msg3(){
 	echo -e $CYAN"\t\t-->" "$BLANCO""$@"
+}
+
+pregunta(){
+	warn "$@"
+	read opc
+	if [[ "$opc" == "S" || "$opc" == "s" ]]; then
+		bool_pregunta=1
+	else
+		bool_pregunta=0
+	fi
 }
 
 install_depen(){
@@ -98,6 +110,13 @@ check_makedepen(){
 
 descargar_fuentes_curl(){
 	curl $1 -o $src_dir/source.tar.gz
+}
+
+git_clone(){
+	msg2 "Clonando git..."
+	IFS='+' read -ra array_src <<< "$source"
+	git clone ${array_src[1]} 
+	cd ..
 }
 
 check_arch(){

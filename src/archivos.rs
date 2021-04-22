@@ -473,3 +473,32 @@ pub fn es_abc(path: &str) -> bool {
 		false
 	}
 }
+
+pub fn existe_abc(path: &str) -> bool {
+	let mut db_path = String::from("/etc/apmpkg/paquetes/");
+	db_path.push_str(path); db_path.push_str(".abc");
+	let cat_file = Command::new("cat")
+								.arg(db_path)
+								.output()
+								.expect("Ocurrio algo con cat");
+	if cat_file.status.to_string() == "exit code: 1" {
+		false
+	}
+	else {
+		true
+	}
+}
+
+pub fn existe_adi() -> bool {
+	let resultado_cat = Command::new("cat")
+									.arg("install.d/apkg.adi")
+									.output()
+									.expect("Ocurrio un error al ejecutar cat");
+
+	if resultado_cat.status.to_string() == "exit code: 1" {
+		false
+	}
+	else {
+		true
+	}
+}

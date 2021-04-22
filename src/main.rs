@@ -24,7 +24,7 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
 	else {
 		let abc = archivos::es_abc(name);
 		if abc == true {
-			metodos_de_instalacion::instalar_abc(name);
+			metodos_de_instalacion::instalar_abc(name, bin);
 		}
 		else {
 			metodos_de_instalacion::instalar_adi(name, no_user, bin);
@@ -45,35 +45,42 @@ fn instalar_url(name: &str, user: bool, bin_bool:bool) {
 
 fn dinstalar(name: &str, no_user: bool) {
 	println!("Desinstalando el paquete {}", name);
-	let mut adi_file = String::new(); adi_file.push_str("/etc/apmpkg/paquetes/"); 
-	adi_file.push_str(name); adi_file.push_str(".adi");
-	let toml = archivos::read_fs(&adi_file);
-	let meta = archivos::read_adi(&toml);
-	core_funcions::clear();
-	core_funcions::print_banner();
-	core_funcions::print_metapkg(meta.clone());
+	let bash_file = archivos::existe_abc(name);
 
-	if no_user == true {
-		println!("{}", "Omitiendo la confirmacion".yellow());
+	if bash_file == true {
+		core_funcions::remove_abc(name);
 	}
 	else {
-		let confirm = core_funcions::quess("Deseas seguir con la desinstalacion?");
-			if confirm == true {
-				println!("Iniciando con el proceso de desinstalacion");
+		let mut adi_file = String::new(); adi_file.push_str("/etc/apmpkg/paquetes/"); 
+		adi_file.push_str(name); adi_file.push_str(".adi");
+		let toml = archivos::read_fs(&adi_file);
+		let meta = archivos::read_adi(&toml);
+		core_funcions::clear();
+		core_funcions::print_banner();
+		core_funcions::print_metapkg(meta.clone());
+	
+			if no_user == true {
+				println!("{}", "Omitiendo la confirmacion".yellow());
 			}
 			else {
-				println!("{}", "abortando!".red());
-				process::exit(0x0100);
+				let confirm = core_funcions::quess("Deseas seguir con la desinstalacion?");
+					if confirm == true {
+						println!("Iniciando con el proceso de desinstalacion");
+					}
+					else {
+						println!("{}", "abortando!".red());
+						process::exit(0x0100);
+					}
 			}
+	
+			println!("Removiendo los archivos...");
+			archivos::dinstall_path(&toml);
+			archivos::opt_remove(&toml);
+			let mut file_db = String::new(); file_db.push_str("/etc/apmpkg/paquetes/");
+			file_db.push_str(&meta.nombre); file_db.push_str(".adi");
+			archivos::remove_df(&file_db);
+		println!("La desinstalacion se realizo con exito!");
 	}
-
-	println!("Removiendo los archivos...");
-	archivos::dinstall_path(&toml);
-	archivos::opt_remove(&toml);
-	let mut file_db = String::new(); file_db.push_str("/etc/apmpkg/paquetes/");
-	file_db.push_str(&meta.nombre); file_db.push_str(".adi");
-	archivos::remove_df(&file_db);
-	println!("La desinstalacion se realizo con exito!");
 }
 
 fn instalar_depen(depen: &str) {

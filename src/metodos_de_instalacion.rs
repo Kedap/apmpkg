@@ -186,6 +186,16 @@ pub fn instalar_abi(path: &str, no_user: bool) {
 		Err(_e) => {println!("{}", "Ocurrio un error al descomprimir el tarball".red()); process::exit(0x0100);}
 	}
 
+	let abi_funcion = archivos::existe_adi();
+	if abi_funcion == true {
+		instalar_abi_adi(no_user);
+	}
+	else {
+		instalar_abi_abc(path);
+	}
+}
+
+fn instalar_abi_adi(no_user: bool) {
 	//Creacion del progress bar
 	let contador_bar = 7; let mut pb = ProgressBar::new(contador_bar);
 	pb.format("(->.)");
@@ -260,14 +270,31 @@ pub fn instalar_abi(path: &str, no_user: bool) {
 	core_funcions::msg_end(&toml);
 }
 
+fn instalar_abi_abc(path: &str) {
+	archivos::remove_ddf("install.d");
+	core_funcions::binario_abc(path);							
+}
+
 // Instalacion apartir de un archivo .abc
-pub fn instalar_abc(path: &str) {
+pub fn instalar_abc(path: &str, bin: bool) {
 	println!("Iniciando desde un .abc");
-	let mut child = process::Command::new("bash")
+
+	if bin == true {
+		let mut child = process::Command::new("bash")
+										.arg("/etc/apmpkg/iiabc/iiabc.sh")
+										.arg("-b")
+										.arg(path)
+										.spawn()
+										.expect("Al parecer no tienes iiabc, algo anda mal");
+		let _result = child.wait().unwrap();
+	}
+	else {
+		let mut child = process::Command::new("bash")
 										.arg("/etc/apmpkg/iiabc/iiabc.sh")
 										.arg("-i")
 										.arg(path)
 										.spawn()
 										.expect("Al parecer no tienes iiabc, algo anda mal");
-	let _result = child.wait().unwrap();
+		let _result = child.wait().unwrap();
+	}
 }

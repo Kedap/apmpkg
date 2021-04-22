@@ -382,6 +382,26 @@ pub fn msg_end(file: &str) {
 	}
 }
 
+pub fn remove_abc(path: &str) {
+	let mut child = Command::new("bash")
+								.arg("/etc/apmpkg/iiabc/iiabc.sh")
+								.arg("-r")
+								.arg(path)
+								.spawn()
+								.expect("Ocurrio un error");
+	let _result = child.wait().unwrap();
+}
+
+pub fn binario_abc(path: &str) {
+	let mut child = Command::new("bash")
+								.arg("/etc/apmpkg/iiabc/iiabc.sh")
+								.arg("-ib")
+								.arg(path)
+								.spawn()
+								.expect("Algo fallo al intentar ejecutar iiabc");
+	let _result = child.wait().unwrap();	
+}
+
 /* Puede ayudar en casos de un programador que apenas se adentra en rust
 Un ejemplo: yo*/
 pub fn type_of<T>(_: T) -> &'static str {

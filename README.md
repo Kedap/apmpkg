@@ -45,7 +45,7 @@ Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mi
 - Extenciones propios de nuestra herramienta, *.adi, .abc y .abi.tar.gz* cada una tiene una funcion especial, [mas informacion aqui](doc/modos_de_instalacion.md)
 
 ## Contribuir
-Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar por [aqui](https://github.com/Kedap/apmpkg/issues) y leer [esto(Crear art de contribucion)]
+Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar por [aqui](https://github.com/Kedap/apmpkg/issues) y [leer esto](CONTRIBUTING.md)
 
 ## FAQ / Preguntas frecuentes
 

@@ -52,7 +52,7 @@ De igual manera hay mas versiones ApmPKG en AUR.
 ## binario
 En la seccion de [lanzamientos]() puede descargarlo e instalarlo con el siguiente comando:
 `curl -O aaaaaaaa; mv apmpkg /usr/bin/apmpkg`
-Pero si quiere ejecutarlo de manera <portable> puede hacerlo:
+Pero si quiere ejecutarlo de manera portable puede hacerlo:
 `curl -O aaaaaaa; ./apmpkg --help`
 
 
@@ -60,7 +60,8 @@ Pero si quiere ejecutarlo de manera <portable> puede hacerlo:
 
 Para la instalacion y compilacion de manera manual debera de cumplir con los siguientes requisitos:
 
-- Dependencias: git cargo pkg-config y openssl, openssl puede variar en diferentes distribuciones, este es necesario para openssl rust, [mas informacion aqui](https://docs.rs/openssl/0.10.33/openssl/index.html#automatic)
+- Dependencias para compilar: git cargo pkg-config y openssl, openssl puede variar en diferentes distribuciones, este es necesario para openssl rust, [mas informacion aqui](https://docs.rs/openssl/0.10.33/openssl/index.html#automatic)
+- Dependencias de ApmPKG: pip3/pip2, bundle, curl, fakeroot y git
 
 Para empezar con el proceso de compilacion debera de ejecutar lo siguiente:
 

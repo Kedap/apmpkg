@@ -209,6 +209,9 @@ install_bin(){
 			exit 1
 		fi
 	fi
+	
+	msg1 "Verificando dependencias..."
+	check_depen 
 	msg1 "Procediendo con la instalacion de el paquete $pkgname..."
 	cd pkg 
 	cp -r * /

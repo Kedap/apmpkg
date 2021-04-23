@@ -2,6 +2,7 @@
 ![version](https://img.shields.io/badge/Version-v0.1--Pre--Beta-blue)![Travis (.org)](https://travis-ci.com/Kedap/apmpkg.svg?token=xg7g7bZN9YxrMVR6YKvj&branch=main)
 
 A Package Manager as a model: PKGBUILD
+![Logo](img/logo.png)
 
 # NOTICIAS
 - Se ha liberado la primera versioon: v0.1-Pre-Beta (solo para beta tester)

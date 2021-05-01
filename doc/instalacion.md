@@ -6,7 +6,7 @@ Tabla de contenido:
 1. [Instalar desde los binarios](#instalacion-de-los-binarios)
 	1. [apt](#apt)
 	2. [dnf](#dnf)
-	3, [pacman](#pacman)
+	3. [pacman](#pacman)
 	4. [zypper](#zypper)
 	5. [apmpkg](#apmpkg)
 	6. [yay](#yay)

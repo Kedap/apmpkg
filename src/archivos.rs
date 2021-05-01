@@ -390,14 +390,14 @@ pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
     }
 
     if conservar_src_dir == true {
-    	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar");
+    	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar.gz");
 		let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
     	let enc = GzEncoder::new(tar_gz, Compression::default());
     	let mut tar = tar::Builder::new(enc);
     	tar.append_dir_all(".", path).expect("Fallo en dir_all");
     }
     else {
-    	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar");
+    	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar.gz");
 		let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
     	let enc = GzEncoder::new(tar_gz, Compression::default());
     	let mut tar = tar::Builder::new(enc);

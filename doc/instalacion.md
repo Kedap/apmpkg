@@ -4,15 +4,15 @@ La opcion mas recomendable es que se dirja a la [seccion de lanzamientos]() y de
 
 Tabla de contenido:
 1. [Instalar desde los binarios](#instalacion-de-los-binarios)
-	i. [apt](#apt)
-	ii. [dnf](#dnf)
-	iii, [pacman](#pacman)
-	iv. [zypper](#zypper)
-	v. [apmpkg](#apmpkg)
-	vi. [yay](#yay)
-	vii. [binario](#binario)
+	1. [apt](#apt)
+	2. [dnf](#dnf)
+	3, [pacman](#pacman)
+	4. [zypper](#zypper)
+	5. [apmpkg](#apmpkg)
+	6. [yay](#yay)
+	7. [binario](#binario)
 2. [Instalacion manual (compilacion)](#compilacion)
-	i. [Post-Instalacion](#post-instalacion)
+	1. [Post-Instalacion](#post-instalacion)
 
 # instalacion de los binarios
 Este es solo una gia de como es recomentable instalar los binarios con los gestores de paquetes a continuacion:

@@ -1,5 +1,5 @@
 # MODOS DE INSTALACION
-En ApmPKG tenemos 2 formas de instalar paquetes, obviamente antes ya hechos como se dice en [creando paquetes](doc/creando_paquetes.md) para compartir estos paquetes se pueden hacer desde un [archivo .adi](), [archivo.abc]() y/o desde [un archivo binario (.abi.tar.gz)]() realizados por usted mismo o por otra persona. Aunque es lo mismo para todos lo archivos posibles. Veamos los modos de instalacion:
+En ApmPKG tenemos 2 formas de instalar paquetes, obviamente antes ya hechos como se dice en [creando paquetes](creando_paquetes.md) para compartir estos paquetes se pueden hacer desde un [archivo .adi](creando_paquetes.md#adi), [archivo.abc](creando_paquetes.md#abc) y/o desde un archivo binario (.abi.tar.gz) realizados por usted mismo o por otra persona. Aunque es lo mismo para todos lo archivos posibles. Veamos los modos de instalacion:
 
 Tabla de contenido:
 1. [Instalacion desde un archivo ADI](#instalacion-desde-un-archivo-de-descarga-e-instalacion)
@@ -17,7 +17,7 @@ Como recordaremos un archivo .adi no es mas que un documento con sintaxis TOML p
 
 `# apmpkg instalar foo.adi`
 
-En seguida se iniciara la instalacion de dicho paquetes, lo que hace este proceso es descargar e instalar dependencias a si como dependencias de pip o bundle, segun sea el caso, una vez realizado este paso lo siguiente que sera es instalar los archivos especificados en este archivo y asi concluir con la instalacion.
+En seguida se iniciara la instalacion de dicho paquetes, lo que hace este proceso es descargar e instalar dependencias asi como dependencias de pip o bundle, segun sea el caso, una vez realizado este paso lo siguiente que sera es instalar los archivos especificados en este archivo y asi concluir con la instalacion.
 
 ### desde la web
 
@@ -30,7 +30,7 @@ Esto solamente descargara el archivo especificado y pasara a la funcion de insta
 
 ## instalacion desde un archivo de bash y compilacion
 
-Los archivos .ABC son los que se mas se van a ver desde el panorama desde esta herramienta, este tipo de archivos son leidos por [iiabc]() habiamos acordado en [la creacion de paquqtes]() este es un archivo similar o igual que un [PKGBUILD](https://wiki.archlinux.org/index.php/PKGBUILD) de archlinux, pero claro tenemos [ciertos problemas]() con la compatibilad de TODOS los PKGBUILD's existentes, pero seguiremos trabajando para que no sea asi. Para instalar desde un archivo .ABC, podemos ejecutar el siguiente comando:
+Los archivos .ABC son los que se mas se van a ver desde el panorama desde esta herramienta, este tipo de archivos son leidos por [iiabc](creando_paquetes.md#abc) que habiamos acordado en [la creacion de paquetes](creando_paquetes.md) este es un archivo similar o igual que un [PKGBUILD](https://wiki.archlinux.org/index.php/PKGBUILD) de archlinux, pero claro tenemos [ciertos problemas](creando_paquetes.md#complicaciones-abc) con la compatibilad de TODOS los PKGBUILD's existentes, pero seguiremos trabajando para que no sea asi. Para instalar desde un archivo .ABC, podemos ejecutar el siguiente comando:
 `# apmpkg instalar foo.abc`
 
 ### abc desde internet

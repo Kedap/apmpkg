@@ -70,11 +70,11 @@ install_depen(){
 	msg1 "Instalando dependencias..."
 	if [ "$(id -u)" != '0' ]; then
 		error "Para instalar dependencias se necesita de ser root"
-		#apmpkg -d $1
-		sudo /home/lo0p3r/Documentos/prog/repos/gito/apmpkg/target/debug/apmpkg -d $1
+		sudo apmpkg -d $1
+		#sudo /../apmpkg/target/debug/apmpkg -d $1
 	else
-		#apmpkg -d $1
-		/home/lo0p3r/Documentos/prog/repos/gito/apmpkg/target/debug/apmpkg -d $1
+		apmpkg -d $1
+		#/../apmpkg/target/debug/apmpkg -d $1
 	fi
 }
 

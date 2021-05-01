@@ -186,12 +186,13 @@ pub fn local_depen(file_toml: &str) -> bool {
     	                .output()
     	                .expect("Algo fallo en install depen");
     	    println!("Comprobando que {} este instalado", depen_arr[i].as_str().unwrap().to_string());
-			if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+			if check_depn.status.to_string() != "exit code: 127" {
 				ready = true;
 			}
 			else {
 				println!("Al parecer no, porque no lo instalamos");
 				ready = false;
+				break;
 			}					
 		}
 		ready
@@ -206,12 +207,13 @@ pub fn local_depen(file_toml: &str) -> bool {
     	                .output()
     	                .expect("Algo fallo en install depen");
     	    println!("Comprobando que {} este instalado", depen_arr[i].as_str().unwrap().to_string());
-			if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+			if check_depn.status.to_string() != "exit code: 127" {
 				ready = true;
 			}
 			else {
 				println!("Al parecer no, porque no lo instalamos");
 				ready = false;
+				break;
 			}					
 		}
 		ready
@@ -267,7 +269,7 @@ pub fn install_depen(file_toml: &str) {
         	            .output()
         	            .expect("Algo fallo en install depen");
         	println!("Comprobando que {} se haya instalado", cmd_arr[i].as_str().unwrap().to_string());
-				if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+				if check_depn.status.to_string() != "exit code: 127" {
 					ready = true;
 				}
 				else {
@@ -284,7 +286,7 @@ pub fn install_depen(file_toml: &str) {
         	             .output()
         	             .expect("Algo fallo en install depen");
         	    println!("Comprobando que {} se haya instalado", depen_arr[i].as_str().unwrap().to_string());
-				if check_depn.status.to_string() == "exit code: 0" || check_depn.status.to_string() == "exit code: 1" {
+				if check_depn.status.to_string() != "exit code: 127" {
 					ready = true;
 				}
 				else {

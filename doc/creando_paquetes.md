@@ -3,13 +3,13 @@ En esta guia aprenderas todo lo que se debe de saber al crear paquetes para ApmP
 
 Tabla de contenidos
 1. [Contruyendo con un Archivo de Descarga e Instalacion: ADI](#adi)
-	i. [Datos del paquete](#paquete)
-	ii. [Gemas de ruby](#gem)
-	iii. [Pip2 / pip3](#pip)
-	iv. [descarga](#descarga)
-	v. [instalacion](#instalacion)
+	1. [Datos del paquete](#paquete)
+	2. [Gemas de ruby](#gem)
+	3. [Pip2 / pip3](#pip)
+	4. [descarga](#descarga)
+	5. [instalacion](#instalacion)
 2. [Compilando e instalando desde un Archivo de Bash y Compilando](#abc)
-	i. [Errores con abc](#complicaciones-abc)
+	1. [Errores con abc](#complicaciones-abc)
 3. [FAQ's / Preguntas frecuentes](#preguntas-frecuentes)
 
 # adi
@@ -78,7 +78,7 @@ conflicto = "/opt/foo/"
 Un poco mas facil, ¿no? Apartir de aqui vemos cosas basicas como el nombre y la version que son strings, nada muy importante que descatar, pero vemos algo en rama. 
 La variable **rama** es un string que se utiliza para diferenciar entre que es el paquete, si es una version beta, si es de la rama git o de desarrollo o si es una version estable.
 Vamos a lo siguiente que es **descrip**, y **licensia**. Estos son strings donde uno se coloca una pequeña descripcion del paquete y la licensia para espeficar que tipo de licensia de paquete es.
-**dependencias** y **cmd-depen**: dependencias es un array donde se colocan el nombre de los paquetes a los cuales se deben instalar, y cmd_depen es algo muy curioso, ya que para verificar que las dependencias estan instaladas se ejecuta un comando; es decir que si la dependencia es python despues de ejecutar el comando de instalacion se ejecuta `python`y si se obtiene una salida de codigo 1 y 0 se da por hecho que esta instalado la dependencia, mas sin embargo existen paquetes que se ejecutan de diferente manera como es el ejemplo de `openssh` que se ejecuta con `ssh`o en este caso `metasploit` que se ejecuta con `msfconsole` es por ello que se creo este array. Mas sin embargo no es necesario SI TODAS las dependencias se ejecutan con el mismo nombre con el que se instala, como es el caso de `ruby`
+**dependencias** y **cmd-depen**: dependencias es un array donde se colocan el nombre de los paquetes a los cuales se deben instalar, y cmd_depen es algo muy curioso, ya que para verificar que las dependencias estan instaladas se ejecuta un comando; es decir que si la dependencia es python despues de ejecutar el comando de instalacion se ejecuta `python`y si se obtiene una salida de 127 se da por hecho que esta instalado la dependencia, mas sin embargo existen paquetes que se ejecutan de diferente manera como es el ejemplo de `openssh` que se ejecuta con `ssh`o en este caso `metasploit` que se ejecuta con `msfconsole` es por ello que se creo este array. Mas sin embargo no es necesario SI TODAS las dependencias se ejecutan con el mismo nombre con el que se instala, como es el caso de `ruby`
 conflicto: Este string debe de contener un path, si dicho path o archivo existe no se podra instalar, es por decir que evita que un paquete se instale cuando ya esta instalado con otro gestor de paquetes
 
 ## gem

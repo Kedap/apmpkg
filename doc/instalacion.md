@@ -1,6 +1,6 @@
 # INSTALACION
 
-La opcion mas recomendable es que se dirja a la [seccion de lanzamientos]() y descargar los binarios, de igual manera se intentara distribuir para la mayoria de destribuciones y plataformas ¡SE PUEDE INSTALAR DESDE APMPKG! De igual manera en este markdown dara las manera de llevar la instalacion de ApmPKG a tu maquina.
+La opcion mas recomendable es que se dirja a la [seccion de lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.0) y descargar los binarios, de igual manera se intentara distribuir para la mayoria de destribuciones y plataformas ¡SE PUEDE INSTALAR DESDE APMPKG! De igual manera en este markdown dara las manera de llevar la instalacion de ApmPKG a tu maquina.
 
 Tabla de contenido:
 1. [Instalar desde los binarios](#instalacion-de-los-binarios)
@@ -19,7 +19,7 @@ Este es solo una gia de como es recomentable instalar los binarios con los gesto
 
 ## apt
 Apt es el gestor de paquetes para debian y sus derivados, para hacer un instalacion utilizando apt solo sobre escribir los siguientes comandos en su terminal:
-`curl -O lalallala; apt install .deb`
+`# wget https://github.com/Kedap/apmpkg/releases/download/1.0/apmpkg_1.0_amd64.deb; apt install ./apmpkg_1.0_amd64.deb`
 
 De esta manera apt buscara por las dependencias necesarias para ApmPKG
 
@@ -33,7 +33,7 @@ De esta manera usted ya tendra instalado ApmPKG en su equipo
 ## pacman
 Pacman...<. el gestor de paquetes de archlinux, de igual manera se puede instalar con este gestor, solo falta que ejecute:
 
-`curl -O lalalalalala; pacman -U jsjs.pkg.tar.xz`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.0/apmpkg-1.0-1-x86_64.pkg.tar.zst; pacman -U apmpkg-1.0-1-x86_64.pkg.tar.zst`
 
 ## zypper
 Zypper es el gestor de paquetes de OpenSUSE y para que ApmPKG sea instalado solo falta ejecutar lo siguiente:
@@ -52,10 +52,10 @@ Un gestor de paquetes universal para linux escrito en rust y bash. como habiamos
 De igual manera hay mas versiones ApmPKG en AUR.
 
 ## binario
-En la seccion de [lanzamientos]() puede descargarlo e instalarlo con el siguiente comando:
-`curl -O aaaaaaaa; mv apmpkg /usr/bin/apmpkg`
+En la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.0) puede descargarlo e instalarlo con el siguiente comando:
+`wget https://github.com/Kedap/apmpkg/releases/download/1.0/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
 Pero si quiere ejecutarlo de manera portable puede hacerlo:
-`curl -O aaaaaaa; ./apmpkg --help`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.0/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
 
 
 # compilacion

@@ -40,7 +40,7 @@ Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mi
 - fakeroot 
 - git
 
-Para ello puedes dirijirte a la seccion de [lanzamientos(link)] en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
+Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.0) en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
 
 # Caracteristicas
 ![Esquema](img/esquema.png)

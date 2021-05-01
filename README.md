@@ -1,5 +1,5 @@
 # ApmPKG
-![version](https://img.shields.io/badge/Version-v0.1--Pre--Beta-blue) ![Travis (.org)](https://travis-ci.com/Kedap/apmpkg.svg?token=xg7g7bZN9YxrMVR6YKvj&branch=main)
+![version](https://img.shields.io/github/v/release/kedap/apmpkg) ![Travis (.org)](https://img.shields.io/travis/com/kedap/apmpkg)
 
 A Package Manager as a model: PKGBUILD
 ![Logo](img/logo.png)

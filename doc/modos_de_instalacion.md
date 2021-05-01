@@ -3,11 +3,11 @@ En ApmPKG tenemos 2 formas de instalar paquetes, obviamente antes ya hechos como
 
 Tabla de contenido:
 1. [Instalacion desde un archivo ADI](#instalacion-desde-un-archivo-de-descarga-e-instalacion)
-	i. [Instalacion desde un archivo ADI alojado en la web](#desde-la-web)
+	1. [Instalacion desde un archivo ADI alojado en la web](#desde-la-web)
 2. [instalacion desde un archivo ABC](#instalacion-desde-un-archivo-de-bash-y-compilacion)
-	i. [Instalacion desde un archivo ABC alojado en la web](#abc-desde-internet)
+	1. [Instalacion desde un archivo ABC alojado en la web](#abc-desde-internet)
 3. [Instalacion desde un archivo ADI.TAR.GZ](#instalacion-desde-un-archivo-binario-de-instalacion)
-	i. [Instalacion desde un archivo ADI.TAR.GZ](#binario-desde-el-internet)
+	1. [Instalacion desde un archivo ADI.TAR.GZ](#binario-desde-el-internet)
 	
 	
 

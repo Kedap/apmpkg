@@ -5,7 +5,7 @@ A Package Manager as a model: PKGBUILD
 ![Logo](img/logo.png)
 
 # NOTICIAS
-- Se ha liberado la primera versión: v0.1 Para todos!!!
+- Se ha liberado la primera versión: v1.0 Para todos!!!
 - Creacion de los binarios de instalacion
 - Se a subido ApmPKG esta en AUR
 * * *
@@ -39,6 +39,7 @@ Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mi
 - curl 
 - fakeroot 
 - git
+
 Para ello puedes dirijirte a la seccion de [lanzamientos(link)] en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
 
 # Caracteristicas

@@ -46,7 +46,9 @@ Un gestor de paquetes universal para linux escrito en rust y bash. como habiamos
 
 ## yay
 *Yet another yogurt* ApmPKG tambien esta en [AUR](aur.archlinux.org) y que mejor manera que instalarlo con yay, con el siguiente comando
+
 `yay -S apmpkg`
+
 De igual manera hay mas versiones ApmPKG en AUR.
 
 ## binario

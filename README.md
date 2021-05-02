@@ -1,13 +1,13 @@
 # ApmPKG
-![version](https://img.shields.io/github/v/release/kedap/apmpkg) ![Travis (.org)](https://img.shields.io/travis/com/kedap/apmpkg)
+![version](https://img.shields.io/github/v/release/kedap/apmpkg) ![Travis (.org)](https://img.shields.io/travis/com/kedap/apmpkg) ![Paquete arch](https://img.shields.io/aur/version/apmpkg)
 
 A Package Manager as a model: PKGBUILD
 ![Logo](img/logo.png)
 
 # NOTICIAS
 - Se ha liberado la primera versión: v1.0 Para todos!!!
-- Creacion de los binarios de instalacion
-- Se a subido ApmPKG esta en AUR
+- Creacion de los binarios para todas las distribuciones disponibles
+- Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
 ![Captura](img/captura_prin.png)

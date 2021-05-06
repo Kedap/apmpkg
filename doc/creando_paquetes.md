@@ -140,13 +140,14 @@ Actualmente no tenemos soporte con las siguientes variables
 - groups: Actualmente no contamos con grupos para paquetes
 - depends: Como vimos que para crear ADI y como se comprueban las dependencias es [ejecutandolas](#paquete), con los archivos abc se comprueban buscando el nombre de la dependencia en `/bin` y en `/usr/bin` y si no pues se da como dependencia no instalada. 
 - optdepeds: Simplemente no usamos esta variable al igual que provides, conflicts, backups, options, install, changelog y todas las sumas que no sean sha256
+De igual manera con la llegada de la version 1.0.1 se implemento la variable `cmd_depen ` para que tambien se pueda comprobar la dependencia si se ejecuta este comando dando como salida de 127 se da por no instalada
 
 # preguntas frecuentes
 **¿PKGBUILD o archivos .abc funcionan en otro diestro que no sea archlinux?**
 Si, ya que se realiza un proceso similar a `makepkg` mas sin embargo `iiabc`(interprete para la instalacion con .abc) hace un proceso similar pero muy diferente, al igual los binarios que se generan son similares a un `pkg.tar.xz` pero muy diferentes a `adi.tar.gz`
 
 **¡Tengo problemas con dependencias! En X distribucion las dependencias se instala pero en Y no**
-Este es una advertencia, es decir que se buscara una solucion lo mas rapido al lanzamiento de ApmPKG ya que existen paquetes con nombres diferentes en diferentes repositorios, un ejemplo es el paquete `openssh` que en archlinux se llama `openssh` pero en debian se llama `ssh`. Una solucion temporal seria modificar el nombre de las dependencias para cada distribucion, pero estamos trabajando para eliminar dicho problema
+Este es una advertencia, es decir que se buscara una solucion lo mas rapido al lanzamiento de ApmPKG ya que existen paquetes con nombres diferentes en diferentes repositorios, un ejemplo es el paquete `openssh` que en archlinux se llama `openssh` pero en debian se llama `ssh`. Una solucion temporal seria modificar el nombre de las dependencias para cada distribucion, pero estamos trabajando para eliminar dicho problema. Pero con la version 1.0.1 se dio la solucion de poder preguntar al usuario a un paquete que no se encuentre
 
 **¿Se requiere de permisos root?**
 Para instalar paquetes se necesita ser root, mas sin embargo para crear binarios no es necesario

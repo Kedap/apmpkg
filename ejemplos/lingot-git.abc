@@ -10,6 +10,7 @@ url='http://nongnu.org/lingot/'
 license=('GPL2')
 depends=('gtk3')
 makedepends=('git' 'intltool')
+cmd_depends=('gtk3-nocsd' 'git' 'intltool-extract')
 provides=('lingot')
 conflicts=('lingot')
 source=('git+https://git.savannah.nongnu.org/git/lingot.git')

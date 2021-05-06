@@ -5,7 +5,7 @@
 ################################################################
 #                                                              #
 # Interpretador para la Instalacion con archivos .ABC (IIABC)  #
-# v1.0                                                         #
+# v1.0.1                                                       #
 #                                                              #
 # Autor / Contribudores                                        #
 #                                                              #
@@ -29,8 +29,8 @@ fi
 # Crear un binario
 create_bin(){
 	pwd_dd=$(pwd)
-	pkgdir="$pwd_dd/pkg"
-	mkdir $pkgdir
+	pkgdir="$pwd_dd/pkg/"
+	mkdir $pkgdir > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		pregunta "El archivo de trabajo ya existe, desea borrarlo? [S/n]"
 		if [ $bool_pregunta -eq 1 ]; then
@@ -66,8 +66,8 @@ create_bin(){
 
 	# Creando el espacio de trabajo y compilacion
 	msg1 "Creando el paquete $pkgname..."
-	pwd_dir= pwd > /dev/null 
-	src_dir="$pwd_dir$pkgname.d/"
+	pwd_dir=$(pwd)
+	src_dir="$pwd_dir/$pkgname.d/"
 	mkdir $src_dir > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		pregunta "El archivo de trabajo ya existe, desea borrarlo? [S/n]"
@@ -121,7 +121,7 @@ create_bin(){
 		msg1 "iniciando prepare()..."
 		cd "$pkgname.d"
 		prepare 
-		cd ..
+		cd $pwd_dd
 	fi
 
 	# Ejecutando las funciones...
@@ -132,7 +132,7 @@ create_bin(){
 		msg1 "Iniciando build()..."
 		cd "$pkgname.d"
 		build 
-		cd ..
+		cd $pwd_dd
 	fi
 
 	# Check
@@ -143,25 +143,25 @@ create_bin(){
 		msg1 "Iniciando check()..."
 		cd "$pkgname.d"
 		check
-		cd ..
+		cd $pwd_dd
 	fi
 
 	# La instalacion se debe de instalar como root, aqui
 	msg1 "Iniciando package()..."
 	if [ "$(id -u)" != '0' ]; then
 		warn "Entrando en el entrono fakeroot..."
-		cd ..
+		cd $pwd_dd
 		fakeroot -- bash -$- "${BASH_SOURCE[0]}" -f "${ARGLIST[0]}" || exit $?
 		cd "$pkgname.d"
 		package
 	else
+		cd $pwd_dd;cd "$pkgname.d"
 		package
 	fi
 
 	# Empaquetando el binario
 	msg1 "Empaquetando el binario..."
-	cd ..
-	cd ..
+	cd $pwd_dd
 	tar -czf $pkgname-$pkgver.abi.tar.gz pkg $1
 
 	# Mensaje final

@@ -14,11 +14,12 @@ checksum = "23ac7c30002a5accbf7e8987d0632fa6de155b7c3d39d0067317a391e00a2ef6"
 
 [[package]]
 name = "apmpkg"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "clap",
  "colored",
  "flate2",
+ "nix",
  "pbr",
  "read_input",
  "reqwest",
@@ -560,6 +561,18 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "tempfile",
+]
+
+[[package]]
+name = "nix"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
+dependencies = [
+ "bitflags 1.2.1",
+ "cc",
+ "cfg-if",
+ "libc",
 ]
 
 [[package]]

@@ -1,13 +1,12 @@
 [paquete]
 
 nombre = "tool-ac"
-version = "1.1.0-beta"
+version = "1.2-m4rk"
 rama = "estable"
 descrip = "Multi-Herramientas para la obtencion o creacion de cuentas"
-pagina = "https://github.com/y4ot3t1/Tool-AC"
+pagina = "https://github.com/m4rklean/Tool-AC"
 licensia = "GPL-V3"
-dependencias = ["ruby", "metasploit"]
-cmd_depen = ["ruby" , "msfconsole"]
+dependencias = ["ruby" , "php"]
 conflicto = "/opt/tool-ac/"
 
 [gem]
@@ -17,13 +16,12 @@ file = "ConsolaV/Gemfile"
 
 [descarga]
 
-url = "https://github.com/y4ot3t1/Tool-AC/archive/Beta.tar.gz"
-carpeta = "Tool-AC-Beta"
-sha256sum = "cb346d5c0ccf75aba9031e4e94813c9132513ced2554f0b3a65230b167fbfbb8"
+url = "https://github.com/m4rklean/Tool-AC/archive/refs/tags/1.2.0.tar.gz"
+carpeta = "Tool-AC-1.2.0"
+sha256sum = "ce4e645b0f79c86772cf5a9caafdb7bf5f6ed9347fa9edcf6b4dc7bdef88c0fd"
 
 [instalacion]
 
-#opt_src = true
-files = ["ConsolaV/main.rb" , "ConsolaV/commands.sh"]
-ruta = ["/usr/bin/toac", "/opt/comandos.sh"]
+files = ["ConsolaV/toac" , "ConsolaV/core", "ConsolaV/libs"]
+ruta = ["/usr/bin/toac", "/usr/share/tool-ac/", "/usr/share/tool-ac/"]
 mensaje = "Puedes ejecutarlo con 'toac'!"

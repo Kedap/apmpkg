@@ -265,7 +265,13 @@ pub fn install_path(file: &str, root_src: &str) {
 								.expect("Install?");
 		}
 		else {
-			copy_df(&aak, &insta[i].as_str().unwrap().to_string());
+			let mut child = Command::new("rsync")
+										.arg("-a")
+										.arg(&aak)
+										.arg(&insta[i].as_str().unwrap().to_string())
+										.spawn()
+										.expect("Ocurrio un error al instalar paquetes");
+			let _result = child.wait().unwrap();
 		}
 	}
 }
@@ -279,12 +285,11 @@ pub fn remove_df(path: &str) {
 }
 
 pub fn remove_ddf(path: &str) {
-	let mut child = Command::new("rm")
-								.arg("-r")
-								.arg(path)
-								.spawn()
-								.expect("Algo muy raro sucedio con RM -R");
-	let _result = child.wait().unwrap();
+	Command::new("rm")
+			.arg("-r")
+			.arg(path)
+			.output()
+			.expect("Algo muy raro sucedio con RM -R");
 }
 
 pub fn dinstall_path(file: &str) {
@@ -294,7 +299,7 @@ pub fn dinstall_path(file: &str) {
 	let remove = &adi["instalacion"]["ruta"].as_array().unwrap();
 
 	for i in 0..remove.len() {
-		remove_df(&remove[i].as_str().unwrap().to_string());
+		remove_ddf(&remove[i].as_str().unwrap().to_string());
 	}
 }
 

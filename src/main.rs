@@ -12,13 +12,18 @@
 use {apmpkg::{
 	core_funcions, archivos, metodos_de_instalacion},
 	std::process,
-	colored::*};
+	colored::*,
+	nix::unistd::Uid};
 
 
 fn instalar(name: &str, no_user: bool, bin: bool) {
 	println!("{}", "Iniciando instalacion!".green());
 	let abi = archivos::es_abi(name);
 	if abi == true {
+		if !Uid::effective().is_root() {
+    	    println!("{}", "Para instalar un binario necesitas de permisos root!".red());
+    	 	process::exit(0x0100);   
+    	}
 		metodos_de_instalacion::instalar_abi(name, no_user);
 	}
 	else {
@@ -27,6 +32,10 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
 			metodos_de_instalacion::instalar_abc(name, bin);
 		}
 		else {
+			if !Uid::effective().is_root() {
+    		    println!("{}", "Para instalar un archivo adi necesitas de permisos root!".red());
+    		 	process::exit(0x0100);   
+    		}
 			metodos_de_instalacion::instalar_adi(name, no_user, bin);
 		}
 	}
@@ -45,6 +54,10 @@ fn instalar_url(name: &str, user: bool, bin_bool:bool) {
 
 fn dinstalar(name: &str, no_user: bool) {
 	println!("Desinstalando el paquete {}", name);
+	if !Uid::effective().is_root() {
+        println!("{}", "Para deinstalar un paquete necesitas de permisos root!".red());
+     	process::exit(0x0100);   
+    }
 	let bash_file = archivos::existe_abc(name);
 
 	if bash_file == true {
@@ -84,6 +97,10 @@ fn dinstalar(name: &str, no_user: bool) {
 }
 
 fn instalar_depen(depen: &str) {
+	if !Uid::effective().is_root() {
+        println!("{}", "Para instalar un binario necesitas de permisos root!".red());
+     	process::exit(0x0100);   
+    }
 	core_funcions::clear();
 	println!("Instalando el paquete {}", depen);
 	let mut toml_str = String::from("

@@ -79,33 +79,53 @@ install_depen(){
 }
 
 check_depen(){
-	for depen in "${depends[@]}"; do
-		ls /bin/ | grep  $depen > /dev/null 2>&1
-		if [ $? -eq 1 ]; then
-			ls /usr/bin/ | grep $depen > /dev/null 2>&1
+	if [ -z $cmd_depends ]; then
+		for depen in "${depends[@]}"; do
+			ls /bin/ | grep  $depen > /dev/null 2>&1
 			if [ $? -eq 1 ]; then
-				install_depen "$depen"
-			else
-				msg2 "$depen instalado!"
+				ls /usr/bin/ | grep $depen > /dev/null 2>&1
+				if [ $? -eq 1 ]; then
+					install_depen "$depen"
+				else
+					msg2 "$depen instalado!"
+				fi
 			fi
-		fi
-		msg2 "$depen instalado!"
-	done
+			msg2 "$depen instalado!"
+		done
+	else
+		for depen in "${cmd_depends[@]}"; do
+			$depen > /dev/null 2>&1
+			if [ $? -eq 172 ]; then
+				install_depen "$depen"
+			fi
+			msg2 "$depen esta disponible!"
+		done
+	fi
 }
 
 check_makedepen(){
-	for depen in "${makedepends[@]}"; do
-		ls /bin/ | grep  $depen > /dev/null 2>&1
-		if [ $? -eq 1 ]; then
-			ls /usr/bin/ | grep $depen > /dev/null 2>&1
+	if [ -z $cmd_depends ]; then
+		for depen in "${makedepends[@]}"; do
+				ls /bin/ | grep  $depen > /dev/null 2>&1
 			if [ $? -eq 1 ]; then
-				install_depen "$depen"
-			else
-				msg2 "$depen instalado!"
+				ls /usr/bin/ | grep $depen > /dev/null 2>&1
+				if [ $? -eq 1 ]; then
+					install_depen "$depen"
+				else
+					msg2 "$depen instalado!"
+				fi
 			fi
-		fi
-		msg2 "$depen instalado!"
-	done
+			msg2 "$depen instalado!"
+		done
+	else
+		for depen in "${cmd_depends[@]}"; do
+			$depen > /dev/null 2>&1
+			if [ $? -eq 172 ]; then
+				install_depen "$depen"
+			fi
+			msg2 "$depen esta disponible!"
+		done
+	fi
 }
 
 descargar_fuentes_curl(){

@@ -220,6 +220,21 @@ pub fn local_depen(file_toml: &str) -> bool {
 	}
 }
 
+fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
+	let comando_instalacion = Command::new(gestor.comando)
+				.arg(gestor.intalacion)
+				.arg(paquete)
+				.arg(gestor.confirmacion)
+				.output()
+				.expect("Ocurrio un error cuando se instalaba las dependencias");
+	if comando_instalacion.status.to_string() == "exit code: 0"{
+		true
+	}
+	else {
+		false
+	}
+}
+
 pub fn install_depen(file_toml: &str) {
 	println!("Administrando dependencias...");
 	let cata = ["apt", "pacman", "dnf", "snap", "flatpak", "zypper"];
@@ -247,61 +262,42 @@ pub fn install_depen(file_toml: &str) {
 	println!("Procediendo con la descarga e instalacion de dependencias... ");
 	let mut contador = 0;
 	loop {
+		let mut ready = false;
 		for i in 0..depen_arr.len() {
-			let pack_less = manager(manpack[contador].to_string());
-			let _instalar_comando = Command::new(pack_less.comando)
-                     .arg(pack_less.intalacion)
-                     .arg(depen_arr[i].as_str().unwrap())
-                     .arg(pack_less.confirmacion)
-                     .output()
-                     .expect("Algo fallo en install depen");
-		}
-        let mut ready = false;
-
-
-		let depen = &adi["paquete"].as_table().unwrap();
-		if depen.contains_key("cmd_depen") {
-			let cmd_arr = &adi["paquete"]["cmd_depen"].as_array().unwrap();
-			for i in 0..cmd_arr.len() {
-			let check_depn = Command::new("bash")
-        	            .arg("-c")
-        	            .arg(cmd_arr[i].as_str().unwrap())
-        	            .output()
-        	            .expect("Algo fallo en install depen");
-        	println!("Comprobando que {} se haya instalado", cmd_arr[i].as_str().unwrap().to_string());
-				if check_depn.status.to_string() != "exit code: 127" {
-					ready = true;
+			let gestor = manager(manpack[contador].to_string());
+			let dependencia = depen_arr[i].as_str().unwrap();
+			let instalacion_completada = instalar_paquete(gestor.clone() , dependencia);
+			// De igual manera como se instala se verifica que la dependencia fue instalada si este da como codigo de salida 0
+			if instalacion_completada == true {
+				println!("Se termino de instalar el paquete {} de manera correcta!", depen_arr[i].as_str().unwrap());
+				ready = true
+			}
+			else {
+				let mut child = Command::new(gestor.comando.clone())
+											.arg(gestor.buscar.clone())
+											.arg(dependencia)
+											.spawn()
+											.expect("Ocurrio un error al buscar posibles dependencias");
+				let _result = child.wait().unwrap();
+				println!("\nQue paquete sastiface la dependencia {}?", dependencia.green());
+				let posible_paquete: String = input().get();
+				println!("Instalando el posible paquete {}", posible_paquete);
+				let instalacion_completada = instalar_paquete(gestor, &posible_paquete);
+				if instalacion_completada == true {
+					ready = true
 				}
 				else {
-					ready = false;
-					println!("Algo fallo, al parecer no se encuentra en los repositorios");
-				}					
-			}
-		}
-		else {
-				for i in 0..depen_arr.len() {
-				let check_depn = Command::new("bash")
-        	             .arg("-c")
-        	             .arg(depen_arr[i].as_str().unwrap())
-        	             .output()
-        	             .expect("Algo fallo en install depen");
-        	    println!("Comprobando que {} se haya instalado", depen_arr[i].as_str().unwrap().to_string());
-				if check_depn.status.to_string() != "exit code: 127" {
-					ready = true;
+					ready = false
 				}
-				else {
-					ready = false;
-					println!("Algo fallo, al parecer no se encuentra en los repositorios");
-				}					
 			}
 		}
-
 
 		if ready == true {
-			println!("Se han terminado de instalar las dependencias correctamente");
+			println!("Se han resolvido las dependencias de manera correcta");
 			break;
 		}
 		else {
+			
 			contador += 1;
 		}
 	}

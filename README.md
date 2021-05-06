@@ -19,8 +19,7 @@ Un gestor de paquetes que desea ser una poderosa herramienta universal para linu
 ## Crear paquetes
 
 Esta es una herramienta escrita en rust y bash, que utiliza gestores de paquetes nativos para la resolucion de dependencias, se pueden crear paquetes desde un archivo simple con sintaxis TOML y hasta puedes de igual manera crearlo desde un PKGBUILD!
-Gestores de paquetes soportado por ApmPKG
-
+Gestores de paquetes soportado por ApmPKG:
 - [x] Apt
 - [x] Pacman
 - [x] Dnf
@@ -43,8 +42,9 @@ Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mi
 - curl 
 - fakeroot 
 - git
+- rsync
 
-Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.0) en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
+Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.0.1) en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
 
 # Caracteristicas
 ![Esquema](img/esquema.png)

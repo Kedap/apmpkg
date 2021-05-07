@@ -19,14 +19,14 @@ Este es solo una gia de como es recomentable instalar los binarios con los gesto
 
 ## apt
 Apt es el gestor de paquetes para debian y sus derivados, para hacer un instalacion utilizando apt solo sobre escribir los siguientes comandos en su terminal:
-`# wget https://github.com/Kedap/apmpkg/releases/download/1.0/apmpkg_1.0_amd64.deb; apt install ./apmpkg_1.0_amd64.deb`
+`# wget https://github.com/Kedap/apmpkg/releases/download/1.0.1/apmpkg-1.0.1_amd64.deb; apt install ./apmpkg-1.0.1_amd64.deb`
 
 De esta manera apt buscara por las dependencias necesarias para ApmPKG
 
 ## dnf
 Dnf, la siguiente generacion de yum, recomendamos altamente utilizar dnf para la instalacion de ApmPKG para que sea una instalacion deseada como se debe, para instalar con esta herramienta es necesario ejecutar lo siguiente:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.0/apmpkg-1.0-1.fc33.x86_64.rpm; dnf localinstall apmpkg-1.0-1.fc33.x86_64.rpm`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.0.1/apmpkg-1.0.1-1.fc34.x86_64.rpm; dnf localinstall apmpkg-1.0.1-1.fc34.x86_64.rpm`
 
 De esta manera usted ya tendra instalado ApmPKG en su equipo
 
@@ -38,7 +38,7 @@ Pacman...<. el gestor de paquetes de archlinux, de igual manera se puede instala
 ## zypper
 Zypper es el gestor de paquetes de OpenSUSE y para que ApmPKG sea instalado solo falta ejecutar lo siguiente:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.0/apmpkg-1.0-1.fc33.x86_64.rpm; zypper in apmpkg-1.0-1.fc33.x86_64.rpm`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.0.1/apmpkg-1.0.1-1.fc34.x86_64.rpm; zypper in apmpkg-1.0.1-1.fc34.x86_64.rpm`
 
 ## apmpkg
 Un gestor de paquetes universal para linux escrito en rust y bash. como habiamos dicho antes que para instalar ApmPKG tambien se puede utilizar para descargar ApmPKG, obviamente no va a poder descargar ApmPKG en ApmPKG sin que antes lo tenga instalado, este metodo se utiliza mas para poder actualizar el ApmPKG, pues solo falta que escriba el siguiente comando.

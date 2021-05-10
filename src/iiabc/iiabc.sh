@@ -5,7 +5,7 @@
 ################################################################
 #                                                              #
 # Interpretador para la Instalacion con archivos .ABC (IIABC)  #
-# v1.0.1                                                       #
+# v1.0.2                                                       #
 #                                                              #
 # Autor / Contribudores                                        #
 #                                                              #
@@ -114,7 +114,7 @@ create_bin(){
 	fi
 
 	# Prepare
-	LC_ALL=C type prepare > /dev/null 2>&1
+	declare -F prepare > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		msg1 "Saltando a la siguiente funcion"
 	else
@@ -125,7 +125,7 @@ create_bin(){
 	fi
 
 	# Ejecutando las funciones...
-	LC_ALL=C type build > /dev/null 2>&1
+	declare -F build > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		msg1 "Saltando a la siguiente funcion"
 	else
@@ -136,7 +136,7 @@ create_bin(){
 	fi
 
 	# Check
-	LC_ALL=C type check > /dev/null 2>&1
+	declare -F check > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		msg1 "Saltando a la siguiente funcion"
 	else
@@ -162,7 +162,13 @@ create_bin(){
 	# Empaquetando el binario
 	msg1 "Empaquetando el binario..."
 	cd $pwd_dd
-	tar -czf $pkgname-$pkgver.abi.tar.gz pkg $1
+	cp $1 apkg.abc
+	tar -czf $pkgname-$pkgver.abi.tar.gz pkg apkg.abc > /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		error "Algo fallo al crear el archivo binario"
+		exit 1
+	fi
+	rm apkg.abc
 
 	# Mensaje final
 	msg1 "La creacion del binario a terminado!"
@@ -183,18 +189,33 @@ install_bin(){
 
 	# Desempaquetando...
 	msg1 "Desempaquetando el archivo $1..."
-	mkdir abi_d
+	mkdir abi_d > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
 		pregunta "El archivo de trabajo ya existe, desea borrarlo? [S/n]"
 		if [ $bool_pregunta -eq 1 ]; then
-			warn "Borrando directorio $pkgdir.d..."
-			rm -r $pkgdir
-			mkdir $pkgdir > /dev/null 2>&1
+			warn "Borrando directorio abi_d..."
+			rm -r abi_d
+			mkdir abi_d > /dev/null 2>&1
 		else
 			error "Es necesario borrarlo"
 			exit 1
 		fi
 	fi
+	msg1 "Verificando conflictos..."
+	if [ -z $conflicts ]; then
+		msg1 "No hay de que preocuparnos!"
+	else
+		for cmd in "$conflicts[@]"; do
+			$cmd > /dev/null 2>&1
+			if [ $? -eq 127 ]; then
+				msg1 "No presenta conflicto alguno!"
+			else
+				error "El comando $cmd existe, por lo cual causa conflicto\nAbortando..."
+				exit 1
+			fi
+		done
+	fi
+
 	cp $1 abi_d
 	cd abi_d
 	tar -xf $1

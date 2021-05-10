@@ -371,28 +371,10 @@ pub fn opt_src(file:&str, dir: &str) {
 // Funcion para crear un binario apartir de un .ADI
 pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
 	println!("Iniciando la creacion de un Archivos Binario de Instalacion...");
-
 	let tomy: Value = toml::from_str(meta_file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
     let adi = tomy.as_table().unwrap();
-    let mut conservar_src_dir = false;
-    let insta = adi["instalacion"].as_table().unwrap();
-    let gito = source_git_q(&meta_file);
 
-    if adi.contains_key("gem") || adi.contains_key("pip") {
-    	conservar_src_dir = true;
-    }
-    else if insta.contains_key("opt_src") {
-    	let boleano = insta["opt_src"].as_bool().unwrap();
-    	if boleano == true {
-    		conservar_src_dir = true;
-    	}
-    	else {
-    		conservar_src_dir = false;
-    	}
-    }
-    else if gito == true {
-    	conservar_src_dir = true;
-    }
+	let conservar_src_dir = binario_completo(meta_file);
 
     if conservar_src_dir == true {
     	let mut noombre = String::new(); noombre.push_str(nombre); noombre.push_str(".abi.tar.gz");
@@ -431,6 +413,31 @@ pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
     }
 
     println!("Creacion del binario a sido de manera exitosa!!!");
+}
+
+pub fn binario_completo(toml_file: &str) -> bool {
+	let tomy: Value = toml::from_str(toml_file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+    let adi = tomy.as_table().unwrap();
+    let mut conservar_src_dir = false;
+    let insta = adi["instalacion"].as_table().unwrap();
+    let gito = source_git_q(&toml_file);
+
+    if adi.contains_key("gem") || adi.contains_key("pip") {
+    	conservar_src_dir = true;
+    }
+    else if insta.contains_key("opt_src") {
+    	let boleano = insta["opt_src"].as_bool().unwrap();
+    	if boleano == true {
+    		conservar_src_dir = true;
+    	}
+    	else {
+    		conservar_src_dir = false;
+    	}
+    }
+    else if gito == true {
+    	conservar_src_dir = true;
+    }
+    conservar_src_dir
 }
 
 pub fn es_abi(path: &str) -> bool {

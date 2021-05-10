@@ -76,6 +76,16 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
 		Err(_e) => {println!("{}", "Ocurrio un error al crear el directorio".red()); process::exit(0x0100);}
 	}
 
+	println!("Verificando los conflictos");
+	let existe_conflicto = Path::new(&meta.conflicto.clone()).exists();
+	if existe_conflicto == true {
+		println!("No se puede instalar, el archivo {} entra en conflicto", &meta.conflicto.clone());
+		process::exit(0x0100);
+	}
+	else {
+		println!("No existe el conflicto");
+	}
+
 	let ya_install = core_funcions::local_depen(&toml);
 	if ya_install == true {
 		println!("Yeah, ya tienes las dependencias instaladas!!!!");
@@ -226,6 +236,16 @@ fn instalar_abi_adi(no_user: bool) {
 	}
 	pb.inc();
 
+	println!("Verificando conflictos...");
+	let conflicto = Path::new(&meta.conflicto).exists();
+	if conflicto == true {
+		println!("{}", "Ocurrio un problema, ha ocurrido un problema con los conflictos".red());
+		process::exit(0x0100);
+	}
+	else {
+		println!("Pasando al siguiente paso...");
+	}
+
 	//Checando dependencias
 	println!("Leyendo dependencias");
 	let ya_install = core_funcions::local_depen(&toml);
@@ -237,20 +257,37 @@ fn instalar_abi_adi(no_user: bool) {
 	}
 	pb.inc();
 
-	//Analizando el codigo extraido
-	println!("Instalacion de librerias extras...");
-	let es_git = archivos::source_git_q(&toml);
-	let descarga_meta = archivos::read_adi_down(&toml, es_git);
-	let mut src_path = String::from("install.d/"); src_path.push_str(&descarga_meta.src);
-	src_path.push_str("/");
-	archivos::extern_depen(&toml, &src_path);
-	pb.inc();
-
-	//Colocando los archivos en los lugares deseados
-	println!("Procediendo con la instalacion");
-	archivos::install_path(&toml, &src_path);
-	archivos::opt_src(&toml, &src_path);
-	pb.inc();
+	let desempacar_binario = archivos::binario_completo(&toml);
+	if desempacar_binario == true {
+		//Analizando el codigo extraido
+		println!("Instalacion de librerias extras...");
+		let es_git = archivos::source_git_q(&toml);
+		let descarga_meta = archivos::read_adi_down(&toml, es_git);
+		let mut src_path = String::from("install.d/"); src_path.push_str(&descarga_meta.src);
+		src_path.push_str("/");	archivos::extern_depen(&toml, &src_path);
+		pb.inc();
+	
+		//Colocando los archivos en los lugares deseados
+		println!("Procediendo con la instalacion");
+		archivos::install_path(&toml, &src_path);
+		archivos::opt_src(&toml, &src_path);
+		pb.inc();
+	}
+	else {
+		//Analizando el codigo extraido
+		println!("Instalacion de librerias extras...");
+		let es_git = archivos::source_git_q(&toml);
+		let descarga_meta = archivos::read_adi_down(&toml, es_git);
+		let mut src_path = String::from("install.d/"); src_path.push_str(&meta.nombre.clone());
+		src_path.push_str(".d/"); src_path.push_str(&descarga_meta.src); src_path.push_str("/");	archivos::extern_depen(&toml, &src_path);
+		pb.inc();
+	
+		//Colocando los archivos en los lugares deseados
+		println!("Procediendo con la instalacion");
+		archivos::install_path(&toml, &src_path);
+		archivos::opt_src(&toml, &src_path);
+		pb.inc();
+	}
 
 	//Colocando en /etc/apmpkg/paquetes
 	println!("Ejecutando los ultimos disparadores para la instalacion...");

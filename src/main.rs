@@ -43,13 +43,13 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
 
 fn instalar_url(name: &str, user: bool, bin_bool:bool) {
 	println!("Descargando desde la direccion {}", name);
-	let f = archivos::download(name, "file.adi");
+	let f = archivos::download(name, "file.pmpf");
 	match f {
 		Ok(_f) => println!("La descarga se realizo con exito!"),
 		Err(_e) => {println!("{}", "Ocurrio un error al hacer la peticion, intenta de nuevo".red()); process::exit(0x0100);}
 	}
-	instalar("file.adi", user, bin_bool);
-	archivos::remove_df("file.adi");
+	instalar("file.pmpf", user, bin_bool);
+	archivos::remove_df("file.pmpf");
 }
 
 fn dinstalar(name: &str, no_user: bool) {

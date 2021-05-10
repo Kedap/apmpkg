@@ -5,13 +5,13 @@ A Package Manager as a model: PKGBUILD
 ![Logo](img/logo.png)
 
 # NOTICIAS
-- Se ha liberado la primera versión: v1.0.1 Para todos!!!
+- Se ha liberado la primera versión: v1.0.2 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Se puede preguntar por dependencias que no esten en repositorios
-- Arreglamos el hecho que solo se podian instalar archivos. ¡Ahora tambien directorios en archivos adi!
-- La variable `cmd_depends` para poder verificar dependencias de otra manera,  mas informacion [aqui](doc/creando_paquetes.md/#preguntas-frecuentes)
-- Se agrego una verificacion de usuario root para poder instalar o desintalar paquetes
+- En los binarios hemos empaquetado para que tambien este en las dependencias file
+- Arreglamos los binarios hechos sobre archivos .adi ¡Ahora ya puedes instalar binarios sin necesidad de que este tenga dependencias como gemas o paquetes pip!
+- Correccion del error al instalar desde un archivo .abc desde la web
+- Se utiliza las variables de conflictos (antes no se usaban)
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
 ![Captura](img/captura_prin.png)

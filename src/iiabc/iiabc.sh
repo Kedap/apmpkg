@@ -164,7 +164,7 @@ create_bin(){
 	cd $pwd_dd
 	cp $1 apkg.abc
 	tar -czf $pkgname-$pkgver.abi.tar.gz pkg apkg.abc > /dev/null 2>&1
-	if [ $? -eq 0 ]; then
+	if [ $? -eq 1 ]; then
 		error "Algo fallo al crear el archivo binario"
 		exit 1
 	fi

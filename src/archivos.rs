@@ -256,13 +256,14 @@ pub fn install_path(file: &str, root_src: &str) {
 		let mut aak = String::new(); aak.push_str(root_src);
 		aak.push_str(&select[i].as_str().unwrap().to_string());
 		if i == 0 {
-			Command::new("install")
+			let mut child = Command::new("install")
 								.arg("-Dm")
 								.arg("755")
 								.arg(aak)
 								.arg(&insta[i].as_str().unwrap())
 								.spawn()
 								.expect("Install?");
+            let _result = child.wait().unwrap();
 		}
 		else {
 			let mut child = Command::new("rsync")

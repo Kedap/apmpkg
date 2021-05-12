@@ -33,7 +33,7 @@ De esta manera usted ya tendra instalado ApmPKG en su equipo
 ## pacman
 Pacman...<. el gestor de paquetes de archlinux, de igual manera se puede instalar con este gestor, solo falta que ejecute:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.0.2/apmpkg-1.0.2-1-x86_64.pkg.tar.zst; pacman -U apmpkg-1.0.2-1-x86_64.pkg.tar.zst`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.0.2/apmpkg-1.0.2-3-x86_64.pkg.tar.zst; pacman -U apmpkg-1.0.2-3-x86_64.pkg.tar.zst`
 
 ## zypper
 Zypper es el gestor de paquetes de OpenSUSE y para que ApmPKG sea instalado solo falta ejecutar lo siguiente:

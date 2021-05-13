@@ -9,7 +9,7 @@ use {crate::{
 	flate2::{read::GzDecoder,Compression,write::GzEncoder},
 	tar::Archive,
 	sha2::{Sha256, Digest},
-	std::{fs, process, fs::File, io, process::Command}};
+	std::{fs, process, fs::File, io, path::Path ,process::Command}};
 
 #[tokio::main]
 pub async fn download(url: &str, name: &str) -> Result<(), Box<dyn std::error::Error>> {
@@ -398,7 +398,16 @@ pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
     	for i in 0..archivos.len() {
     		let mut archivo = String::new(); archivo.push_str(&dirc);
 			archivo.push_str(&archivos[i].as_str().unwrap().to_string());
-			tar.append_path(archivo).unwrap();
+			//Arregla el problema de no comprimir carpetas, ejemplo funkin
+			let dir_archivos = Path::new(&archivo);
+			let es_directorio: bool = dir_archivos.is_dir();
+			if es_directorio == true {
+				let target_directorio = dir_archivos.file_stem().unwrap();
+				tar.append_dir_all(target_directorio, dir_archivos).unwrap();
+			}
+			else {
+				tar.append_path(archivo).unwrap();
+			}
     	}
 
     	let out_adi = String::from("apkg.adi");

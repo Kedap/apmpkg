@@ -95,7 +95,7 @@ check_depen(){
 	else
 		for depen in "${cmd_depends[@]}"; do
 			$depen > /dev/null 2>&1
-			if [ $? -eq 172 ]; then
+			if [ $? -eq 127 ]; then
 				install_depen "$depen"
 			fi
 			msg2 "$depen esta disponible!"

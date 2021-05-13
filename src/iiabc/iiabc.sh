@@ -143,6 +143,10 @@ create_bin(){
 		msg1 "Iniciando check()..."
 		cd "$pkgname.d"
 		check
+		if [ $? -eq 1 ]; then
+			error "Al parcer el test fallo..."
+			exit 1
+		fi
 		cd $pwd_dd
 	fi
 

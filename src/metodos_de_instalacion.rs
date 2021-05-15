@@ -101,11 +101,16 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
 	pack_ver.push_str(&meta.nombre); pack_ver.push_str("-");
 	pack_ver.push_str(&meta.version); pack_ver.push_str(".acd.tar");
 	let gito = archivos::source_git_q(&toml);
+	let existe_local = archivos::source_es_local(&toml);
 	if gito == true {
 		let des = archivos::read_adi_down(&toml, gito);
 		dirg.push_str("/"); dirg.push_str(&des.src);
 		let source_git = archivos::read_git(&toml);
 		archivos::git_clone(&source_git, &dirg);
+	}
+	else if existe_local == true {
+		let path_local = archivos::leer_fuente_local(&toml);
+		archivos::copy_dd(&path_local, &pack_ver)
 	}
 	else {
 		let des = archivos::read_adi_down(&toml, gito);
@@ -118,7 +123,14 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
 	}
 	pb.inc();
 
-	let des = archivos::read_adi_down(&toml, gito);
+	let git_o_local: bool;
+	if gito == true || existe_local == true {
+		git_o_local = true;
+	}
+	else {
+		git_o_local = false;
+	}
+	let des = archivos::read_adi_down(&toml, git_o_local);
 	println!("Verificando la integridad del archivo...");
 	if des.sha256sum == "SALTAR" {
 		println!("{}", "Se ha saltado la verificacion!!!".red());
@@ -262,7 +274,16 @@ fn instalar_abi_adi(no_user: bool) {
 		//Analizando el codigo extraido
 		println!("Instalacion de librerias extras...");
 		let es_git = archivos::source_git_q(&toml);
-		let descarga_meta = archivos::read_adi_down(&toml, es_git);
+		let local_install = archivos::source_es_local(&toml);
+		let git_o_local: bool;
+		if es_git == true || local_install == true {
+			git_o_local = true;
+		}
+		else {
+			git_o_local = false;
+		}
+
+		let descarga_meta = archivos::read_adi_down(&toml, git_o_local);
 		let mut src_path = String::from("install.d/"); src_path.push_str(&descarga_meta.src);
 		src_path.push_str("/");	archivos::extern_depen(&toml, &src_path);
 		pb.inc();
@@ -277,7 +298,16 @@ fn instalar_abi_adi(no_user: bool) {
 		//Analizando el codigo extraido
 		println!("Instalacion de librerias extras...");
 		let es_git = archivos::source_git_q(&toml);
-		let descarga_meta = archivos::read_adi_down(&toml, es_git);
+		let local_install = archivos::source_es_local(&toml);
+		let git_o_local: bool;
+		if es_git == true || local_install == true {
+			git_o_local = true;
+		}
+		else {
+			git_o_local = false;
+		}
+
+		let descarga_meta = archivos::read_adi_down(&toml, git_o_local);
 		let mut src_path = String::from("install.d/"); src_path.push_str(&meta.nombre.clone());
 		src_path.push_str(".d/"); src_path.push_str(&descarga_meta.src); src_path.push_str("/");	archivos::extern_depen(&toml, &src_path);
 		pb.inc();

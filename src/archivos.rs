@@ -334,6 +334,24 @@ pub fn source_git_q(file: &str) -> bool {
 	}
 }
 
+pub fn source_es_local(file: &str) -> bool {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	let fuente_local = &adi["descarga"].as_table().unwrap();
+	if fuente_local.contains_key("local") {
+		true
+	}
+	else {
+		false
+	}
+}
+
+pub fn leer_fuente_local(file: &str) -> String {
+	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
+	let adi = tomy.as_table().unwrap();
+	adi["descarga"]["local"].as_str().unwrap().to_string()
+}
+
 pub fn read_git(file: &str) -> String {
 	let tomy: Value = toml::from_str(file).expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
 	let adi = tomy.as_table().unwrap();
@@ -390,7 +408,15 @@ pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
     	let enc = GzEncoder::new(tar_gz, Compression::default());
     	let mut tar = tar::Builder::new(enc);
 
-    	let des = read_adi_down(meta_file, false);
+    	// Verificando si es que instala con fuentes locales
+    	let fuentes_locales = source_es_local(meta_file);
+    	let des: AdiDescarga;
+    	if fuentes_locales == true {
+    		des = read_adi_down(meta_file, true);
+    	}
+    	else {
+    		des = read_adi_down(meta_file, false);
+    	}
     	let mut dirc = String::new(); dirc.push_str(path);
     	dirc.push_str(&des.src); dirc.push_str("/");
 

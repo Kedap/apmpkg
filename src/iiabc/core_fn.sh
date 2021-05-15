@@ -129,7 +129,7 @@ check_makedepen(){
 }
 
 descargar_fuentes_curl(){
-	curl $1 -o $src_dir/source.tar.gz
+	wget -O $src_dir/source.tar.gz -q --show-progress $1
 }
 
 git_clone(){

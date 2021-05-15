@@ -114,8 +114,7 @@ create_bin(){
 	fi
 
 	# Prepare
-	declare -F prepare > /dev/null 2>&1
-	if [ $? -eq 1 ]; then
+	if [ -z "$noextract" ]; then
 		msg1 "Saltando a la siguiente funcion"
 	else
 		msg1 "iniciando prepare()..."

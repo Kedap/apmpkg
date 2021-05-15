@@ -17,7 +17,7 @@ subcommands:
         about: Instala/actualiza un paquete
         args:
             - paquete:
-                help: "Nombre y/o ruta del archivo adi o abc"
+                help: "Nombre y/o ruta del archivo adi , abi o abc"
                 index: 1
             - confirmar:
                 short: c 

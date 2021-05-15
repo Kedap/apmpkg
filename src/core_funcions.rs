@@ -109,6 +109,28 @@ pub fn leer_argumentos() -> Argumentos {
 		else {
 			String::new()
 		},
+
+		crear_tipo: if let Some(matches) = matches.subcommand_matches("crear") {
+			if matches.is_present("tipo") {
+				matches.value_of("tipo").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
+		},
+
+		crear_nombre: if let Some(matches) = matches.subcommand_matches("crear") {
+			if matches.is_present("nombre") {
+				matches.value_of("nombre").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
+		},
 	}
 
 }
@@ -125,6 +147,9 @@ pub fn check_args(input: Argumentos) -> String {
 	}
 	else if input.instalar_depen != "" {
 		"instalar_depen".to_string()
+	}
+	else if input.crear_tipo != "" && input.crear_nombre != "" {
+		"crear".to_string()
 	}
 	else {
 		"nope".to_string()

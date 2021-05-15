@@ -42,3 +42,12 @@ subcommands:
                 short: c 
                 long: confirmar
                 help: "No se interactua con el usuario en la confirmacion"
+    - crear:
+        about: Crea un prototipo para archivo .adi o .abc
+        args:
+            - tipo:
+                help: "Tipo de paquete: adi | abc"
+                index: 1
+            - nombre:
+                help: "Nombre del paquete"
+                index: 2

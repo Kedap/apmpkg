@@ -550,3 +550,21 @@ pub fn existe_adi() -> bool {
 		true
 	}
 }
+
+pub fn spawn_adi(nombre: &str) {
+	Command::new("bash")
+				.arg("/etc/apmpkg/iiabc/iiabc.sh")
+				.arg("-a")
+				.arg(nombre)
+				.spawn()
+				.expect("Ocurrio un error al crear el archivo adi");
+}
+
+pub fn spawn_abc(nombre: &str) {
+	Command::new("bash")
+				.arg("/etc/apmpkg/iiabc/iiabc.sh")
+				.arg("-bb")
+				.arg(nombre)
+				.spawn()
+				.expect("Ocurrio un error al crear el archivo .abc");
+}

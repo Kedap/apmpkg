@@ -110,6 +110,26 @@ fn instalar_depen(depen: &str) {
 	core_funcions::install_depen(&toml_str);
 }
 
+fn crear_protipo(tipo: &str, nombre: &str) {
+	// El tipo es correcto?
+	if tipo == "adi" || tipo == "abc" {
+		println!("Creando un archivo {} con el nombre de {}...", tipo, nombre);
+	}
+	else {
+		println!("{} {}", tipo, "No es un formato soportado para crear:/".red());
+		process::exit(0x0100);
+	}
+
+	if tipo == "adi" {
+		archivos::spawn_adi(nombre);
+		println!("La creacion del archivo {}.adi a sido correcta", nombre);
+	}
+	else {
+		archivos::spawn_abc(nombre);
+		println!("La creacion del archivo {}.abc a sido correcta", nombre);
+	}
+}
+
 fn main(){
 	core_funcions::print_banner();
 	let info_arg = core_funcions::leer_argumentos();
@@ -126,6 +146,7 @@ fn main(){
 		"instalar_url" => instalar_url(&info_arg.instalar_url, info_arg.confirmar, info_arg.instalar_bin),
 		"remover" => dinstalar(&info_arg.dinstal, info_arg.dinstal_confi),
 		"instalar_depen" => instalar_depen(&info_arg.instalar_depen),
+		"crear" => crear_protipo(&info_arg.crear_tipo, &info_arg.crear_nombre),
 		_ => {println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green()); process::exit(0x0100);},
 	}
 }

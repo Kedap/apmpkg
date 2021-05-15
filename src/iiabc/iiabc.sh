@@ -313,3 +313,11 @@ if [ "$1" == "-r" ]; then
 	echo "Iniciando desinstalacion..."
 	remove_pkg $2
 fi
+
+if [ $1 == "-a" ]; then
+	generar_adi $2
+fi
+
+if [ $1 == "-bb" ]; then
+	generar_abc $2
+fi

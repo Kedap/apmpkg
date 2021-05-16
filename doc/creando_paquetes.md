@@ -12,7 +12,7 @@ Tabla de contenidos
 	1. [Errores con abc](#complicaciones-abc)
 3. [FAQ's / Preguntas frecuentes](#preguntas-frecuentes)
 
-# adi
+# Adi
 Su nombre del acronimo de:
 **A**rchivo de
 **D**escarga e
@@ -62,7 +62,7 @@ mensaje = "Para poder ejecutar, prueba con 'foo'!"
 ```
 Mucha informacion, vamos por pasos, ADI tiene la sintaxis de TOML para que sea mas facil crear paquetes, de esta forma vamos a ver cada uno de las lineas:
 
-## paquete
+## Paquete
 El inicio de paquete son nada mas ni nama menos que los datos del paquete al cual instalar, se escribe con el incio de `[paquete]`, algo asi:
 ```
 nombre = "foo"
@@ -81,8 +81,8 @@ Vamos a lo siguiente que es **descrip**, y **licensia**. Estos son strings donde
 **dependencias** y **cmd-depen**: dependencias es un array donde se colocan el nombre de los paquetes a los cuales se deben instalar, y cmd_depen es algo muy curioso, ya que para verificar que las dependencias estan instaladas se ejecuta un comando; es decir que si la dependencia es python despues de ejecutar el comando de instalacion se ejecuta `python`y si se obtiene una salida de 127 se da por hecho que esta instalado la dependencia, mas sin embargo existen paquetes que se ejecutan de diferente manera como es el ejemplo de `openssh` que se ejecuta con `ssh`o en este caso `metasploit` que se ejecuta con `msfconsole` es por ello que se creo este array. Mas sin embargo no es necesario SI TODAS las dependencias se ejecutan con el mismo nombre con el que se instala, como es el caso de `ruby`
 conflicto: Este string debe de contener un path, si dicho path o archivo existe no se podra instalar, es por decir que evita que un paquete se instale cuando ya esta instalado con otro gestor de paquetes
 
-## gem
-Esta seccion se creo para contener informacion referente a gemas que depende el paquete, claro gemas de ruby y que seran instalado con `bundle` o `gem` Esta seccion empieza con `[gem]`, esta seccion no es obligatoria, solo se coloca si el proyecto dpende de gemas, si el caso es si, aqui un ejemplo:
+## Gem
+Esta seccion se creo para contener informacion referente a gemas que depende el paquete, claro gemas de ruby y que seran instalado con `bundle` o `gem` Esta seccion empieza con `[gem]`, esta seccion no es obligatoria, solo se coloca si el proyecto depende de gemas, si el caso es si, aqui un ejemplo:
 ```
 gemfile = true
 file = "Gemfile"
@@ -93,7 +93,7 @@ La variable **gemfile** es un boleano (true/false) que esta se debe de colcar de
 **file** esta variable SOLO se coloca si el gemfile contiene true, ya que aqui en este string se espeficara la ruta del Gemfile, en este caso solo se pone "Gemfile" ya que se encuentra en la carpeta del proyecto
 **gemas** este es un array donde se espficica las gemas de las cuales depende, se recomeinda que debe de ser pocas, pocas gemas como crear un Gemfile pero no tantas, esta pensado para proyectos que dependen con 2 o 3 gemas
 
-## pip
+## Pip
 Al igual que ruby, python tambien tiene dependencias, estas van a ser instalados con pip por ApmPKG, de igual manera este campo no es obligatorio a menos que el proyecto lo requiera, tenemos soporte para pip2 y pip3, este se coloca con `[pip]` a continuacion lo que tiene que contener:
 ```
 version = 3 # 2
@@ -106,7 +106,7 @@ En **requirements** es un boleano donde se debe de colocar true si es que el pro
 En **packages** es un array donde se especifican las dependencias, esta no se debe de poner si es que requeriments esta en false.
 Por el contrario **file** es un string donde se especifica la ruta del archivo requeriments.txt para que apartir de aqui se instalan las dependencias con pip
 
-## descarga
+## Descarga
 La seccion de descarga es para ello, donde se especifica los detalles de la descarga, se inicia `[descarga]`en uno de los ejemplos:
 ```
 url = "https://foo.com/bar.tar.gz"
@@ -118,7 +118,7 @@ La variable **url** es un string donde se dice el link de descarga del paquete, 
 En **carpeta** se coloca el directorio al cual se debe de acceder una vez extraido el tar.gz o clonado el git
 En **sha256sums** se debe de colcar las sumas sha256 del archivo a descargar, en el caso de que se utilice una version de git, este se debe de cambiar su valor como: `sha256sums = "SALTAR"`de esta forma se obite la verificacion por sha256
 
-## instalacion
+## Instalacion
 Aqui se enfoca la informacion refrente a la ruta de instalacion, este se inicia con `[instalacion]` ejemplo:
 ```
 #opt_src = true
@@ -129,20 +129,20 @@ mensaje = "Para poder ejecutar, prueba con 'foo'!"
 La variable **opt_src** es un boleano que admite true o false si es que se desea que todo el directorio obtenido por git o por la descarga se copia a la carpeta /opt, un ejemplo de esto es el paquete metasploit que se instala en la carpeta opt.
 **files** y **ruta** ambos son arrays que contienen ruta de archivos, files selecciona los archivos que se van a instalar y ruta la ruta donde estos van a ser instalados, el primer archivo seleccionado se va a instalar con `install -Dm 755` ya que se da por hecho que el index 0 de ambos array es un binario.
 
-## abc
+## Abc
 Su nombre es el acronimo de:
 **A**rchivo de
 **B**ash y 
 **C**ompilacion
 Este tipo de archivo esta basado y/o clonado del [PKGBUILD](https://wiki.archlinux.org/index.php/PKGBUILD) de archlinux, no hace falta explicar lo que puede hacer este gran modelo de archlinux, mas sin embargo nos enfocaremos en lo que ApmPKG no puede hacer con un PKGBUILD porque aun no podemos tener compatibilidad absoluta, pero estamos trabajando para que no sea asi en un futuro, asi que le presentamos las limitaciones con relacion de abc
-## complicaciones abc
+## Complicaciones abc
 Actualmente no tenemos soporte con las siguientes variables
 - groups: Actualmente no contamos con grupos para paquetes
 - depends: Como vimos que para crear ADI y como se comprueban las dependencias es [ejecutandolas](#paquete), con los archivos abc se comprueban buscando el nombre de la dependencia en `/bin` y en `/usr/bin` y si no pues se da como dependencia no instalada. 
 - optdepeds: Simplemente no usamos esta variable al igual que provides, conflicts, backups, options, install, changelog y todas las sumas que no sean sha256
 De igual manera con la llegada de la version 1.0.1 se implemento la variable `cmd_depen ` para que tambien se pueda comprobar la dependencia si se ejecuta este comando dando como salida de 127 se da por no instalada
 
-# preguntas frecuentes
+# Preguntas frecuentes
 **¿PKGBUILD o archivos .abc funcionan en otro diestro que no sea archlinux?**
 Si, ya que se realiza un proceso similar a `makepkg` mas sin embargo `iiabc`(interprete para la instalacion con .abc) hace un proceso similar pero muy diferente, al igual los binarios que se generan son similares a un `pkg.tar.xz` pero muy diferentes a `adi.tar.gz`
 

@@ -10,7 +10,8 @@ Tabla de contenidos
 	5. [instalacion](#instalacion)
 2. [Compilando e instalando desde un Archivo de Bash y Compilando](#abc)
 	1. [Errores con abc](#complicaciones-abc)
-3. [FAQ's / Preguntas frecuentes](#preguntas-frecuentes)
+3. [Generar un archivo facilmente](#comando-de-creacion)
+4. [FAQ's / Preguntas frecuentes](#preguntas-frecuentes)
 
 # Adi
 Su nombre del acronimo de:
@@ -50,7 +51,8 @@ file = "Gemfile"
 
 url = "https://foo.com/bar.tar.gz"
 carpeta = "foo-bar"
-# git = "https://serviciogit.com/foo/bar"
+#git = "https://serviciogit.com/foo/bar"
+#local = "/path/de/las/fuentes/foo.tar.gz"
 sha256sum = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" # SALTAR
 
 [instalacion]
@@ -110,11 +112,12 @@ Por el contrario **file** es un string donde se especifica la ruta del archivo r
 La seccion de descarga es para ello, donde se especifica los detalles de la descarga, se inicia `[descarga]`en uno de los ejemplos:
 ```
 url = "https://foo.com/bar.tar.gz"
-# git = "https://serviciogit.com/foo/bar"
+#git = "https://serviciogit.com/foo/bar"
+#local = "/path/local/de/las/fuentes"
 carpeta = "foo-bar"
 sha256sum = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" # SALTAR
 ```
-La variable **url** es un string donde se dice el link de descarga del paquete, este debe estar comprimido en `tar.gz`ya que sera extraido con este formato de compresion, mas sin embargo en la versiones git se ha creado la variable **git** que se coloca en lugar de url, al colocar git se va a clonar el repositorio descrito aqui
+La variable **url** es un string donde se dice el link de descarga del paquete, este debe estar comprimido en `tar.gz`ya que sera extraido con este formato de compresion, mas sin embargo en la versiones git se ha creado la variable **git** que se coloca en lugar de url, al colocar git se va a clonar el repositorio descrito aqui, o en su defecto si tiene una las fuentes en su equipo puede colocar la ruta de esta en la variable **local**
 En **carpeta** se coloca el directorio al cual se debe de acceder una vez extraido el tar.gz o clonado el git
 En **sha256sums** se debe de colcar las sumas sha256 del archivo a descargar, en el caso de que se utilice una version de git, este se debe de cambiar su valor como: `sha256sums = "SALTAR"`de esta forma se obite la verificacion por sha256
 
@@ -141,6 +144,15 @@ Actualmente no tenemos soporte con las siguientes variables
 - depends: Como vimos que para crear ADI y como se comprueban las dependencias es [ejecutandolas](#paquete), con los archivos abc se comprueban buscando el nombre de la dependencia en `/bin` y en `/usr/bin` y si no pues se da como dependencia no instalada. 
 - optdepeds: Simplemente no usamos esta variable al igual que provides, conflicts, backups, options, install, changelog y todas las sumas que no sean sha256
 De igual manera con la llegada de la version 1.0.1 se implemento la variable `cmd_depen ` para que tambien se pueda comprobar la dependencia si se ejecuta este comando dando como salida de 127 se da por no instalada
+
+
+# Comando de creacion
+
+En la actualizacion de la version 1.1 hemos integrado un subcomando para la creacion de un prototipo del cual sea necesario crear, del cual es el siguiente:
+```
+apmpkg crear <abc | adi> <Nombre del paquete a crear>
+```
+Asi para facilitar la creacion de un paquete
 
 # Preguntas frecuentes
 **¿PKGBUILD o archivos .abc funcionan en otro diestro que no sea archlinux?**

@@ -428,8 +428,7 @@ pub fn crate_bin(path: &str, nombre:&str, meta_file: &str) {
 			let dir_archivos = Path::new(&archivo);
 			let es_directorio: bool = dir_archivos.is_dir();
 			if es_directorio == true {
-				let target_directorio = dir_archivos.file_stem().unwrap();
-				tar.append_dir_all(target_directorio, dir_archivos).unwrap();
+				tar.append_dir_all(dir_archivos, dir_archivos).unwrap();
 			}
 			else {
 				tar.append_path(archivo).unwrap();

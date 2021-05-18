@@ -63,7 +63,7 @@ Pero si quiere ejecutarlo de manera portable puede hacerlo:
 Para la instalacion y compilacion de manera manual debera de cumplir con los siguientes requisitos:
 
 - Dependencias para compilar: git cargo pkg-config y openssl, openssl puede variar en diferentes distribuciones, este es necesario para openssl rust, [mas informacion aqui](https://docs.rs/openssl/0.10.33/openssl/index.html#automatic)
-- Dependencias de ApmPKG: pip3/pip2, bundle, wget, fakeroot, rsync y git
+- Dependencias de ApmPKG: pip3/pip2, bundle, curl, fakeroot, rsync y git
 
 Para empezar con el proceso de compilacion debera de ejecutar lo siguiente:
 

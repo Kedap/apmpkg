@@ -44,7 +44,7 @@ De igual manera se pueden crear binarios para una instalacion offline [binarios]
 Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mismo apmpkg, aun porque creemos que la distribucion de paquetes es importante tratamos de poner a disposicion y de crear binarios nativos para cada distribucion en donde son soportados los gestores de paquetes,  pero primero debes de tener las depencias, entre ellos: 
 - pip3/pip2
 - bundle 
-- wget 
+- curl 
 - fakeroot 
 - git
 - rsync

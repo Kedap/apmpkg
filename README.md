@@ -5,7 +5,7 @@ A Package Manager as a model: PKGBUILD
 ![Logo](img/logo.png)
 
 # NOTICIAS
-- Se ha liberado la primera versión: v1.0.2 Para todos!!!
+- Se ha liberado la versión: v1.1.0 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
 - Modificacion al verificar en   `cmd_depends` de los archivos .abc

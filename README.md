@@ -1,17 +1,21 @@
 # ApmPKG
-![version](https://img.shields.io/github/v/release/kedap/apmpkg) ![Travis (.org)](https://img.shields.io/travis/com/kedap/apmpkg) ![Paquete arch](https://img.shields.io/aur/version/apmpkg)
+[![version](https://img.shields.io/github/v/release/kedap/apmpkg)](https://github.com/Kedap/apmpkg/releases/) [![Build Status](https://travis-ci.com/Kedap/apmpkg.svg?branch=main)](https://travis-ci.com/Kedap/apmpkg) [![Paquete arch](https://img.shields.io/aur/version/apmpkg)](https://aur.archlinux.org/packages/apmpkg)
 
 A Package Manager as a model: PKGBUILD
 ![Logo](img/logo.png)
 
 # NOTICIAS
-- Se ha liberado la primera versión: v1.0.2 Para todos!!!
+- Se ha liberado la versión: v1.1.0 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- En los binarios hemos empaquetado para que tambien este en las dependencias file
-- Arreglamos los binarios hechos sobre archivos .adi ¡Ahora ya puedes instalar binarios sin necesidad de que este tenga dependencias como gemas o paquetes pip!
-- Correccion del error al instalar desde un archivo .abc desde la web
-- Se utiliza las variables de conflictos (antes no se usaban)
+- Modificacion al verificar en   `cmd_depends` de los archivos .abc
+- Ahora ya se pueden utilizar la funcion check y verificar que esta se creo correctamente
+- Al crear los archivos binarios con archivos .adi, no se comprimian los directorios, ¡Ahora si!
+- Aregamos soporte para apk y yum!
+- Agregamos el hecho que se puedan tener fuentes locales en archivos .adi para no tener la necesidad de descargarlos
+- Hemos cambiado curl por wget para descargar fuentes en archivos abc
+- Ahora ya se puede utilizar la funcion de no extract
+- Implementamos un comando para generar un prototipo de archivos .adi o .abc
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
 ![Captura](img/captura_prin.png)
@@ -19,18 +23,19 @@ Un gestor de paquetes que desea ser una poderosa herramienta universal para linu
 ## Crear paquetes
 
 Esta es una herramienta escrita en rust y bash, que utiliza gestores de paquetes nativos para la resolucion de dependencias, se pueden crear paquetes desde un archivo simple con sintaxis TOML y hasta puedes de igual manera crearlo desde un PKGBUILD!
-Gestores de paquetes soportado por ApmPKG:
+Los gestores que son soportado por ApmPKG:
+
 - [x] Apt
 - [x] Pacman
 - [x] Dnf
 - [x] Snap
 - [x] Flatpak
 - [x] Zypper
+- [x] Yum
+- [x] Apk
 - [ ] Emerge
 - [ ] Yay
 - [ ] Pkg (termux)
-- [ ] Yum
-- [ ] Apk
 
 De igual manera se pueden crear binarios para una instalacion offline [binarios](doc/modos_de_instalacion.md/#instalacion-desde-un-archivo-binario-de-instalacion) para saber [mas infomarcion aqui](doc/modos_de_instalacion.md)
 
@@ -44,7 +49,7 @@ Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mi
 - git
 - rsync
 
-Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.0.1) en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
+Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.1.0) en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
 
 # Caracteristicas
 ![Esquema](img/esquema.png)

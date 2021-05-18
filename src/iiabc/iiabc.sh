@@ -114,8 +114,7 @@ create_bin(){
 	fi
 
 	# Prepare
-	declare -F prepare > /dev/null 2>&1
-	if [ $? -eq 1 ]; then
+	if [ -z "$noextract" ]; then
 		msg1 "Saltando a la siguiente funcion"
 	else
 		msg1 "iniciando prepare()..."
@@ -143,6 +142,10 @@ create_bin(){
 		msg1 "Iniciando check()..."
 		cd "$pkgname.d"
 		check
+		if [ $? -eq 1 ]; then
+			error "Al parcer el test fallo..."
+			exit 1
+		fi
 		cd $pwd_dd
 	fi
 
@@ -309,4 +312,12 @@ fi
 if [ "$1" == "-r" ]; then
 	echo "Iniciando desinstalacion..."
 	remove_pkg $2
+fi
+
+if [ $1 == "-a" ]; then
+	generar_adi $2
+fi
+
+if [ $1 == "-bb" ]; then
+	generar_abc $2
 fi

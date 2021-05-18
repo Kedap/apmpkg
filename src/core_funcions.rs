@@ -109,6 +109,28 @@ pub fn leer_argumentos() -> Argumentos {
 		else {
 			String::new()
 		},
+
+		crear_tipo: if let Some(matches) = matches.subcommand_matches("crear") {
+			if matches.is_present("tipo") {
+				matches.value_of("tipo").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
+		},
+
+		crear_nombre: if let Some(matches) = matches.subcommand_matches("crear") {
+			if matches.is_present("nombre") {
+				matches.value_of("nombre").unwrap().to_string()
+			} else {
+				String::new()
+			}
+		}
+		else {
+			String::new()
+		},
 	}
 
 }
@@ -125,6 +147,9 @@ pub fn check_args(input: Argumentos) -> String {
 	}
 	else if input.instalar_depen != "" {
 		"instalar_depen".to_string()
+	}
+	else if input.crear_tipo != "" && input.crear_nombre != "" {
+		"crear".to_string()
 	}
 	else {
 		"nope".to_string()
@@ -237,7 +262,7 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
 
 pub fn install_depen(file_toml: &str) {
 	println!("Administrando dependencias...");
-	let cata = ["apt", "pacman", "dnf", "snap", "flatpak", "zypper"];
+	let cata = ["apt", "pacman", "dnf", "snap", "flatpak", "zypper", "yum", "apk"];
 	let mut manpack = Vec::new();
 
 	for i in 0..cata.len() {
@@ -353,11 +378,29 @@ fn manager(pack: String) -> PackageManager {
 		"zypper" => {PackageManager {
 			comando: "zypper".to_string(),
         	buscar: "search".to_string(),
-        	intalacion: "search".to_string(),
+        	intalacion: "in".to_string(),
         	dinstalacion: "remove".to_string(),
         	paquete: String::new(),
         	confirmacion: "--non-interactive".to_string(),
         	root: true,
+		}},
+		"yum" => {PackageManager{
+			comando: "yum".to_string(),
+			buscar: "search".to_string(),
+			intalacion: "install".to_string(),
+			dinstalacion: "remove".to_string(),
+			paquete: String::new(),
+			confirmacion: "-y".to_string(),
+			root: true,
+		}},
+		"apk" => {PackageManager{
+			comando: "apk".to_string(),
+			buscar: "search".to_string(),
+			intalacion: "add".to_string(),
+			dinstalacion: "delete".to_string(),
+			paquete: String::new(),
+			confirmacion: String::new(),
+			root: true,
 		}},
 		_ => {PackageManager {
 			comando: "apmpkg".to_string(),
@@ -365,7 +408,7 @@ fn manager(pack: String) -> PackageManager {
         	intalacion: "instalar".to_string(),
         	dinstalacion: "dinstal".to_string(),
         	paquete: String::new(),
-        	confirmacion: "-v".to_string(),
+        	confirmacion: "-c".to_string(),
         	root: true,
 		}},
 	}

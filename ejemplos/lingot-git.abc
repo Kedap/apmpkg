@@ -13,7 +13,7 @@ makedepends=('git' 'intltool')
 cmd_depends=('gtk3-nocsd' 'git' 'intltool-extract')
 provides=('lingot')
 conflicts=('lingot')
-source=('git+https://git.savannah.nongnu.org/git/lingot.git')
+source=('git+https://github.com/ibancg/lingot')
 sha256sums=('SKIP')
 
 pkgver() {

@@ -1,5 +1,5 @@
 name: ApmPKG
-version: "v1.0.2"
+version: "v1.1.0"
 author: Kedap. <dxhqezk@hi2.in>
 about: Un administrador de paquetes universal para linux como modelo PKGBUILD
 args:
@@ -17,7 +17,7 @@ subcommands:
         about: Instala/actualiza un paquete
         args:
             - paquete:
-                help: "Nombre y/o ruta del archivo adi o abc"
+                help: "Nombre y/o ruta del archivo adi , abi o abc"
                 index: 1
             - confirmar:
                 short: c 
@@ -42,3 +42,12 @@ subcommands:
                 short: c 
                 long: confirmar
                 help: "No se interactua con el usuario en la confirmacion"
+    - crear:
+        about: Crea un prototipo para archivo .adi o .abc
+        args:
+            - tipo:
+                help: "Tipo de paquete: adi | abc"
+                index: 1
+            - nombre:
+                help: "Nombre del paquete"
+                index: 2

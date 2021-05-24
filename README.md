@@ -5,7 +5,8 @@ A Package Manager as a model: PKGBUILD
 ![Logo](img/logo.png)
 
 # NOTICIAS
-- Se ha liberado la versión: v1.1.0 Para todos!!!
+- Se ha liberado la versión: v1.1.1 Para todos!!!
+- Se Arreglo el error al verificar si un archivo es .adi o .abc 
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
 - Modificacion al verificar en   `cmd_depends` de los archivos .abc
@@ -44,12 +45,12 @@ De igual manera se pueden crear binarios para una instalacion offline [binarios]
 Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mismo apmpkg, aun porque creemos que la distribucion de paquetes es importante tratamos de poner a disposicion y de crear binarios nativos para cada distribucion en donde son soportados los gestores de paquetes,  pero primero debes de tener las depencias, entre ellos: 
 - pip3/pip2
 - bundle 
-- wget 
+- curl 
 - fakeroot 
 - git
 - rsync
 
-Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.1.0) en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
+Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/) en donde se suben los paquetes, si deseas tener mas informacion, [da click aqui](doc/instalacion.md)
 
 # Caracteristicas
 ![Esquema](img/esquema.png)

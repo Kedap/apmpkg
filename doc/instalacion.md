@@ -64,10 +64,10 @@ wget https://github.com/Kedap/apmpkg/releases/download/1.1.0/apmpkg-doc.apk; apk
 ```
 
 ## Binario
-En la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.0.2) puede descargarlo e instalarlo con el siguiente comando:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.0/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
+En la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.1.1) puede descargarlo e instalarlo con el siguiente comando:
+`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
 Pero si quiere ejecutarlo de manera portable puede hacerlo:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.0/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
 
 
 # Compilacion
@@ -75,7 +75,7 @@ Pero si quiere ejecutarlo de manera portable puede hacerlo:
 Para la instalacion y compilacion de manera manual debera de cumplir con los siguientes requisitos:
 
 - Dependencias para compilar: git cargo pkg-config y openssl, openssl puede variar en diferentes distribuciones, este es necesario para openssl rust, [mas informacion aqui](https://docs.rs/openssl/0.10.33/openssl/index.html#automatic)
-- Dependencias de ApmPKG: pip3/pip2, bundle, wget, fakeroot, rsync y git
+- Dependencias de ApmPKG: pip3/pip2, bundle, curl, fakeroot, rsync y git
 
 Para empezar con el proceso de compilacion debera de ejecutar lo siguiente:
 

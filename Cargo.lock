@@ -14,7 +14,7 @@ checksum = "23ac7c30002a5accbf7e8987d0632fa6de155b7c3d39d0067317a391e00a2ef6"
 
 [[package]]
 name = "apmpkg"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "clap",
  "colored",

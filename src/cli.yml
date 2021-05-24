@@ -1,5 +1,5 @@
 name: ApmPKG
-version: "v1.1.0"
+version: "v1.1.1"
 author: Kedap. <dxhqezk@hi2.in>
 about: Un administrador de paquetes universal para linux como modelo PKGBUILD
 args:

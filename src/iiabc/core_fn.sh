@@ -187,7 +187,7 @@ generar_adi(){
 	echo >> $nombre.adi
 	echo '##[pip]'>> $nombre.adi
 	echo >> $nombre.adi
-	echo '##version = "3"'>> $nombre.adi
+	echo '##version = 3'>> $nombre.adi
 	echo '##requirements = false'>> $nombre.adi
 	echo '##packages = ["requests"]'>> $nombre.adi
 	echo >> $nombre.adi
@@ -198,7 +198,7 @@ generar_adi(){
 	echo 'url = "https://foo.com/bar/foo-bar.tar.gz"'>> $nombre.adi
 	echo 'carpeta = "foo-bar"'>> $nombre.adi
 	echo 'sha256sum = "j9f2898934fjfj893j89j893fj89sdjdksajijsiodje9we"'>> $nombre.adi
-	echo '#sha2156sum = "SALTAR"'>> $nombre.adi
+	echo '#sha256sum = "SALTAR"'>> $nombre.adi
 	echo >> $nombre.adi
 	echo '[instalacion]'>> $nombre.adi
 	echo >> $nombre.adi

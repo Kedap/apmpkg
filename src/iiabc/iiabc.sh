@@ -5,7 +5,7 @@
 ################################################################
 #                                                              #
 # Interpretador para la Instalacion con archivos .ABC (IIABC)  #
-# v1.0.2                                                       #
+# v1.0.3                                                       #
 #                                                              #
 # Autor / Contribudores                                        #
 #                                                              #
@@ -284,7 +284,7 @@ remove_pkg(){
 
 # Saber si es un archivo .abc
 if [ "$1" == "-abc" ]; then
-	usuario= cat $2 | grep package > /dev/null
+    usuario= cat $2 | grep "package()" > /dev/null
 	if [ $? -eq 1 ]; then
 		echo "false"
 	else

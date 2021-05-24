@@ -64,10 +64,10 @@ wget https://github.com/Kedap/apmpkg/releases/download/1.1.0/apmpkg-doc.apk; apk
 ```
 
 ## Binario
-En la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.0.2) puede descargarlo e instalarlo con el siguiente comando:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.0/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
+En la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/tag/1.1.1) puede descargarlo e instalarlo con el siguiente comando:
+`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
 Pero si quiere ejecutarlo de manera portable puede hacerlo:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.0/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
 
 
 # Compilacion

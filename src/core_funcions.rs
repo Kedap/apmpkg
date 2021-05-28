@@ -30,11 +30,7 @@ pub fn leer_argumentos() -> Argumentos {
 
     // Structura de los argumentos
     Argumentos {
-        verbose: if matches.is_present("verbose") {
-            true
-        } else {
-            false
-        },
+        verbose: matches.is_present("verbose"),
 
         instalar: if let Some(matches) = matches.subcommand_matches("instalar") {
             if matches.is_present("paquete") {
@@ -47,21 +43,13 @@ pub fn leer_argumentos() -> Argumentos {
         },
 
         confirmar: if let Some(matches) = matches.subcommand_matches("instalar") {
-            if matches.is_present("confirmar") {
-                true
-            } else {
-                false
-            }
+            matches.is_present("confirmar")
         } else {
             false
         },
 
         instalar_bin: if let Some(matches) = matches.subcommand_matches("instalar") {
-            if matches.is_present("binario") {
-                true
-            } else {
-                false
-            }
+            matches.is_present("binario")
         } else {
             false
         },
@@ -87,11 +75,7 @@ pub fn leer_argumentos() -> Argumentos {
         },
 
         dinstal_confi: if let Some(matches) = matches.subcommand_matches("remover") {
-            if matches.is_present("confirmar") {
-                true
-            } else {
-                false
-            }
+            matches.is_present("confirmar")
         } else {
             false
         },
@@ -125,30 +109,19 @@ pub fn leer_argumentos() -> Argumentos {
 }
 
 pub fn check_args(input: Argumentos) -> String {
-    if input.instalar != "" {
+    if !input.instalar.is_empty() {
         "instalar".to_string()
-    } else if input.instalar_url != "" {
+    } else if !input.instalar_url.is_empty() {
         "instalar_url".to_string()
-    } else if input.dinstal != "" {
+    } else if !input.dinstal.is_empty() {
         "remover".to_string()
-    } else if input.instalar_depen != "" {
+    } else if !input.instalar_depen.is_empty() {
         "instalar_depen".to_string()
-    } else if input.crear_tipo != "" && input.crear_nombre != "" {
+    } else if !input.crear_tipo.is_empty() && !input.crear_nombre.is_empty() {
         "crear".to_string()
     } else {
         "nope".to_string()
     }
-}
-
-#[tokio::main]
-pub async fn web_requets(url: &str, flag: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let cuerpo = reqwest::get(url).await?.text().await?;
-    match &flag[..] {
-        "check" => println!("ok! "),
-        "print" => println!("{} ", cuerpo.to_string()),
-        _ => println!("nope"),
-    }
-    Ok(())
 }
 
 pub fn print_metapkg(pkg: AdiPaquete) {
@@ -174,10 +147,7 @@ pub fn quess(texto: &str) -> bool {
     aviso.push_str(" [S/n]");
     println!("{}", aviso.yellow());
     let opc: String = input().get();
-    match &opc[..] {
-        "S" | "s" => true,
-        _ => false,
-    }
+    matches!(&opc[..], "S" | "s")
 }
 
 pub fn local_depen(file_toml: &str) -> bool {
@@ -239,31 +209,27 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
         .arg(gestor.confirmacion)
         .output()
         .expect("Ocurrio un error cuando se instalaba las dependencias");
-    if comando_instalacion.status.to_string() == "exit code: 0" {
-        true
-    } else {
-        false
-    }
+    comando_instalacion.status.to_string() == "exit code: 0"
 }
 
 pub fn install_depen(file_toml: &str) {
     println!("Administrando dependencias...");
-    let cata = [
+    let catalogo = [
         "apt", "pacman", "dnf", "snap", "flatpak", "zypper", "yum", "apk",
     ];
     let mut manpack = Vec::new();
 
-    for i in 0..cata.len() {
+    for gestor in &catalogo {
         let comando = Command::new("bash")
             .arg("-c")
-            .arg(cata[i])
+            .arg(gestor)
             .output()
             .expect("Algo fallo en install depen");
         if comando.status.to_string() == "exit code: 1"
             || comando.status.to_string() == "exit code: 0"
         {
             let hi = {
-                let tmp = cata[i];
+                let tmp = gestor;
                 tmp.to_string()
             };
             manpack.push(hi);
@@ -275,8 +241,8 @@ pub fn install_depen(file_toml: &str) {
     let adi = tomy.as_table().unwrap();
     let depen_arr = &adi["paquete"]["dependencias"].as_array().unwrap();
 
-    for i in 0..manpack.len() {
-        println!("Se a dectectado {}", manpack[i]);
+    for gestor in &manpack {
+        println!("Se a dectectado {}", gestor);
     }
     println!("Procediendo con la descarga e instalacion de dependencias... ");
     let mut contador = 0;
@@ -287,7 +253,7 @@ pub fn install_depen(file_toml: &str) {
             let dependencia = depen_arr[i].as_str().unwrap();
             let instalacion_completada = instalar_paquete(gestor.clone(), dependencia);
             // De igual manera como se instala se verifica que la dependencia fue instalada si este da como codigo de salida 0
-            if instalacion_completada == true {
+            if instalacion_completada {
                 println!(
                     "Se termino de instalar el paquete {} de manera correcta!",
                     depen_arr[i].as_str().unwrap()
@@ -307,7 +273,7 @@ pub fn install_depen(file_toml: &str) {
                 let posible_paquete: String = input().get();
                 println!("Instalando el posible paquete {}", posible_paquete);
                 let instalacion_completada = instalar_paquete(gestor, &posible_paquete);
-                if instalacion_completada == true {
+                if instalacion_completada {
                     ready = true
                 } else {
                     ready = false
@@ -315,7 +281,7 @@ pub fn install_depen(file_toml: &str) {
             }
         }
 
-        if ready == true {
+        if ready {
             println!("Se han resolvido las dependencias de manera correcta");
             break;
         } else {

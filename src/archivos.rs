@@ -33,8 +33,7 @@ pub async fn download(url: &str, name: &str) -> Result<(), Box<dyn std::error::E
 
 pub fn read_fs(file: &str) -> String {
     println!("Leyendo el archivo {}...", file);
-    let filedata = fs::read_to_string(file).expect("Archivo no encontrado!!! ");
-    filedata
+    fs::read_to_string(file).expect("Archivo no encontrado!!! ")
 }
 
 pub fn write_f(name: &str, file: &[u8]) -> io::Result<()> {
@@ -56,7 +55,7 @@ pub fn read_adi_down(file: &str, gito: bool) -> AdiDescarga {
         println!("Douh, eso no parece un archivo .adi");
         process::exit(0x0100);
     }
-    if gito == true {
+    if gito {
         let source = {
             AdiDescarga {
                 url: String::new(),
@@ -104,7 +103,7 @@ pub fn extern_depen(file: &str, path_src: &str) {
         let gemm = adi["gem"]["gemfile"]
             .as_bool()
             .expect("Eso no es un booleano");
-        if gemm == true {
+        if gemm {
             let payload = {
                 AdiGem {
                     gemfile: gemm,
@@ -148,11 +147,11 @@ pub fn extern_depen(file: &str, path_src: &str) {
         }
         let archivo = adi["pip"]["requirements"].as_bool().expect("Cuantico?");
 
-        if archivo == true {
+        if archivo {
             println!("Instalando desde un archivo requirements.txt");
             let payload = {
                 AdiPip {
-                    version: version,
+                    version,
                     requirements: archivo,
                     file: adi["pip"]["file"].as_str().expect("?").to_string(),
                     packages: null_arr.to_vec(),
@@ -167,7 +166,7 @@ pub fn extern_depen(file: &str, path_src: &str) {
             println!("Instalando paquetes de python");
             let payload = {
                 AdiPip {
-                    version: version,
+                    version,
                     requirements: archivo,
                     file: String::new(),
                     packages: pack.to_vec(),
@@ -209,7 +208,7 @@ pub fn pkg_depen(file: &str) -> String {
         if i == ultimo {
             let _ = String::new();
         } else {
-            depen_str.push_str(" ");
+            depen_str.push(' ');
         }
     }
     depen_str
@@ -253,11 +252,7 @@ pub fn hash_sum(path: &str, check: &str) -> bool {
     io::copy(&mut file, &mut suma).expect("Error al copiar");
     let fhash = format!("{:x}", suma.finalize());
 
-    if fhash == check {
-        true
-    } else {
-        false
-    }
+    fhash == check
 }
 
 pub fn copy_df(source: &str, target: &str) {
@@ -340,7 +335,7 @@ pub fn opt_remove(file: &str) {
 
     if insta.contains_key("opt_src") {
         let si = insta["opt_src"].as_bool().unwrap();
-        if si == true {
+        if si {
             let carpeta = adi["descarga"]["carpeta"].as_str().unwrap().to_string();
             let mut opt_src = String::new();
             opt_src.push_str("/opt/");
@@ -357,11 +352,7 @@ pub fn source_git_q(file: &str) -> bool {
         .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
     let adi = tomy.as_table().unwrap();
     let fuente = &adi["descarga"].as_table().unwrap();
-    if fuente.contains_key("git") {
-        true
-    } else {
-        false
-    }
+    fuente.contains_key("git")
 }
 
 pub fn source_es_local(file: &str) -> bool {
@@ -369,11 +360,7 @@ pub fn source_es_local(file: &str) -> bool {
         .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
     let adi = tomy.as_table().unwrap();
     let fuente_local = &adi["descarga"].as_table().unwrap();
-    if fuente_local.contains_key("local") {
-        true
-    } else {
-        false
-    }
+    fuente_local.contains_key("local")
 }
 
 pub fn leer_fuente_local(file: &str) -> String {
@@ -411,7 +398,7 @@ pub fn opt_src(file: &str, dir: &str) {
     let insta = adi["instalacion"].as_table().unwrap();
     if insta.contains_key("opt_src") {
         let si = insta["opt_src"].as_bool().unwrap();
-        if si == true {
+        if si {
             move_dd(dir, "/opt/");
         } else {
             let _h = true;
@@ -428,7 +415,7 @@ pub fn crate_bin(path: &str, nombre: &str, meta_file: &str) {
 
     let conservar_src_dir = binario_completo(meta_file);
 
-    if conservar_src_dir == true {
+    if conservar_src_dir {
         let mut noombre = String::new();
         noombre.push_str(nombre);
         noombre.push_str(".abi.tar.gz");
@@ -447,7 +434,7 @@ pub fn crate_bin(path: &str, nombre: &str, meta_file: &str) {
         // Verificando si es que instala con fuentes locales
         let fuentes_locales = source_es_local(meta_file);
         let des: AdiDescarga;
-        if fuentes_locales == true {
+        if fuentes_locales {
             des = read_adi_down(meta_file, true);
         } else {
             des = read_adi_down(meta_file, false);
@@ -455,7 +442,7 @@ pub fn crate_bin(path: &str, nombre: &str, meta_file: &str) {
         let mut dirc = String::new();
         dirc.push_str(path);
         dirc.push_str(&des.src);
-        dirc.push_str("/");
+        dirc.push('/');
 
         let archivos = &adi["instalacion"]["files"].as_array().unwrap();
         for i in 0..archivos.len() {
@@ -465,7 +452,7 @@ pub fn crate_bin(path: &str, nombre: &str, meta_file: &str) {
             //Arregla el problema de no comprimir carpetas, ejemplo funkin
             let dir_archivos = Path::new(&archivo);
             let es_directorio: bool = dir_archivos.is_dir();
-            if es_directorio == true {
+            if es_directorio {
                 tar.append_dir_all(dir_archivos, dir_archivos).unwrap();
             } else {
                 tar.append_path(archivo).unwrap();
@@ -505,12 +492,12 @@ pub fn binario_completo(toml_file: &str) -> bool {
         conservar_src_dir = true;
     } else if insta.contains_key("opt_src") {
         let boleano = insta["opt_src"].as_bool().unwrap();
-        if boleano == true {
+        if boleano {
             conservar_src_dir = true;
         } else {
             conservar_src_dir = false;
         }
-    } else if gito == true {
+    } else if gito {
         conservar_src_dir = true;
     }
     conservar_src_dir
@@ -555,11 +542,7 @@ pub fn es_abc(path: &str) -> bool {
 
     // Tipo de salidas segun si es abc
     let abc_salida = String::from("true\n");
-    if comando_salida == abc_salida {
-        true
-    } else {
-        false
-    }
+    comando_salida == abc_salida
 }
 
 pub fn existe_abc(path: &str) -> bool {
@@ -570,11 +553,7 @@ pub fn existe_abc(path: &str) -> bool {
         .arg(db_path)
         .output()
         .expect("Ocurrio algo con cat");
-    if cat_file.status.to_string() == "exit code: 1" {
-        false
-    } else {
-        true
-    }
+    cat_file.status.to_string() != "exit code: 1"
 }
 
 pub fn existe_adi() -> bool {
@@ -583,11 +562,7 @@ pub fn existe_adi() -> bool {
         .output()
         .expect("Ocurrio un error al ejecutar cat");
 
-    if resultado_cat.status.to_string() == "exit code: 1" {
-        false
-    } else {
-        true
-    }
+    resultado_cat.status.to_string() != "exit code: 1"
 }
 
 pub fn spawn_adi(nombre: &str) {

@@ -43,11 +43,11 @@ fn install_pip(version: i64, path: &str) -> bool {
 }
 
 fn install_gem(gemas: Vec<Value>) -> bool {
-    for i in 0..gemas.len() {
-        println!("Instalando la gema {}", gemas[i]);
+    for gema in gemas {
+        println!("Instalando la gema {}", gema);
         let mut child = Command::new("gem")
             .arg("install")
-            .arg(gemas[i].as_str().unwrap())
+            .arg(gema.as_str().unwrap())
             .spawn()
             .expect("No tenis ruby?");
         let _result = child.wait().unwrap();
@@ -58,22 +58,22 @@ fn install_gem(gemas: Vec<Value>) -> bool {
 fn pip_pack(version: i64, packages: Vec<Value>) -> bool {
     if version == 2 {
         let pipa = "pip2";
-        for i in 0..packages.len() {
-            println!("Instalando {}", packages[i]);
+        for paquete in packages {
+            println!("Instalando {}", paquete);
             let mut child = Command::new(pipa)
                 .arg("install")
-                .arg(packages[i].as_str().unwrap())
+                .arg(paquete.as_str().unwrap())
                 .spawn()
                 .expect("No tenis el pip?");
             let _result = child.wait().unwrap();
         }
     } else {
         let pipa = "pip3";
-        for i in 0..packages.len() {
-            println!("Instalando {}", packages[i]);
+        for paquete in packages {
+            println!("Instalando {}", paquete);
             let mut child = Command::new(pipa)
                 .arg("install")
-                .arg(packages[i].as_str().unwrap())
+                .arg(paquete.as_str().unwrap())
                 .spawn()
                 .expect("No tenis el pip?");
             let _result = child.wait().unwrap();
@@ -83,11 +83,11 @@ fn pip_pack(version: i64, packages: Vec<Value>) -> bool {
 }
 
 pub fn analized_pip(input: AdiPip, path: &str) {
-    if input.requirements == true {
+    if input.requirements {
         let mut pat = String::from(path);
         pat.push_str(&input.file);
         let confir = install_pip(input.version, &pat);
-        if confir == true {
+        if confir {
             println!("Instalacion de pip terminada con exito!");
         } else {
             println!("{}", "Algo salio mal instalando con pip".red());
@@ -95,7 +95,7 @@ pub fn analized_pip(input: AdiPip, path: &str) {
         }
     } else {
         let conf = pip_pack(input.version, input.packages);
-        if conf == true {
+        if conf {
             println!("Instalacion con pip correcta!");
         } else {
             println!("{}", "Algo salio mal instalando con pip".red());
@@ -105,13 +105,13 @@ pub fn analized_pip(input: AdiPip, path: &str) {
 }
 
 pub fn analized_gem(input: AdiGem, path: &str) {
-    if input.gemfile == true {
+    if input.gemfile {
         let mut paa = String::new();
         paa.push_str(path);
         paa.push_str(&input.file);
         let conf = install_bundle(&paa);
 
-        if conf == true {
+        if conf {
             println!("La instalacion se ha realizado con exito");
         } else {
             println!("{}", "Algo salio mal instalando con bundler".red());
@@ -119,7 +119,7 @@ pub fn analized_gem(input: AdiGem, path: &str) {
         }
     } else {
         let conf = install_gem(input.gemas);
-        if conf == true {
+        if conf {
             println!("Se termino la instalacion de las gemas!!");
         } else {
             println!("{}", "Algo salio mal instalando las gemas".red());

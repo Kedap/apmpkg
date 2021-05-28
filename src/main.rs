@@ -19,7 +19,7 @@ use {
 fn instalar(name: &str, no_user: bool, bin: bool) {
     println!("{}", "Iniciando instalacion!".green());
     let abi = archivos::es_abi(name);
-    if abi == true {
+    if abi {
         if !Uid::effective().is_root() {
             println!(
                 "{}",
@@ -30,7 +30,7 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
         metodos_de_instalacion::instalar_abi(name, no_user);
     } else {
         let abc = archivos::es_abc(name);
-        if abc == true {
+        if abc {
             metodos_de_instalacion::instalar_abc(name, bin);
         } else {
             if !Uid::effective().is_root() {
@@ -73,7 +73,7 @@ fn dinstalar(name: &str, no_user: bool) {
     }
     let bash_file = archivos::existe_abc(name);
 
-    if bash_file == true {
+    if bash_file {
         core_funcions::remove_abc(name);
     } else {
         let mut adi_file = String::new();
@@ -86,11 +86,11 @@ fn dinstalar(name: &str, no_user: bool) {
         core_funcions::print_banner();
         core_funcions::print_metapkg(meta.clone());
 
-        if no_user == true {
+        if no_user {
             println!("{}", "Omitiendo la confirmacion".yellow());
         } else {
             let confirm = core_funcions::quess("Deseas seguir con la desinstalacion?");
-            if confirm == true {
+            if confirm {
                 println!("Iniciando con el proceso de desinstalacion");
             } else {
                 println!("{}", "abortando!".red());
@@ -157,7 +157,7 @@ fn main() {
     let info_arg = core_funcions::leer_argumentos();
 
     // verbose?
-    if info_arg.verbose == true {
+    if info_arg.verbose {
         println!("{}", "Modo verbose: Activado".blue());
     }
 

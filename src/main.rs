@@ -53,7 +53,7 @@ fn instalar(name: &str, flags: Banderas) {
     }
 }
 
-pub fn instalar_url(name: &str, flags: Banderas) {
+fn instalar_url(name: &str, flags: Banderas) {
     println!("Descargando desde la direccion {}", name);
     let f = archivos::download(name, "file.pmpf");
     match f {
@@ -122,7 +122,7 @@ fn dinstalar(name: &str, flags: Banderas) {
     }
 }
 
-pub fn instalar_depen(depen: &str) {
+fn instalar_depen(depen: &str) {
     if !Uid::effective().is_root() {
         println!(
             "{}",
@@ -142,7 +142,7 @@ pub fn instalar_depen(depen: &str) {
     core_funcions::install_depen(&toml_str);
 }
 
-pub fn crear_protipo(tipo: &str, nombre: &str) {
+fn crear_protipo(tipo: &str, nombre: &str) {
     // El tipo es correcto?
     if tipo == "adi" || tipo == "abc" {
         println!("Creando un archivo {} con el nombre de {}...", tipo, nombre);

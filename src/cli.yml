@@ -47,3 +47,9 @@ subcommands:
             - nombre:
                 help: "Nombre del paquete"
                 index: 2
+    - construir:
+        about: Crea un binario apartir de un archivo adi o abc
+        args:
+            - paquete:
+                help: Ruta del archivo adi o abc a construir el binario
+                index: 1

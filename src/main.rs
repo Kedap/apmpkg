@@ -164,6 +164,22 @@ fn crear_protipo(tipo: &str, nombre: &str) {
     }
 }
 
+fn constuir(path: &str) {
+    let abc = archivos::es_abc(path);
+    if abc {
+        let mut child = std::process::Command::new("bash")
+                                    .arg("/etc/apmpkg/iiabc/iiabc.sh")
+                                    .arg("-b")
+                                    .arg(path)
+                                    .spawn()
+                                    .expect("Algo fallo al intentar ejecutar iiabc");
+        let _result = child.wait().unwrap();
+    }
+    else {
+        metodos_de_instalacion::binario_adi(path);
+    }
+}
+
 fn main() {
     core_funcions::print_banner();
     let info_arg = core_funcions::leer_argumentos();
@@ -176,6 +192,7 @@ fn main() {
         SubComandos::Remover(path) => dinstalar(&path, flags),
         SubComandos::InstalarDependencia(dependencia) => instalar_depen(&dependencia),
         SubComandos::Crear { tipo, nombre } => crear_protipo(&tipo, &nombre),
+        SubComandos::Construir(path) => constuir(&path),
         _ => {
             println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green());
             process::exit(0x0100);

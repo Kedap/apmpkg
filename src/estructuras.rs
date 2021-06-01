@@ -10,6 +10,7 @@ pub enum SubComandos {
     Remover(String),
     InstalarDependencia(String),
     Crear { tipo: String, nombre: String },
+    Construir(String),
     Ninguno,
 }
 

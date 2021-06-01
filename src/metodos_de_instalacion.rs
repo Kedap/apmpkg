@@ -20,6 +20,14 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     core_funcions::clear();
     core_funcions::print_banner();
     core_funcions::print_metapkg(meta.clone());
+    let mut instalacion_adi = meta.nombre.clone();
+    instalacion_adi.push_str(".adi");
+    let actualizacion = Path::new("/etc/apmpkg/paquetes")
+        .join(instalacion_adi)
+        .is_file();
+    if actualizacion {
+        println!("{}{}...", "Actualizando el paquete ".yellow(), meta.nombre);
+    }
     if no_user {
         println!("{}", "Omitiendo la confirmacion...".yellow());
     } else {
@@ -252,15 +260,18 @@ pub fn binario_adi(path: &str) {
     thread::sleep(Duration::from_secs(1));
 
     //Directorios
-    let mut dird = String::new(); dird.push_str(&meta.nombre); dird.push_str(".d");
+    let mut dird = String::new();
+    dird.push_str(&meta.nombre);
+    dird.push_str(".d");
     let pkgd = Path::new(&dird);
     if pkgd.exists() {
-        let borrar = core_funcions::quess("Al parecer el directorio de trabajo ya esta creado, quiere borrarlo?");
+        let borrar = core_funcions::quess(
+            "Al parecer el directorio de trabajo ya esta creado, quiere borrarlo?",
+        );
         if borrar {
             println!("Borrando el directorio...");
             archivos::remove_dd(pkgd.to_str().unwrap());
-        }
-        else {
+        } else {
             println!("No se puede continuar a menos que se elimine dicho directorio");
             process::exit(0x0100);
         }
@@ -269,8 +280,11 @@ pub fn binario_adi(path: &str) {
     //Descarga de las fuentes
     pb.inc();
     println!("{}", "Iniciando la descarga de las fuentes...".green());
-    let mut acd_file = String::new(); acd_file.push_str(&meta.nombre); acd_file.push_str("-");
-    acd_file.push_str(&meta.version); acd_file.push_str(".acd.tar");
+    let mut acd_file = String::new();
+    acd_file.push_str(&meta.nombre);
+    acd_file.push('-');
+    acd_file.push_str(&meta.version);
+    acd_file.push_str(".acd.tar");
     //if...
     let existe_local = archivos::source_es_local(&toml);
     let gito = archivos::source_git_q(&toml);

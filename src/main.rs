@@ -168,14 +168,13 @@ fn constuir(path: &str) {
     let abc = archivos::es_abc(path);
     if abc {
         let mut child = std::process::Command::new("bash")
-                                    .arg("/etc/apmpkg/iiabc/iiabc.sh")
-                                    .arg("-b")
-                                    .arg(path)
-                                    .spawn()
-                                    .expect("Algo fallo al intentar ejecutar iiabc");
+            .arg("/etc/apmpkg/iiabc/iiabc.sh")
+            .arg("-b")
+            .arg(path)
+            .spawn()
+            .expect("Algo fallo al intentar ejecutar iiabc");
         let _result = child.wait().unwrap();
-    }
-    else {
+    } else {
         metodos_de_instalacion::binario_adi(path);
     }
 }

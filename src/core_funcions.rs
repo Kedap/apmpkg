@@ -55,16 +55,13 @@ pub fn leer_argumentos() -> Argumentos {
             } else {
                 SubComandos::Ninguno
             }
-        } 
-        else if let Some(matches) = matches.subcommand_matches("construir") {
+        } else if let Some(matches) = matches.subcommand_matches("construir") {
             if matches.is_present("paquete") {
                 SubComandos::Construir(matches.value_of("paquete").unwrap().to_string())
-            }
-            else {
+            } else {
                 SubComandos::Ninguno
             }
-        }
-        else {
+        } else {
             SubComandos::Ninguno
         },
 

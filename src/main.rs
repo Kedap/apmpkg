@@ -17,8 +17,14 @@ use {
 };
 
 fn instalar(name: &str, flags: Banderas) {
-    let no_user = matches!(flags, Banderas::ConfirmarInstalacion | Banderas::ConfirmarConBinarios);
-    let bin = matches!(flags, Banderas::InstalacionConBinarios | Banderas::ConfirmarConBinarios);
+    let no_user = matches!(
+        flags,
+        Banderas::ConfirmarInstalacion | Banderas::ConfirmarConBinarios
+    );
+    let bin = matches!(
+        flags,
+        Banderas::InstalacionConBinarios | Banderas::ConfirmarConBinarios
+    );
     println!("{}", "Iniciando instalacion!".green());
     let abi = archivos::es_abi(name);
     if abi {

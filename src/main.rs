@@ -166,7 +166,7 @@ fn main() {
         SubComandos::InstalarUrl(url) => instalar_url(&url, flags),
         SubComandos::Remover(path) => dinstalar(&path, flags),
         SubComandos::InstalarDependencia(dependencia) => instalar_depen(&dependencia),
-        SubComandos::Crear(crear_arr) => crear_protipo(&crear_arr[0], &crear_arr[1]),
+        SubComandos::Crear { tipo, nombre } => crear_protipo(&tipo, &nombre),
         _ => {
             println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green());
             process::exit(0x0100);

@@ -1,18 +1,31 @@
 // Estructuras
 use toml::Value;
 
+//Enumeracion de subcomandos
+
+#[derive(Debug, Clone)]
+pub enum SubComandos {
+    Instalar(String),
+    InstalarUrl(String),
+    Remover(String),
+    InstalarDependencia(String),
+    Crear([String; 2]),
+    Ninguno,
+}
+
+#[derive(Debug, Clone)]
+pub enum Banderas {
+    ConfirmarInstalacion,
+    InstalacionConBinarios,
+    ConfirmarConBinarios,
+    ConfirmacionRemove,
+    Ninguno,
+}
+
 #[derive(Clone, Debug)]
 pub struct Argumentos {
-    pub verbose: bool,
-    pub instalar: String,
-    pub confirmar: bool,
-    pub instalar_bin: bool,
-    pub instalar_url: String,
-    pub dinstal: String,
-    pub dinstal_confi: bool,
-    pub instalar_depen: String,
-    pub crear_tipo: String,
-    pub crear_nombre: String,
+    pub subcomand: SubComandos,
+    pub flags: Banderas,
 }
 
 // ADI TOML archivo

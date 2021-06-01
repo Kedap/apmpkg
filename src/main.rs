@@ -10,13 +10,21 @@
 
 //use y modulos
 use {
-    apmpkg::{archivos, core_funcions, metodos_de_instalacion},
+    apmpkg::{archivos, core_funcions, metodos_de_instalacion, estructuras::*},
     colored::*,
     nix::unistd::Uid,
     std::process,
 };
 
-fn instalar(name: &str, no_user: bool, bin: bool) {
+fn instalar(name: &str, flags: Banderas) {
+    let no_user = match flags {
+        Banderas::ConfirmarInstalacion | Banderas::ConfirmarConBinarios => true,
+        _ => false,
+    };
+    let bin = match flags {
+        Banderas::InstalacionConBinarios | Banderas::ConfirmarConBinarios => true,
+        _ => false,
+    };
     println!("{}", "Iniciando instalacion!".green());
     let abi = archivos::es_abi(name);
     if abi {
@@ -45,7 +53,7 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
     }
 }
 
-fn instalar_url(name: &str, user: bool, bin_bool: bool) {
+pub fn instalar_url(name: &str, flags: Banderas) {
     println!("Descargando desde la direccion {}", name);
     let f = archivos::download(name, "file.pmpf");
     match f {
@@ -58,11 +66,15 @@ fn instalar_url(name: &str, user: bool, bin_bool: bool) {
             process::exit(0x0100);
         }
     }
-    instalar("file.pmpf", user, bin_bool);
+    instalar("file.pmpf", flags);
     archivos::remove_df("file.pmpf");
 }
 
-fn dinstalar(name: &str, no_user: bool) {
+fn dinstalar(name: &str, flags: Banderas) {
+    let no_user = match flags {
+        Banderas::ConfirmacionRemove => true,
+        _ => false,
+    };
     println!("Desinstalando el paquete {}", name);
     if !Uid::effective().is_root() {
         println!(
@@ -110,7 +122,7 @@ fn dinstalar(name: &str, no_user: bool) {
     }
 }
 
-fn instalar_depen(depen: &str) {
+pub fn instalar_depen(depen: &str) {
     if !Uid::effective().is_root() {
         println!(
             "{}",
@@ -130,7 +142,7 @@ fn instalar_depen(depen: &str) {
     core_funcions::install_depen(&toml_str);
 }
 
-fn crear_protipo(tipo: &str, nombre: &str) {
+pub fn crear_protipo(tipo: &str, nombre: &str) {
     // El tipo es correcto?
     if tipo == "adi" || tipo == "abc" {
         println!("Creando un archivo {} con el nombre de {}...", tipo, nombre);
@@ -155,28 +167,15 @@ fn crear_protipo(tipo: &str, nombre: &str) {
 fn main() {
     core_funcions::print_banner();
     let info_arg = core_funcions::leer_argumentos();
+    let flags = info_arg.flags;
 
-    // verbose?
-    if info_arg.verbose {
-        println!("{}", "Modo verbose: Activado".blue());
-    }
-
-    // Separador:
-    let argu = core_funcions::check_args(info_arg.clone());
-    match &argu[..] {
-        "instalar" => instalar(
-            &info_arg.instalar,
-            info_arg.confirmar,
-            info_arg.instalar_bin,
-        ),
-        "instalar_url" => instalar_url(
-            &info_arg.instalar_url,
-            info_arg.confirmar,
-            info_arg.instalar_bin,
-        ),
-        "remover" => dinstalar(&info_arg.dinstal, info_arg.dinstal_confi),
-        "instalar_depen" => instalar_depen(&info_arg.instalar_depen),
-        "crear" => crear_protipo(&info_arg.crear_tipo, &info_arg.crear_nombre),
+    //Modificado para no utilizar core_funciones::checkargs
+    match info_arg.subcomand {
+        SubComandos::Instalar(path) => instalar(&path, flags),
+        SubComandos::InstalarUrl(url) => instalar_url(&url, flags),
+        SubComandos::Remover(path) => dinstalar(&path, flags),
+        SubComandos::InstalarDependencia(dependencia) => instalar_depen(&dependencia),
+        SubComandos::Crear(crear_arr) => crear_protipo(&crear_arr[0], &crear_arr[1]),
         _ => {
             println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green());
             process::exit(0x0100);

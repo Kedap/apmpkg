@@ -3,10 +3,6 @@ version: "v1.1.1"
 author: Kedap. <dxhqezk@hi2.in>
 about: Un administrador de paquetes universal para linux como modelo PKGBUILD
 args:
-    - verbose:
-        short: v
-        multiple: true
-        help: Mostrar la salida (modo verbose)
     - instalard:
         short: di
         long: Instalar_dependencia

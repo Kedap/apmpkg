@@ -10,21 +10,15 @@
 
 //use y modulos
 use {
-    apmpkg::{archivos, core_funcions, metodos_de_instalacion, estructuras::*},
+    apmpkg::{archivos, core_funcions, estructuras::*, metodos_de_instalacion},
     colored::*,
     nix::unistd::Uid,
     std::process,
 };
 
 fn instalar(name: &str, flags: Banderas) {
-    let no_user = match flags {
-        Banderas::ConfirmarInstalacion | Banderas::ConfirmarConBinarios => true,
-        _ => false,
-    };
-    let bin = match flags {
-        Banderas::InstalacionConBinarios | Banderas::ConfirmarConBinarios => true,
-        _ => false,
-    };
+    let no_user = matches!(flags, Banderas::ConfirmarInstalacion | Banderas::ConfirmarConBinarios);
+    let bin = matches!(flags, Banderas::InstalacionConBinarios | Banderas::ConfirmarConBinarios);
     println!("{}", "Iniciando instalacion!".green());
     let abi = archivos::es_abi(name);
     if abi {
@@ -71,10 +65,7 @@ fn instalar_url(name: &str, flags: Banderas) {
 }
 
 fn dinstalar(name: &str, flags: Banderas) {
-    let no_user = match flags {
-        Banderas::ConfirmacionRemove => true,
-        _ => false,
-    };
+    let no_user = matches!(flags, Banderas::ConfirmacionRemove);
     println!("Desinstalando el paquete {}", name);
     if !Uid::effective().is_root() {
         println!(

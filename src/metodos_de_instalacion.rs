@@ -10,7 +10,7 @@ use {
 };
 
 // Instalacion apartir de un archivo .adi
-pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
+pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     println!(
         "Iniciando instalacion/creacion del paquete desde el archivo: {}",
         name
@@ -97,7 +97,10 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
     if ya_install {
         println!("Yeah, ya tienes las dependencias instaladas!!!!");
     } else {
-        core_funcions::install_depen(&toml);
+        let dependencias_instaladas = core_funcions::install_depen(&toml);
+        if !dependencias_instaladas {
+            return archivos::dependencias_adi(&toml);
+        }
     }
     pb.inc();
 
@@ -218,6 +221,7 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
     pb.inc();
     pb.finish_print("Se realizo con exito la instalacion!");
     core_funcions::msg_end(&toml);
+    Vec::new()
 }
 
 // Instalacion apartir de un archivo .abi.tar

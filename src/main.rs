@@ -48,7 +48,10 @@ fn instalar(name: &str, flags: Banderas) {
                 );
                 process::exit(0x0100);
             }
-            metodos_de_instalacion::instalar_adi(name, no_user, bin);
+            let paquetes_externos = metodos_de_instalacion::instalar_adi(name, no_user, bin);
+            for paquete in &paquetes_externos {
+                instalar_url(paquete, Banderas::ConfirmarInstalacion);
+            }
         }
     }
 }

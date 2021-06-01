@@ -174,7 +174,7 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
     comando_instalacion.status.to_string() == "exit code: 0"
 }
 
-pub fn install_depen(file_toml: &str) {
+pub fn install_depen(file_toml: &str) -> bool {
     println!("Administrando dependencias...");
     let catalogo = [
         "apt", "pacman", "dnf", "snap", "flatpak", "zypper", "yum", "apk",
@@ -245,9 +245,12 @@ pub fn install_depen(file_toml: &str) {
 
         if ready {
             println!("Se han resolvido las dependencias de manera correcta");
-            break;
+            return true;
         } else {
             contador += 1;
+            if contador > manpack.len() {
+                return false;
+            }
         }
     }
 }

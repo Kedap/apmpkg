@@ -503,6 +503,34 @@ pub fn binario_completo(toml_file: &str) -> bool {
     conservar_src_dir
 }
 
+pub fn dependencias_adi(file_toml: &str) -> Vec<String> {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parecer no escribiste bien el archivo ADI");
+    let adi = tomy.as_table().unwrap();
+    let paquete = adi["paquete"].as_table().unwrap();
+    if paquete.contains_key("abi_dependencias") {
+        let abi_depend_arr = paquete["abi_dependencias"]
+            .as_array()
+            .expect("La variable abi_dependencias debe de ser un array!");
+        let abi_depend_table = adi["dependencias_adi"]
+            .as_table()
+            .expect("Debe de colocar la tabla de dependencias_adi!");
+
+        let mut salida = Vec::new();
+        for i in 0..abi_depend_arr.len() {
+            salida.push(
+                abi_depend_table[&abi_depend_arr[i].as_str().unwrap().to_string()]
+                    .as_str()
+                    .unwrap()
+                    .to_string(),
+            );
+        }
+        salida
+    } else {
+        Vec::new()
+    }
+}
+
 pub fn es_abi(path: &str) -> bool {
     let comando_file = Command::new("file")
         .arg("-i")

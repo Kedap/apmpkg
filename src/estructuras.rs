@@ -9,7 +9,10 @@ pub enum SubComandos {
     InstalarUrl(String),
     Remover(String),
     InstalarDependencia(String),
-    Crear([String; 2]),
+    Crear {
+        tipo: String,
+        nombre: String,
+    },
     Ninguno,
 }
 

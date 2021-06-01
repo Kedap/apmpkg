@@ -47,10 +47,10 @@ pub fn leer_argumentos() -> Argumentos {
             SubComandos::InstalarDependencia(matches.value_of("instalard").unwrap().to_string())
         } else if let Some(matches) = matches.subcommand_matches("crear") {
             if matches.is_present("tipo") && matches.is_present("nombre") {
-                SubComandos::Crear([
-                    matches.value_of("tipo").unwrap().to_string(),
-                    matches.value_of("nombre").unwrap().to_string(),
-                ])
+                SubComandos::Crear {
+                    tipo: matches.value_of("tipo").unwrap().to_string(),
+                    nombre: matches.value_of("nombre").unwrap().to_string(),
+                }
             } else {
                 SubComandos::Ninguno
             }

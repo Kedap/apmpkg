@@ -93,6 +93,18 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
         println!("No existe el conflicto");
     }
 
+    println!("Verificando requisitos...");
+    let arch = core_funcions::verificar_arch(&toml);
+    if arch {
+        println!("Requisitos cumplidos");
+    } else {
+        println!(
+            "{}",
+            "Error: Al parecer no cuentas con la arquitectura requerida".red()
+        );
+        process::exit(0x0100);
+    }
+
     let ya_install = core_funcions::local_depen(&toml);
     if ya_install {
         println!("Yeah, ya tienes las dependencias instaladas!!!!");

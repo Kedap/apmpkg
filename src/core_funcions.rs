@@ -5,6 +5,7 @@ use {
     crate::estructuras::{AdiPaquete, Argumentos, Banderas, PackageManager, SubComandos},
     clap::{load_yaml, App},
     colored::*,
+    psutil,
     read_input::prelude::*,
     std::{any::type_name, process::Command},
     toml::Value,
@@ -369,6 +370,18 @@ pub fn binario_abc(path: &str) {
         .spawn()
         .expect("Algo fallo al intentar ejecutar iiabc");
     let _result = child.wait().unwrap();
+}
+
+pub fn verificar_arch(file_toml: &str) -> bool {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let paquete = tomy["paquete"].as_table().unwrap();
+    if paquete.contains_key("arch") {
+        let archi = psutil::host::info().architecture().as_str().to_string();
+        *paquete["arch"].as_str().unwrap() == archi
+    } else {
+        true
+    }
 }
 
 /* Puede ayudar en casos de un programador que apenas se adentra en rust

@@ -255,7 +255,7 @@ pub fn install_depen(file_toml: &str) -> bool {
             return true;
         } else {
             contador += 1;
-            if contador > manpack.len() {
+            if contador >= manpack.len() {
                 return false;
             }
         }

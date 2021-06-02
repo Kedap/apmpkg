@@ -119,6 +119,7 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     } else {
         let dependencias_instaladas = core_funcions::install_depen(&toml);
         if !dependencias_instaladas {
+            println!("Descargando dependencias externas...");
             return archivos::dependencias_adi(&toml);
         }
     }

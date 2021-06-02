@@ -52,6 +52,7 @@ fn instalar(name: &str, flags: Banderas) {
             for paquete in &paquetes_externos {
                 instalar_url(paquete, Banderas::ConfirmarInstalacion);
             }
+            instalar(name, flags);
         }
     }
 }

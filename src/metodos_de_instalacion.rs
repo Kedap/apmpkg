@@ -254,7 +254,7 @@ pub fn binario_adi(path: &str) {
     println!("Iniciando la construccion del paquete {}...", meta.nombre);
 
     //Progress bar
-    let contador_bar = 5;
+    let contador_bar = 6;
     let mut pb = ProgressBar::new(contador_bar);
     pb.format("(->.)");
     pb.inc();
@@ -263,7 +263,7 @@ pub fn binario_adi(path: &str) {
     //Directorios
     let mut dird = String::new();
     dird.push_str(&meta.nombre);
-    dird.push_str(".d");
+    dird.push_str(".d/");
     let pkgd = Path::new(&dird);
     if pkgd.exists() {
         let borrar = core_funcions::quess(
@@ -279,6 +279,14 @@ pub fn binario_adi(path: &str) {
     }
 
     //Descarga de las fuentes
+    let directorio = archivos::new_dir(&pkgd.to_str().unwrap());
+    match directorio {
+        Ok(_a) => println!("La creacion del directorio a sido correcto"),
+        Err(e) => {
+            println!("{} {}", "Ocurrio un error al crear el directorio:".red(), e);
+            process::exit(0x0100);
+        }
+    }
     pb.inc();
     println!("{}", "Iniciando la descarga de las fuentes...".green());
     let mut acd_file = String::new();
@@ -326,7 +334,7 @@ pub fn binario_adi(path: &str) {
     if des.sha256sum == "SALTAR" {
         println!("{}", "Se ha saltado la verificacion!!!".red());
     } else {
-        let suma = archivos::hash_sum(&acd_file, &des.sha256sum);
+        let suma = archivos::hash_sum(&pkgd.join(&acd_file).to_str().unwrap(), &des.sha256sum);
         if suma {
             println!("{}", "Verificacion correcta".green());
         } else {
@@ -339,7 +347,10 @@ pub fn binario_adi(path: &str) {
     pb.inc();
     if !gito {
         println!("Extrayendo el tarball");
-        let taa = archivos::e_tar(&acd_file, &pkgd.to_str().unwrap());
+        let taa = archivos::e_tar(
+            &pkgd.join(&acd_file).to_str().unwrap(),
+            &pkgd.to_str().unwrap(),
+        );
         match taa {
             Ok(_taa) => println!("El tarball se descomprimio con exito"),
             Err(_e) => {
@@ -359,6 +370,7 @@ pub fn binario_adi(path: &str) {
     archivos::crate_bin(&pkgd.to_str().unwrap(), &nombre_bin, &toml);
     println!("Limpiando...");
     archivos::remove_dd(&pkgd.to_str().unwrap());
+    pb.inc();
 }
 
 // Instalacion apartir de un archivo .abi.tar

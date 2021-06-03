@@ -10,7 +10,7 @@ use {
 };
 
 // Instalacion apartir de un archivo .adi
-pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
+pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     println!(
         "Iniciando instalacion/creacion del paquete desde el archivo: {}",
         name
@@ -20,6 +20,14 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
     core_funcions::clear();
     core_funcions::print_banner();
     core_funcions::print_metapkg(meta.clone());
+    let mut instalacion_adi = meta.nombre.clone();
+    instalacion_adi.push_str(".adi");
+    let actualizacion = Path::new("/etc/apmpkg/paquetes")
+        .join(instalacion_adi)
+        .is_file();
+    if actualizacion {
+        println!("{}{}...", "Actualizando el paquete ".yellow(), meta.nombre);
+    }
     if no_user {
         println!("{}", "Omitiendo la confirmacion...".yellow());
     } else {
@@ -93,11 +101,27 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
         println!("No existe el conflicto");
     }
 
+    println!("Verificando requisitos...");
+    let arch = core_funcions::verificar_arch(&toml);
+    if arch {
+        println!("Requisitos cumplidos");
+    } else {
+        println!(
+            "{}",
+            "Error: Al parecer no cuentas con la arquitectura requerida".red()
+        );
+        process::exit(0x0100);
+    }
+
     let ya_install = core_funcions::local_depen(&toml);
     if ya_install {
         println!("Yeah, ya tienes las dependencias instaladas!!!!");
     } else {
-        core_funcions::install_depen(&toml);
+        let dependencias_instaladas = core_funcions::install_depen(&toml);
+        if !dependencias_instaladas {
+            println!("Descargando dependencias externas...");
+            return archivos::dependencias_adi(&toml);
+        }
     }
     pb.inc();
 
@@ -218,6 +242,135 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) {
     pb.inc();
     pb.finish_print("Se realizo con exito la instalacion!");
     core_funcions::msg_end(&toml);
+    Vec::new()
+}
+
+pub fn binario_adi(path: &str) {
+    println!("Creando binario desde el archivo {}...", path);
+    let toml = archivos::read_fs(path);
+    let meta = archivos::read_adi(&toml);
+    core_funcions::clear();
+    core_funcions::print_banner();
+    println!("Iniciando la construccion del paquete {}...", meta.nombre);
+
+    //Progress bar
+    let contador_bar = 6;
+    let mut pb = ProgressBar::new(contador_bar);
+    pb.format("(->.)");
+    pb.inc();
+    thread::sleep(Duration::from_secs(1));
+
+    //Directorios
+    let mut dird = String::new();
+    dird.push_str(&meta.nombre);
+    dird.push_str(".d/");
+    let pkgd = Path::new(&dird);
+    if pkgd.exists() {
+        let borrar = core_funcions::quess(
+            "Al parecer el directorio de trabajo ya esta creado, quiere borrarlo?",
+        );
+        if borrar {
+            println!("Borrando el directorio...");
+            archivos::remove_dd(pkgd.to_str().unwrap());
+        } else {
+            println!("No se puede continuar a menos que se elimine dicho directorio");
+            process::exit(0x0100);
+        }
+    }
+
+    //Descarga de las fuentes
+    let directorio = archivos::new_dir(&pkgd.to_str().unwrap());
+    match directorio {
+        Ok(_a) => println!("La creacion del directorio a sido correcto"),
+        Err(e) => {
+            println!("{} {}", "Ocurrio un error al crear el directorio:".red(), e);
+            process::exit(0x0100);
+        }
+    }
+    pb.inc();
+    println!("{}", "Iniciando la descarga de las fuentes...".green());
+    let mut acd_file = String::new();
+    acd_file.push_str(&meta.nombre);
+    acd_file.push('-');
+    acd_file.push_str(&meta.version);
+    acd_file.push_str(".acd.tar");
+    //if...
+    let existe_local = archivos::source_es_local(&toml);
+    let gito = archivos::source_git_q(&toml);
+    if gito {
+        let des = archivos::read_adi_down(&toml, gito);
+        let git_path = pkgd.join(&des.src);
+        let source_git = archivos::read_git(&toml);
+        archivos::git_clone(&source_git, &git_path.to_str().unwrap());
+    } else if existe_local {
+        let path_local = archivos::leer_fuente_local(&toml);
+        archivos::copy_dd(&path_local, &pkgd.join(&acd_file).to_str().unwrap())
+    } else {
+        let des = archivos::read_adi_down(&toml, gito);
+        let f = archivos::download(&des.url, &pkgd.join(&acd_file).to_str().unwrap());
+        match f {
+            Ok(_f) => println!("Correcto"),
+            Err(_e) => {
+                println!(
+                    "{}",
+                    "Ocurrio un error al hacer la peticion, intenta de nuevo".red()
+                );
+                process::exit(0x0100);
+            }
+        }
+        println!("Se termino la descarga");
+    }
+
+    //Integridad
+    pb.inc();
+    let git_o_local: bool;
+    if gito || existe_local {
+        git_o_local = true;
+    } else {
+        git_o_local = false;
+    }
+    let des = archivos::read_adi_down(&toml, git_o_local);
+    println!("Verificando la integridad del archivo...");
+    if des.sha256sum == "SALTAR" {
+        println!("{}", "Se ha saltado la verificacion!!!".red());
+    } else {
+        let suma = archivos::hash_sum(&pkgd.join(&acd_file).to_str().unwrap(), &des.sha256sum);
+        if suma {
+            println!("{}", "Verificacion correcta".green());
+        } else {
+            println!("{}", "La verificacion no coinside, vuelve intentar".red());
+            process::exit(0x0100);
+        }
+    }
+
+    //extraer fuentes
+    pb.inc();
+    if !gito {
+        println!("Extrayendo el tarball");
+        let taa = archivos::e_tar(
+            &pkgd.join(&acd_file).to_str().unwrap(),
+            &pkgd.to_str().unwrap(),
+        );
+        match taa {
+            Ok(_taa) => println!("El tarball se descomprimio con exito"),
+            Err(_e) => {
+                println!("{}", "Ocurrio un error al descomprimir el tarball".red());
+                process::exit(0x0100);
+            }
+        }
+    }
+
+    //Empaquetamiento
+    pb.inc();
+    archivos::copy_dd(path, &pkgd.join("apkg.adi").to_str().unwrap());
+    let mut nombre_bin = String::new();
+    nombre_bin.push_str(&meta.nombre);
+    nombre_bin.push('-');
+    nombre_bin.push_str(&meta.version);
+    archivos::crate_bin(&pkgd.to_str().unwrap(), &nombre_bin, &toml);
+    println!("Limpiando...");
+    archivos::remove_dd(&pkgd.to_str().unwrap());
+    pb.inc();
 }
 
 // Instalacion apartir de un archivo .abi.tar

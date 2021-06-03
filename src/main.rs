@@ -10,13 +10,21 @@
 
 //use y modulos
 use {
-    apmpkg::{archivos, core_funcions, metodos_de_instalacion},
+    apmpkg::{archivos, core_funcions, estructuras::*, metodos_de_instalacion},
     colored::*,
     nix::unistd::Uid,
     std::process,
 };
 
-fn instalar(name: &str, no_user: bool, bin: bool) {
+fn instalar(name: &str, flags: Banderas) {
+    let no_user = matches!(
+        flags,
+        Banderas::ConfirmarInstalacion | Banderas::ConfirmarConBinarios
+    );
+    let bin = matches!(
+        flags,
+        Banderas::InstalacionConBinarios | Banderas::ConfirmarConBinarios
+    );
     println!("{}", "Iniciando instalacion!".green());
     let abi = archivos::es_abi(name);
     if abi {
@@ -40,12 +48,18 @@ fn instalar(name: &str, no_user: bool, bin: bool) {
                 );
                 process::exit(0x0100);
             }
-            metodos_de_instalacion::instalar_adi(name, no_user, bin);
+            let paquetes_externos = metodos_de_instalacion::instalar_adi(name, no_user, bin);
+            if !paquetes_externos.is_empty() {
+                for paquete in &paquetes_externos {
+                    instalar_url(paquete, Banderas::ConfirmarInstalacion);
+                }
+                instalar(name, flags);
+            }
         }
     }
 }
 
-fn instalar_url(name: &str, user: bool, bin_bool: bool) {
+fn instalar_url(name: &str, flags: Banderas) {
     println!("Descargando desde la direccion {}", name);
     let f = archivos::download(name, "file.pmpf");
     match f {
@@ -58,11 +72,12 @@ fn instalar_url(name: &str, user: bool, bin_bool: bool) {
             process::exit(0x0100);
         }
     }
-    instalar("file.pmpf", user, bin_bool);
+    instalar("file.pmpf", flags);
     archivos::remove_df("file.pmpf");
 }
 
-fn dinstalar(name: &str, no_user: bool) {
+fn dinstalar(name: &str, flags: Banderas) {
+    let no_user = matches!(flags, Banderas::ConfirmacionRemove);
     println!("Desinstalando el paquete {}", name);
     if !Uid::effective().is_root() {
         println!(
@@ -152,31 +167,34 @@ fn crear_protipo(tipo: &str, nombre: &str) {
     }
 }
 
+fn constuir(path: &str) {
+    let abc = archivos::es_abc(path);
+    if abc {
+        let mut child = std::process::Command::new("bash")
+            .arg("/etc/apmpkg/iiabc/iiabc.sh")
+            .arg("-b")
+            .arg(path)
+            .spawn()
+            .expect("Algo fallo al intentar ejecutar iiabc");
+        let _result = child.wait().unwrap();
+    } else {
+        metodos_de_instalacion::binario_adi(path);
+    }
+}
+
 fn main() {
     core_funcions::print_banner();
     let info_arg = core_funcions::leer_argumentos();
+    let flags = info_arg.flags;
 
-    // verbose?
-    if info_arg.verbose {
-        println!("{}", "Modo verbose: Activado".blue());
-    }
-
-    // Separador:
-    let argu = core_funcions::check_args(info_arg.clone());
-    match &argu[..] {
-        "instalar" => instalar(
-            &info_arg.instalar,
-            info_arg.confirmar,
-            info_arg.instalar_bin,
-        ),
-        "instalar_url" => instalar_url(
-            &info_arg.instalar_url,
-            info_arg.confirmar,
-            info_arg.instalar_bin,
-        ),
-        "remover" => dinstalar(&info_arg.dinstal, info_arg.dinstal_confi),
-        "instalar_depen" => instalar_depen(&info_arg.instalar_depen),
-        "crear" => crear_protipo(&info_arg.crear_tipo, &info_arg.crear_nombre),
+    //Modificado para no utilizar core_funciones::checkargs
+    match info_arg.subcomand {
+        SubComandos::Instalar(path) => instalar(&path, flags),
+        SubComandos::InstalarUrl(url) => instalar_url(&url, flags),
+        SubComandos::Remover(path) => dinstalar(&path, flags),
+        SubComandos::InstalarDependencia(dependencia) => instalar_depen(&dependencia),
+        SubComandos::Crear { tipo, nombre } => crear_protipo(&tipo, &nombre),
+        SubComandos::Construir(path) => constuir(&path),
         _ => {
             println!("{}", "Intenta con: apmpkg -h o apmpkg --help".green());
             process::exit(0x0100);

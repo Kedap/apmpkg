@@ -2,9 +2,10 @@
 
 //uses
 use {
-    crate::estructuras::{AdiPaquete, Argumentos, PackageManager},
+    crate::estructuras::{AdiPaquete, Argumentos, Banderas, PackageManager, SubComandos},
     clap::{load_yaml, App},
     colored::*,
+    psutil,
     read_input::prelude::*,
     std::{any::type_name, process::Command},
     toml::Value,
@@ -28,99 +29,67 @@ pub fn leer_argumentos() -> Argumentos {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
-    // Structura de los argumentos
     Argumentos {
-        verbose: matches.is_present("verbose"),
-
-        instalar: if let Some(matches) = matches.subcommand_matches("instalar") {
+        subcomand: if let Some(matches) = matches.subcommand_matches("instalar") {
             if matches.is_present("paquete") {
-                matches.value_of("paquete").unwrap().to_string()
+                SubComandos::Instalar(matches.value_of("paquete").unwrap().to_string())
+            } else if matches.is_present("url") {
+                SubComandos::InstalarUrl(matches.value_of("url").unwrap().to_string())
             } else {
-                String::new()
+                SubComandos::Ninguno
             }
-        } else {
-            String::new()
-        },
-
-        confirmar: if let Some(matches) = matches.subcommand_matches("instalar") {
-            matches.is_present("confirmar")
-        } else {
-            false
-        },
-
-        instalar_bin: if let Some(matches) = matches.subcommand_matches("instalar") {
-            matches.is_present("binario")
-        } else {
-            false
-        },
-
-        instalar_url: if let Some(matches) = matches.subcommand_matches("instalar") {
-            if matches.is_present("url") {
-                matches.value_of("url").unwrap().to_string()
-            } else {
-                String::new()
-            }
-        } else {
-            String::new()
-        },
-
-        dinstal: if let Some(matches) = matches.subcommand_matches("remover") {
+        } else if let Some(matches) = matches.subcommand_matches("remover") {
             if matches.is_present("paquete") {
-                matches.value_of("paquete").unwrap().to_string()
+                SubComandos::Remover(matches.value_of("paquete").unwrap().to_string())
             } else {
-                String::new()
+                SubComandos::Ninguno
+            }
+        } else if matches.is_present("instalard") {
+            SubComandos::InstalarDependencia(matches.value_of("instalard").unwrap().to_string())
+        } else if let Some(matches) = matches.subcommand_matches("crear") {
+            if matches.is_present("tipo") && matches.is_present("nombre") {
+                SubComandos::Crear {
+                    tipo: matches.value_of("tipo").unwrap().to_string(),
+                    nombre: matches.value_of("nombre").unwrap().to_string(),
+                }
+            } else {
+                SubComandos::Ninguno
+            }
+        } else if let Some(matches) = matches.subcommand_matches("construir") {
+            if matches.is_present("paquete") {
+                SubComandos::Construir(matches.value_of("paquete").unwrap().to_string())
+            } else {
+                SubComandos::Ninguno
             }
         } else {
-            String::new()
+            SubComandos::Ninguno
         },
 
-        dinstal_confi: if let Some(matches) = matches.subcommand_matches("remover") {
-            matches.is_present("confirmar")
-        } else {
-            false
-        },
-
-        instalar_depen: if matches.is_present("instalard") {
-            matches.value_of("instalard").unwrap().to_string()
-        } else {
-            String::new()
-        },
-
-        crear_tipo: if let Some(matches) = matches.subcommand_matches("crear") {
-            if matches.is_present("tipo") {
-                matches.value_of("tipo").unwrap().to_string()
+        flags: if let Some(matches) = matches.subcommand_matches("instalar") {
+            if matches.is_present("confirmar") {
+                if matches.is_present("binario") {
+                    Banderas::ConfirmarConBinarios
+                } else {
+                    Banderas::ConfirmarInstalacion
+                }
+            } else if matches.is_present("binario") {
+                if matches.is_present("confirmar") {
+                    Banderas::ConfirmarConBinarios
+                } else {
+                    Banderas::InstalacionConBinarios
+                }
             } else {
-                String::new()
+                Banderas::Ninguno
+            }
+        } else if let Some(matches) = matches.subcommand_matches("remover") {
+            if matches.is_present("confirmar") {
+                Banderas::ConfirmacionRemove
+            } else {
+                Banderas::Ninguno
             }
         } else {
-            String::new()
+            Banderas::Ninguno
         },
-
-        crear_nombre: if let Some(matches) = matches.subcommand_matches("crear") {
-            if matches.is_present("nombre") {
-                matches.value_of("nombre").unwrap().to_string()
-            } else {
-                String::new()
-            }
-        } else {
-            String::new()
-        },
-    }
-}
-
-pub fn check_args(input: Argumentos) -> String {
-    if !input.instalar.is_empty() {
-        "instalar".to_string()
-    } else if !input.instalar_url.is_empty() {
-        "instalar_url".to_string()
-    } else if !input.dinstal.is_empty() {
-        "remover".to_string()
-    } else if !input.instalar_depen.is_empty() {
-        "instalar_depen".to_string()
-    } else if !input.crear_tipo.is_empty() && !input.crear_nombre.is_empty() {
-        "crear".to_string()
-    } else {
-        "nope".to_string()
     }
 }
 
@@ -212,7 +181,7 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
     comando_instalacion.status.to_string() == "exit code: 0"
 }
 
-pub fn install_depen(file_toml: &str) {
+pub fn install_depen(file_toml: &str) -> bool {
     println!("Administrando dependencias...");
     let catalogo = [
         "apt", "pacman", "dnf", "snap", "flatpak", "zypper", "yum", "apk",
@@ -283,9 +252,12 @@ pub fn install_depen(file_toml: &str) {
 
         if ready {
             println!("Se han resolvido las dependencias de manera correcta");
-            break;
+            return true;
         } else {
             contador += 1;
+            if contador >= manpack.len() {
+                return false;
+            }
         }
     }
 }
@@ -404,6 +376,18 @@ pub fn binario_abc(path: &str) {
         .spawn()
         .expect("Algo fallo al intentar ejecutar iiabc");
     let _result = child.wait().unwrap();
+}
+
+pub fn verificar_arch(file_toml: &str) -> bool {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let paquete = tomy["paquete"].as_table().unwrap();
+    if paquete.contains_key("arch") {
+        let archi = psutil::host::info().architecture().as_str().to_string();
+        *paquete["arch"].as_str().unwrap() == archi
+    } else {
+        true
+    }
 }
 
 /* Puede ayudar en casos de un programador que apenas se adentra en rust

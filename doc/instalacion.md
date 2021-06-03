@@ -36,6 +36,26 @@ Pacman...<. el gestor de paquetes de archlinux, de igual manera se puede instala
 
 `wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-1.1.1-1-x86_64.pkg.tar.zst; pacman -U apmpkg-1.1.1-1-x86_64.pkg.tar.zst`
 
+O de mejor manera puedes tener las ultimas version con el repositorio [krep0](https://krep0.bitbucket.io/archlinux/), si no lo tienes en tu pacman.conf, deberas de realizar lo siguiente:
+Colocar las siguientes lineas en `/etc/pacman.conf`:
+```toml
+[krep0]
+SigLevel = Optional TrustAll
+Server = https://$repo.bitbucket.io/archlinux/$arch
+```
+Y actualizar con `pacman -Syu`
+
+Una vez que ya tengas krep0 en tu pacman.conf deberas de ejecutar lo siguiente para instalar apmpkg:
+
+```sh
+pacman -S apmpkg
+```
+
+En el caso de que quieras instalar la version en desarrollo (no recomendado) deberas ejecutar:
+```sh
+pacman -S apmpkg-git-dev
+```
+
 ## Zypper
 Zypper es el gestor de paquetes de OpenSUSE y para que ApmPKG sea instalado solo falta ejecutar lo siguiente:
 
@@ -93,7 +113,7 @@ $ cargo build --release
 Para instalar los manuales solo ejecute:
 ```
 # mkdir -p /usr/local/share/man/man1
-# cp apmpkg.1 /usr/local/share/man/man1
+# cp man/* /usr/local/share/man/man1
 ```
 ## Ejecucion
 `apmpkg --help`

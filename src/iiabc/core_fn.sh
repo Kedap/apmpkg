@@ -2,7 +2,7 @@
 
 #Variables de cajon
 NOMBRE='iiabc'
-VERSION='1.0-beta'
+VERSION='1.2'
 TRUE=1
 FALSE=0
 ROJO='\033[91m'

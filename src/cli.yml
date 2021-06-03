@@ -1,12 +1,8 @@
 name: ApmPKG
-version: "v1.1.1"
+version: "v1.2.0"
 author: Kedap. <dxhqezk@hi2.in>
 about: Un administrador de paquetes universal para linux como modelo PKGBUILD
 args:
-    - verbose:
-        short: v
-        multiple: true
-        help: Mostrar la salida (modo verbose)
     - instalard:
         short: di
         long: Instalar_dependencia
@@ -51,3 +47,9 @@ subcommands:
             - nombre:
                 help: "Nombre del paquete"
                 index: 2
+    - construir:
+        about: Crea un binario apartir de un archivo adi o abc
+        args:
+            - paquete:
+                help: Ruta del archivo adi o abc a construir el binario
+                index: 1

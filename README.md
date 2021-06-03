@@ -1,22 +1,20 @@
 # ApmPKG
-[![version](https://img.shields.io/github/v/release/kedap/apmpkg)](https://github.com/Kedap/apmpkg/releases/) [![Build Status](https://travis-ci.com/Kedap/apmpkg.svg?branch=main)](https://travis-ci.com/Kedap/apmpkg) [![Paquete arch](https://img.shields.io/aur/version/apmpkg)](https://aur.archlinux.org/packages/apmpkg)
+[![version](https://img.shields.io/github/v/release/kedap/apmpkg)](https://github.com/Kedap/apmpkg/releases/) [![Build Status](https://travis-ci.com/Kedap/apmpkg.svg?branch=main)](https://travis-ci.com/Kedap/apmpkg) [![Paquete arch](https://img.shields.io/aur/version/apmpkg)](https://aur.archlinux.org/packages/apmpkg) [![AUR develop](https://img.shields.io/aur/version/apmpkg-git-dev)](https://aur.archlinux.org/packages/apmpkg-git-dev)
 
 A Package Manager as a model: PKGBUILD
-![Logo](img/logo.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Kedap/apmpkg/main/img/logo.png" />
+</p>
 
 # NOTICIAS
-- Se ha liberado la versión: v1.1.1 Para todos!!!
-- Se Arreglo el error al verificar si un archivo es .adi o .abc 
+- Se ha liberado la versión: v1.2 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Modificacion al verificar en   `cmd_depends` de los archivos .abc
-- Ahora ya se pueden utilizar la funcion check y verificar que esta se creo correctamente
-- Al crear los archivos binarios con archivos .adi, no se comprimian los directorios, ¡Ahora si!
-- Aregamos soporte para apk y yum!
-- Agregamos el hecho que se puedan tener fuentes locales en archivos .adi para no tener la necesidad de descargarlos
-- Hemos cambiado curl por wget para descargar fuentes en archivos abc
-- Ahora ya se puede utilizar la funcion de no extract
-- Implementamos un comando para generar un prototipo de archivos .adi o .abc
+- Agregamos `abi_dependencias` y `dependencias_adi` para dependencias que no esten en repositorios nativos, [mas informacion aqui](doc/creando_paquetes.md/#dependencias-adi)
+- Agregamos informacion para arquitectura del cual esta hecho el paquete, [mas informacion aqui](doc/creando_paquetes.md/#paquete)
+- Colocamos la leyenda `actualizando paquete...` cuando ya se tiene una instalacion previa del paquete a instalar
+- Manuales en Ingles y Español, ahora hemos creado paginas para `man` en ambos idiomas!
+
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
 ![Captura](img/captura_prin.png)
@@ -45,7 +43,7 @@ De igual manera se pueden crear binarios para una instalacion offline [binarios]
 Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mismo apmpkg, aun porque creemos que la distribucion de paquetes es importante tratamos de poner a disposicion y de crear binarios nativos para cada distribucion en donde son soportados los gestores de paquetes,  pero primero debes de tener las depencias, entre ellos: 
 - pip3/pip2
 - bundle 
-- curl 
+- wget 
 - fakeroot 
 - git
 - rsync
@@ -60,6 +58,8 @@ Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Ked
 - Resolucion de dependencias con los gestores de paquetes antes mencionados, trabajaremos para que la lista sea mas extensa
 - Descargar y/o compilar desde una url, ejemplo: `apmpkg instalar -u https://foo.com/bar`
 - Extenciones propios de nuestra herramienta, *.adi, .abc y .abi.tar.gz* cada una tiene una funcion especial, [mas informacion aqui](doc/modos_de_instalacion.md)
+- Crear un prototipo para un generar un archivo .adi o .abc, con el comando: `apmpkg crear adi foo` en el caso de crear un archivo .abc se debe de ejecutar lo siguiente: `apmpkg crear abc foo`
+- Construir tus binarios, Con la llegada de la version 1.2 se puede construir binarios sin la necesidad de instalarlos, solo debes de ejecutar: `apmpkg construir foo.adi` o si es un paquete .abc: `apmpkg construir foo.abc`
 
 ## Contribuir
 Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar por [aqui](https://github.com/Kedap/apmpkg/issues) y [leer esto](CONTRIBUTING.md)

@@ -1,0 +1,36 @@
+[paquete]
+
+nombre = "beef-cerberus"
+version = "4.0"
+rama = "estable"
+descrip = "Herramienta para automatizar BeEF fuera de LAN!"
+pagina = "https://github.com/tony23x/beef-for-cerberus"
+licensia = "Desconocida"
+dependencias = ["curl", "wget", "php", "openssh", "net-tools", "python3", "unzip", "ngrok"]
+cmd_depen = ["curl", "wget", "php", "ssh", "iptunnel", "python3", "unzip", "ngrok"]
+abi_dependencias = ["ngrok"]
+conflicto = "/usr/bin/cerberus.py"
+
+[dependencias_adi]
+ngrok = "https://krep0.bitbucket.io/apmpkg/ngrok-2.3.40.abi.tar.gz"
+
+[pip]
+
+version = 3
+requirements = true
+file = "requirements.txt"
+
+[descarga]
+
+#git = "https://github.com/tony23x/beef-for-cerberus.git"
+#Para testeo
+git = "https://github.com/kedap/beef-for-cerberus.git"
+carpeta = "beef-for-cerberus"
+sha256sum = "SALTAR"
+
+[instalacion]
+
+opt_src = true
+files = ["beef-cerberus.sh"]
+ruta = ["/usr/bin/beef-cerberus"]
+mensaje = "Ejecuta 'beef-cerberus' para iniciar :)"

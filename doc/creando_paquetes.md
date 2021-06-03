@@ -4,10 +4,11 @@ En esta guia aprenderas todo lo que se debe de saber al crear paquetes para ApmP
 Tabla de contenidos
 1. [Contruyendo con un Archivo de Descarga e Instalacion: ADI](#adi)
 	1. [Datos del paquete](#paquete)
-	2. [Gemas de ruby](#gem)
-	3. [Pip2 / pip3](#pip)
-	4. [descarga](#descarga)
-	5. [instalacion](#instalacion)
+	2. [Dependencias externas](#dependencias-adi)
+	3. [Gemas de ruby](#gem)
+	4. [Pip2 / pip3](#pip)
+	5. [descarga](#descarga)
+	6. [instalacion](#instalacion)
 2. [Compilando e instalando desde un Archivo de Bash y Compilando](#abc)
 	1. [Errores con abc](#complicaciones-abc)
 3. [Generar un archivo facilmente](#comando-de-creacion)
@@ -31,7 +32,12 @@ pagina = "https://foo.com/"
 licensia = "GPL-V3"
 dependencias = ["ruby", "metasploit"]
 #cmd_depen = ["ruby" , "msfconsole"]
+#abi_dependencias = ["metasploit"]
+#arch = "x86_64"
 conflicto = "/opt/foo/"
+
+#[dependencias_adi]
+#metasploit = "https://foo/bar/alterntiva/metasploit.abi.tar.gz"
 
 [gem]
 
@@ -76,12 +82,25 @@ licensia = "GPL-V3"
 dependencias = ["ruby", "metasploit"]
 #cmd_depen = ["ruby" , "msfconsole"]
 conflicto = "/opt/foo/"
+#abi_dependencias = ["metasploit"]
 ```
 Un poco mas facil, ¿no? Apartir de aqui vemos cosas basicas como el nombre y la version que son strings, nada muy importante que descatar, pero vemos algo en rama. 
 La variable **rama** es un string que se utiliza para diferenciar entre que es el paquete, si es una version beta, si es de la rama git o de desarrollo o si es una version estable.
 Vamos a lo siguiente que es **descrip**, y **licensia**. Estos son strings donde uno se coloca una pequeña descripcion del paquete y la licensia para espeficar que tipo de licensia de paquete es.
 **dependencias** y **cmd-depen**: dependencias es un array donde se colocan el nombre de los paquetes a los cuales se deben instalar, y cmd_depen es algo muy curioso, ya que para verificar que las dependencias estan instaladas se ejecuta un comando; es decir que si la dependencia es python despues de ejecutar el comando de instalacion se ejecuta `python`y si se obtiene una salida de 127 se da por hecho que esta instalado la dependencia, mas sin embargo existen paquetes que se ejecutan de diferente manera como es el ejemplo de `openssh` que se ejecuta con `ssh`o en este caso `metasploit` que se ejecuta con `msfconsole` es por ello que se creo este array. Mas sin embargo no es necesario SI TODAS las dependencias se ejecutan con el mismo nombre con el que se instala, como es el caso de `ruby`
 conflicto: Este string debe de contener un path, si dicho path o archivo existe no se podra instalar, es por decir que evita que un paquete se instale cuando ya esta instalado con otro gestor de paquetes
+**abi_dependencias** Es un array en donde se colocan las depedencias que **en el caso** de no encontrarse y/o resolverse con gestores de paquetes nativos, estas dependencias se instalaran de manera externa por ApmPKG, vease mas informacion en [dependencias_adi](#dependencias-adi)
+**arch** Es una variable string que debe de colocarse en el caso de que dicho paquete sea compatible unicamente para dicha arquitectura, en el caso de que sea disponible para todas las arquitecturas esta variable no debe de colocarse, ya que si dicha variable no se coloca se da por hecho que el paquete esta construido para cualquier arquitectura
+
+## Dependencias adi
+
+Esta seccion se integro con la version 1.2.0, la funcion de esta seccion es la de otorgar las fuentes de dependencias que no se han podido resolver con los gestores de paquetes nativos, ya sea porque no se encuentran en el repositorio o porque estos se encuentran rotos y/o por alguna otra razon...
+
+```toml
+metasploit = "https://foo/bar/alterntiva/metasploit.abi.tar.gz"
+```
+
+Tenemos una simple linea, las variables de esta seccion llevaran por nombre la depedencia que en el caso de no cumplirse va a ser instalada mediante esta opcion, en este caso la dependencia **metasploit**, el valor de dicha variable va a hacer un string que contengan la ruta de donde descargar dicho paquete en formato .abi.tar.gz para que este sea instalado por apmpkg
 
 ## Gem
 Esta seccion se creo para contener informacion referente a gemas que depende el paquete, claro gemas de ruby y que seran instalado con `bundle` o `gem` Esta seccion empieza con `[gem]`, esta seccion no es obligatoria, solo se coloca si el proyecto depende de gemas, si el caso es si, aqui un ejemplo:

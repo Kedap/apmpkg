@@ -14,6 +14,7 @@ A Package Manager as a model: PKGBUILD
 - Agregamos informacion para arquitectura del cual esta hecho el paquete, [mas informacion aqui](doc/creando_paquetes.md/#paquete)
 - Colocamos la leyenda `actualizando paquete...` cuando ya se tiene una instalacion previa del paquete a instalar
 - Manuales en Ingles y Español, ahora hemos creado paginas para `man` en ambos idiomas!
+- Se agrego un comando para construir binarios sin necesida de construirlos
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.

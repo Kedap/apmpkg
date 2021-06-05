@@ -20,21 +20,21 @@ Este es solo una gia de como es recomentable instalar los binarios con los gesto
 
 ## Apt
 Apt es el gestor de paquetes para debian y sus derivados, para hacer un instalacion utilizando apt solo sobre escribir los siguientes comandos en su terminal:
-`# wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-1.1.1-amd64.deb; apt install ./apmpkg-1.1.1-amd64.deb`
+`# https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-1.2.0-amd64.deb; apt install ./apmpkg-1.2.0-amd64.deb`
 
 De esta manera apt buscara por las dependencias necesarias para ApmPKG
 
 ## Dnf
 Dnf, la siguiente generacion de yum, recomendamos altamente utilizar dnf para la instalacion de ApmPKG para que sea una instalacion deseada como se debe, para instalar con esta herramienta es necesario ejecutar lo siguiente:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-1.1.1-1.fc34.x86_64.rpm; dnf localinstall apmpkg-1.1.1-1.fc34.x86_64.rpm`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-1.2.0-1.fc34.x86_64.rpm; dnf localinstall apmpkg-1.2.0-1.fc34.x86_64.rpm`
 
 De esta manera usted ya tendra instalado ApmPKG en su equipo
 
 ## Pacman
 Pacman...<. el gestor de paquetes de archlinux, de igual manera se puede instalar con este gestor, solo falta que ejecute:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-1.1.1-1-x86_64.pkg.tar.zst; pacman -U apmpkg-1.1.1-1-x86_64.pkg.tar.zst`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-1.2.0-1-x86_64.pkg.tar.zst; pacman -U apmpkg-1.2.0-1-x86_64.pkg.tar.zst`
 
 O de mejor manera puedes tener las ultimas version con el repositorio [krep0](https://krep0.bitbucket.io/archlinux/), si no lo tienes en tu pacman.conf, deberas de realizar lo siguiente:
 Colocar las siguientes lineas en `/etc/pacman.conf`:
@@ -59,14 +59,14 @@ pacman -S apmpkg-git-dev
 ## Zypper
 Zypper es el gestor de paquetes de OpenSUSE y para que ApmPKG sea instalado solo falta ejecutar lo siguiente:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-1.1.1-1.fc34.x86_64.rpm; zypper in apmpkg-1.1.1-1.fc34.x86_64.rpm`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-1.2.0-1.fc34.x86_64.rpm; zypper in apmpkg-1.2.0-1.fc34.x86_64.rpm`
 
 ## Apmpkg
 Un gestor de paquetes universal para linux escrito en rust y bash. como habiamos dicho antes que para instalar ApmPKG tambien se puede utilizar para descargar ApmPKG, obviamente no va a poder descargar ApmPKG en ApmPKG sin que antes lo tenga instalado, este metodo se utiliza mas para poder actualizar el ApmPKG, pues solo falta que escriba el siguiente comando.
-`apmpkg instalar -u https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-1.1.1.abi.tar.gz`
+`apmpkg instalar -u https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-1.2.0.abi.tar.gz`
 
 ## Yay
-*Yet another yogurt* ApmPKG tambien esta en [AUR](https://aur.archlinux.org/packages/apmpkg) y que mejor manera que instalarlo con yay, con el siguiente comando
+*Yet another yogurt* o con cualquier otro ayudador para instalar pauquetes AUR, ApmPKG tambien esta en [AUR](https://aur.archlinux.org/packages/apmpkg) y que mejor manera que instalarlo con yay, con el siguiente comando
 
 `yay -S apmpkg`
 
@@ -76,18 +76,18 @@ De igual manera hay mas versiones ApmPKG en AUR.
 Gestor de paquetes de alpine linux, y en esta actualizacion tenemos soporte para esta,
 por que no lo instalas con:
 ```
-wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-1.1.1-r0.apk; apk add --allow-untrusted apmpkg-1.1.1-r0.apk
+wget https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-1.2.0-r0.apk; apk add --allow-untrusted apmpkg-1.2.0-r0.apk
 ```
 Y si quieres tener la documentacion instalada, prueba con:
 ```
-wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-doc-1.1.1-r0.apk; apk add --allow-untrusted apmpkg-doc-1.1.1-r0.apk
+wget https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-doc-1.2.0-r0.apk apk add --allow-untrusted apmpkg-doc-1.2.0-r0.apk
 ```
 
 ## Binario
 En la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/) puede descargarlo e instalarlo con el siguiente comando:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
 Pero si quiere ejecutarlo de manera portable puede hacerlo:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.1.1/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.2.0/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
 
 
 # Compilacion

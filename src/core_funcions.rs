@@ -172,13 +172,22 @@ pub fn local_depen(file_toml: &str) -> bool {
 }
 
 fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
-    let comando_instalacion = Command::new(gestor.comando)
-        .arg(gestor.intalacion)
-        .arg(paquete)
-        .arg(gestor.confirmacion)
-        .output()
-        .expect("Ocurrio un error cuando se instalaba las dependencias");
-    comando_instalacion.status.to_string() == "exit code: 0"
+    if gestor.confirmacion.is_empty() {
+        let comando_instalacion = Command::new(gestor.comando)
+            .arg(gestor.intalacion)
+            .arg(paquete)
+            .output()
+            .expect("Ocurrio un error cuando se instalaba las dependencias");
+        comando_instalacion.status.to_string() == "exit code: 0"
+    } else {
+        let comando_instalacion = Command::new(gestor.comando)
+            .arg(gestor.intalacion)
+            .arg(paquete)
+            .arg(gestor.confirmacion)
+            .output()
+            .expect("Ocurrio un error cuando se instalaba las dependencias");
+        comando_instalacion.status.to_string() == "exit code: 0"
+    }
 }
 
 pub fn install_depen(file_toml: &str) -> bool {

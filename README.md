@@ -33,9 +33,10 @@ Los gestores que son soportado por ApmPKG:
 - [x] Zypper
 - [x] Yum
 - [x] Apk
+- [x] Pkg (termux)
 - [ ] Emerge
 - [ ] Yay
-- [ ] Pkg (termux)
+- [ ] Nix
 
 De igual manera se pueden crear binarios para una instalacion offline [binarios](doc/modos_de_instalacion.md/#instalacion-desde-un-archivo-binario-de-instalacion) para saber [mas infomarcion aqui](doc/modos_de_instalacion.md)
 

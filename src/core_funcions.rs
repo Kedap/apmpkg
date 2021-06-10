@@ -7,7 +7,7 @@ use {
     colored::*,
     psutil,
     read_input::prelude::*,
-    std::{any::type_name, process::Command},
+    std::{any::type_name, path::Path, process::Command},
     toml::Value,
 };
 
@@ -405,6 +405,20 @@ pub fn verificar_arch(file_toml: &str) -> bool {
         *paquete["arch"].as_str().unwrap() == archi
     } else {
         true
+    }
+}
+
+pub fn post_install(file_toml: &str, path: &Path) {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let instalacion = tomy["instalacion"].as_table().unwrap();
+    if instalacion.contains_key("post_install") {
+        println!("{}", "Ejecutando scripts de postinstalacion...".green());
+        let mut child = Command::new("bash")
+            .arg(path.join(instalacion["post_install"].as_str().unwrap()))
+            .spawn()
+            .expect("Algo fallo al ejecutar el script de postinstalacion");
+        let _result = child.wait().unwrap();
     }
 }
 

@@ -205,11 +205,16 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     src_path.push('/');
     src_path0.push('/');
     archivos::extern_depen(&toml, &src_path);
+    let mut dird = String::new();
+    dird.push_str(&meta.nombre);
+    dird.push_str(".d/");
+    let pkgd = Path::new(&dird);
     pb.inc();
 
     println!("Iniciando instalacion");
     archivos::install_path(&toml, &src_path0);
     archivos::opt_src(&toml, &src_path);
+    core_funcions::post_install(&toml, &pkgd.join(&des.src));
     pb.inc();
 
     println!("Borrando y limpiando los archivos de compilacion y fuentes");

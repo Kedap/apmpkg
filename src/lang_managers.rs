@@ -2,9 +2,9 @@
 
 //uses
 use {
-    crate::estructuras::{AdiGem, AdiPip},
+    crate::estructuras::{AdiGem, AdiNpm, AdiPip},
     colored::*,
-    std::{process, process::Command},
+    std::{path::Path, process, process::Command},
     toml::Value,
 };
 
@@ -125,5 +125,41 @@ pub fn analized_gem(input: AdiGem, path: &str) {
             println!("{}", "Algo salio mal instalando las gemas".red());
             process::exit(0x0100);
         }
+    }
+}
+
+fn npm_i(modulos: Vec<Value>) {
+    for modulo in modulos {
+        println!("Instalando el modulos {}", modulo);
+        let mut child = Command::new("npm")
+            .arg("i")
+            .arg(modulo.as_str().unwrap())
+            .spawn()
+            .expect("No tenis npm?");
+        let _result = child.wait().unwrap();
+    }
+}
+
+fn npm_install(ruta: &Path) {
+    let mut child = Command::new("bash")
+        .arg("-c")
+        .arg("cd")
+        .arg(ruta.parent().unwrap())
+        .arg("&&")
+        .arg("npm")
+        .arg("install")
+        .spawn()
+        .expect("No tenis npm?");
+    let _result = child.wait().unwrap();
+}
+
+pub fn analized_npm(input: AdiNpm, path: &str) {
+    if input.package_json {
+        let mut paa = String::new();
+        paa.push_str(path);
+        paa.push_str(&input.file);
+        npm_install(&Path::new(&paa));
+    } else {
+        npm_i(input.modulos);
     }
 }

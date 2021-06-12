@@ -72,9 +72,11 @@ install_depen(){
 		error "Para instalar dependencias se necesita de ser root"
 		sudo apmpkg -d $1
 		#sudo /../apmpkg/target/debug/apmpkg -d $1
+                #Seleccionado para opcion de desarrollo
 	else
 		apmpkg -d $1
 		#/../apmpkg/target/debug/apmpkg -d $1
+                #Seleccionado para opcion de desarrollo
 	fi
 }
 

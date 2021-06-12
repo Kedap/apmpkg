@@ -7,7 +7,7 @@ use {
     colored::*,
     psutil,
     read_input::prelude::*,
-    std::{any::type_name, path::Path, process::Command},
+    std::{path::Path, process::Command},
     toml::Value,
 };
 
@@ -420,10 +420,4 @@ pub fn post_install(file_toml: &str, path: &Path) {
             .expect("Algo fallo al ejecutar el script de postinstalacion");
         let _result = child.wait().unwrap();
     }
-}
-
-/* Puede ayudar en casos de un programador que apenas se adentra en rust
-Un ejemplo: yo*/
-pub fn type_of<T>(_: T) -> &'static str {
-    type_name::<T>()
 }

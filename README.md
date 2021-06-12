@@ -71,6 +71,8 @@ Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar p
 **¿Realmente es universal para TODAS las distribuciones gnu/linux disponibles?**
 
 No, solo para aquellas que tenemos soporte para las dependencias, gestores de paquetes y arquitectura de estos.
+de igual manera no todas las dependencias se llaman igual en todas las distribuciones que al igual se 
+soluciona al preguntar por algun nombre de dependencias alternativas que se encuentre en sus gestor de paquete de preferencia
 
 **¿Porque no implentan X caracteristica?**
 

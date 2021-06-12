@@ -50,13 +50,6 @@ pub struct AdiGem {
 }
 
 #[derive(Clone, Debug)]
-pub struct AdiNpm {
-    pub package_json: bool,
-    pub file: String,
-    pub modulos: Vec<Value>,
-}
-
-#[derive(Clone, Debug)]
 pub struct AdiPip {
     pub version: i64,
     pub requirements: bool,

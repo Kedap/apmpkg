@@ -1,0 +1,22 @@
+[paquete]
+
+nombre = "nspawn"
+version = "1.0.0"
+rama = "estable"
+descrip = "A wrapper around machinectl for easy-deployment of nspawn.org containers"
+pagina = "https://github.com/nspawn/nspawn"
+licensia = "GPL-V3"
+dependencias = ["bash"]
+conflicto = "/usr/bin/nspawn.sh"
+
+[descarga]
+
+git = "https://github.com/nspawn/nspawn"
+carpeta = "nspawn"
+sha256sum = "SALTAR"
+
+[instalacion]
+
+files = ["nspawn"]
+ruta = ["/usr/bin/nspawn"]
+mensaje = "Visit the page of nspawn: https://nspawn.org/"

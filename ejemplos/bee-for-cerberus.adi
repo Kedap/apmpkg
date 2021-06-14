@@ -22,9 +22,7 @@ file = "requirements.txt"
 
 [descarga]
 
-#git = "https://github.com/tony23x/beef-for-cerberus.git"
-#Para testeo
-git = "https://github.com/kedap/beef-for-cerberus.git"
+git = "https://github.com/tony23x/beef-for-cerberus.git"
 carpeta = "beef-for-cerberus"
 sha256sum = "SALTAR"
 

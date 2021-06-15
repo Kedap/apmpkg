@@ -193,7 +193,7 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
 pub fn install_depen(file_toml: &str) -> bool {
     println!("Administrando dependencias...");
     let catalogo = [
-        "pkg", "apt", "pacman", "dnf", "snap", "flatpak", "zypper", "yum", "apk", "npm",
+        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "snap", "npm", "flatpak",
     ];
     let mut manpack = Vec::new();
 

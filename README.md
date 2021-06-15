@@ -7,14 +7,14 @@ A Package Manager as a model: PKGBUILD
 </p>
 
 # NOTICIAS
-- Se ha liberado la versión: v1.2 Para todos!!!
+- Se ha liberado la versión: v1.3 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Agregamos `abi_dependencias` y `dependencias_adi` para dependencias que no esten en repositorios nativos, [mas informacion aqui](doc/creando_paquetes.md/#dependencias-adi)
-- Agregamos informacion para arquitectura del cual esta hecho el paquete, [mas informacion aqui](doc/creando_paquetes.md/#paquete)
-- Colocamos la leyenda `actualizando paquete...` cuando ya se tiene una instalacion previa del paquete a instalar
-- Manuales en Ingles y Español, ahora hemos creado paginas para `man` en ambos idiomas!
-- Se agrego un comando para construir binarios sin necesida de construirlos
+- Solucionamos el problema con gestores de paquetes que no tenian una opcion o bandera para confirmar la instalacion, es el caso de apk
+- Agregamos en las dependencias para apk `bash` y `ruby-dev`
+- Agregamos el soporte para pkg de termux
+- Agregamos el soporte de dependencias para npm
+- Realizamos que posible el hecho de poder ejecutar scripts post instalacion en archivos adi [mas info aqui](doc/creando_paquetes.md/#instalacion)
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
@@ -33,19 +33,21 @@ Los gestores que son soportado por ApmPKG:
 - [x] Zypper
 - [x] Yum
 - [x] Apk
+- [x] Pkg (termux)
+- [x] Npm
 - [ ] Emerge
 - [ ] Yay
-- [ ] Pkg (termux)
+- [ ] Nix
 
 De igual manera se pueden crear binarios para una instalacion offline [binarios](doc/modos_de_instalacion.md/#instalacion-desde-un-archivo-binario-de-instalacion) para saber [mas infomarcion aqui](doc/modos_de_instalacion.md)
 
 ## Instalacion
-* * * 
+* * *
 Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mismo apmpkg, aun porque creemos que la distribucion de paquetes es importante tratamos de poner a disposicion y de crear binarios nativos para cada distribucion en donde son soportados los gestores de paquetes,  pero primero debes de tener las depencias, entre ellos: 
 - pip3/pip2
-- bundle 
-- wget 
-- fakeroot 
+- bundle
+- wget
+- fakeroot
 - git
 - rsync
 
@@ -61,6 +63,7 @@ Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Ked
 - Extenciones propios de nuestra herramienta, *.adi, .abc y .abi.tar.gz* cada una tiene una funcion especial, [mas informacion aqui](doc/modos_de_instalacion.md)
 - Crear un prototipo para un generar un archivo .adi o .abc, con el comando: `apmpkg crear adi foo` en el caso de crear un archivo .abc se debe de ejecutar lo siguiente: `apmpkg crear abc foo`
 - Construir tus binarios, Con la llegada de la version 1.2 se puede construir binarios sin la necesidad de instalarlos, solo debes de ejecutar: `apmpkg construir foo.adi` o si es un paquete .abc: `apmpkg construir foo.abc`
+- Con la llegada de la version 1.3 se puede ejecutar scripts post instalacion [mas info aqui](doc/creando_paquetes.md/#instalacion)
 
 ## Contribuir
 Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar por [aqui](https://github.com/Kedap/apmpkg/issues) y [leer esto](CONTRIBUTING.md)
@@ -70,6 +73,8 @@ Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar p
 **¿Realmente es universal para TODAS las distribuciones gnu/linux disponibles?**
 
 No, solo para aquellas que tenemos soporte para las dependencias, gestores de paquetes y arquitectura de estos.
+de igual manera no todas las dependencias se llaman igual en todas las distribuciones que al igual se 
+soluciona al preguntar por algun nombre de dependencias alternativas que se encuentre en sus gestor de paquete de preferencia
 
 **¿Porque no implentan X caracteristica?**
 

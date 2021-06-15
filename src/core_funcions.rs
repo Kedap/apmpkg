@@ -7,7 +7,7 @@ use {
     colored::*,
     psutil,
     read_input::prelude::*,
-    std::{any::type_name, process::Command},
+    std::{path::Path, process::Command},
     toml::Value,
 };
 
@@ -172,19 +172,28 @@ pub fn local_depen(file_toml: &str) -> bool {
 }
 
 fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
-    let comando_instalacion = Command::new(gestor.comando)
-        .arg(gestor.intalacion)
-        .arg(paquete)
-        .arg(gestor.confirmacion)
-        .output()
-        .expect("Ocurrio un error cuando se instalaba las dependencias");
-    comando_instalacion.status.to_string() == "exit code: 0"
+    if gestor.confirmacion.is_empty() {
+        let comando_instalacion = Command::new(gestor.comando)
+            .arg(gestor.intalacion)
+            .arg(paquete)
+            .output()
+            .expect("Ocurrio un error cuando se instalaba las dependencias");
+        comando_instalacion.status.to_string() == "exit code: 0"
+    } else {
+        let comando_instalacion = Command::new(gestor.comando)
+            .arg(gestor.intalacion)
+            .arg(paquete)
+            .arg(gestor.confirmacion)
+            .output()
+            .expect("Ocurrio un error cuando se instalaba las dependencias");
+        comando_instalacion.status.to_string() == "exit code: 0"
+    }
 }
 
 pub fn install_depen(file_toml: &str) -> bool {
     println!("Administrando dependencias...");
     let catalogo = [
-        "apt", "pacman", "dnf", "snap", "flatpak", "zypper", "yum", "apk",
+        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "snap", "npm", "flatpak",
     ];
     let mut manpack = Vec::new();
 
@@ -264,6 +273,15 @@ pub fn install_depen(file_toml: &str) -> bool {
 
 fn manager(pack: String) -> PackageManager {
     match &pack[..] {
+        "pkg" => PackageManager {
+            comando: "pkg".to_string(),
+            buscar: "search".to_string(),
+            intalacion: "install".to_string(),
+            dinstalacion: "uninstall".to_string(),
+            paquete: String::new(),
+            confirmacion: "-y".to_string(),
+            root: false,
+        },
         "apt" => PackageManager {
             comando: "apt".to_string(),
             buscar: "search".to_string(),
@@ -336,6 +354,15 @@ fn manager(pack: String) -> PackageManager {
             confirmacion: String::new(),
             root: true,
         },
+        "npm" => PackageManager {
+            comando: "npm".to_string(),
+            buscar: "search".to_string(),
+            intalacion: "install".to_string(),
+            dinstalacion: "uninstall".to_string(),
+            paquete: String::new(),
+            confirmacion: String::new(),
+            root: true,
+        },
         _ => PackageManager {
             comando: "apmpkg".to_string(),
             buscar: String::new(),
@@ -390,8 +417,23 @@ pub fn verificar_arch(file_toml: &str) -> bool {
     }
 }
 
-/* Puede ayudar en casos de un programador que apenas se adentra en rust
-Un ejemplo: yo*/
-pub fn type_of<T>(_: T) -> &'static str {
-    type_name::<T>()
+pub fn post_install(file_toml: &str, path: &Path) {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let instalacion = tomy["instalacion"].as_table().unwrap();
+    if instalacion.contains_key("post_install") {
+        println!("{}", "Ejecutando scripts de postinstalacion...".green());
+        let mut child = Command::new("bash")
+            .arg(path.join(instalacion["post_install"].as_str().unwrap()))
+            .spawn()
+            .expect("Algo fallo al ejecutar el script de postinstalacion");
+        let _result = child.wait().unwrap();
+    }
+}
+
+pub fn post_install_existe(file_toml: &str) -> bool {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let instalacion = tomy["instalacion"].as_table().unwrap();
+    instalacion.contains_key("post_install")
 }

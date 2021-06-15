@@ -2,7 +2,7 @@
 
 #Variables de cajon
 NOMBRE='iiabc'
-VERSION='1.2'
+VERSION='1.3.0'
 TRUE=1
 FALSE=0
 ROJO='\033[91m'
@@ -72,9 +72,11 @@ install_depen(){
 		error "Para instalar dependencias se necesita de ser root"
 		sudo apmpkg -d $1
 		#sudo /../apmpkg/target/debug/apmpkg -d $1
+                #Seleccionado para opcion de desarrollo
 	else
 		apmpkg -d $1
 		#/../apmpkg/target/debug/apmpkg -d $1
+                #Seleccionado para opcion de desarrollo
 	fi
 }
 

@@ -14,6 +14,7 @@ A Package Manager as a model: PKGBUILD
 - Agregamos en las dependencias para apk `bash` y `ruby-dev`
 - Agregamos el soporte para pkg de termux
 - Agregamos el soporte de dependencias para npm
+- Realizamos que posible el hecho de poder ejecutar scripts post instalacion en archivos adi [mas info aqui](doc/creando_paquetes.md/#instalacion)
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
@@ -62,6 +63,7 @@ Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Ked
 - Extenciones propios de nuestra herramienta, *.adi, .abc y .abi.tar.gz* cada una tiene una funcion especial, [mas informacion aqui](doc/modos_de_instalacion.md)
 - Crear un prototipo para un generar un archivo .adi o .abc, con el comando: `apmpkg crear adi foo` en el caso de crear un archivo .abc se debe de ejecutar lo siguiente: `apmpkg crear abc foo`
 - Construir tus binarios, Con la llegada de la version 1.2 se puede construir binarios sin la necesidad de instalarlos, solo debes de ejecutar: `apmpkg construir foo.adi` o si es un paquete .abc: `apmpkg construir foo.abc`
+- Con la llegada de la version 1.3 se puede ejecutar scripts post instalacion [mas info aqui](doc/creando_paquetes.md/#instalacion)
 
 ## Contribuir
 Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar por [aqui](https://github.com/Kedap/apmpkg/issues) y [leer esto](CONTRIBUTING.md)

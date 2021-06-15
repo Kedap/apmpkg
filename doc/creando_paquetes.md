@@ -66,6 +66,7 @@ sha256sum = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" # SALT
 #opt_src = true
 files = ["main.rb" , "config.conf"]
 ruta = ["/usr/bin/foo", "/etc/foo/config.conf"]
+post_install = "post_apmpkg.sh"
 mensaje = "Para poder ejecutar, prueba con 'foo'!"
 ```
 Mucha informacion, vamos por pasos, ADI tiene la sintaxis de TOML para que sea mas facil crear paquetes, de esta forma vamos a ver cada uno de las lineas:
@@ -146,10 +147,12 @@ Aqui se enfoca la informacion refrente a la ruta de instalacion, este se inicia 
 #opt_src = true
 files = ["main.rb" , "config.conf"]
 ruta = ["/usr/bin/foo", "/etc/foo/config.conf"]
+post_install = "post_apmpkg.sh"
 mensaje = "Para poder ejecutar, prueba con 'foo'!"
 ```
 La variable **opt_src** es un boleano que admite true o false si es que se desea que todo el directorio obtenido por git o por la descarga se copia a la carpeta /opt, un ejemplo de esto es el paquete metasploit que se instala en la carpeta opt.
 **files** y **ruta** ambos son arrays que contienen ruta de archivos, files selecciona los archivos que se van a instalar y ruta la ruta donde estos van a ser instalados, el primer archivo seleccionado se va a instalar con `install -Dm 755` ya que se da por hecho que el index 0 de ambos array es un binario.
+Encontraremos con la variable **post_install** que no es mas un variable string que almacena la ruta del script escrito en bash que se ejecutara una vez instalado el paquete
 
 ## Abc
 Su nombre es el acronimo de:

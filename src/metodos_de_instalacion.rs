@@ -502,6 +502,7 @@ fn instalar_abi_adi(no_user: bool) {
         //Colocando los archivos en los lugares deseados
         println!("Procediendo con la instalacion");
         archivos::install_path(&toml, &src_path);
+        core_funcions::post_install(&toml, Path::new(&src_path));
         archivos::opt_src(&toml, &src_path);
         pb.inc();
     }

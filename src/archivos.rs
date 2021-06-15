@@ -3,6 +3,7 @@
 //uses
 use {
     crate::{
+        core_funcions,
         estructuras::{AdiDescarga, AdiGem, AdiPaquete, AdiPip},
         lang_managers,
     },
@@ -443,6 +444,8 @@ pub fn crate_bin(path: &str, nombre: &str, meta_file: &str) {
         dirc.push_str(path);
         dirc.push_str(&des.src);
         dirc.push('/');
+        let tmp = &dirc;
+        let dirpath = Path::new(tmp);
 
         let archivos = &adi["instalacion"]["files"].as_array().unwrap();
         for i in 0..archivos.len() {
@@ -457,6 +460,13 @@ pub fn crate_bin(path: &str, nombre: &str, meta_file: &str) {
             } else {
                 tar.append_path(archivo).unwrap();
             }
+        }
+
+        if core_funcions::post_install_existe(&meta_file) {
+            //Agregando el script post instalcion
+            let instalacion = tomy["instalacion"].as_table().unwrap();
+            tar.append_path(dirpath.join(instalacion["post_install"].as_str().unwrap()))
+                .unwrap();
         }
 
         let out_adi = String::from("apkg.adi");

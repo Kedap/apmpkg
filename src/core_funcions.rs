@@ -430,3 +430,10 @@ pub fn post_install(file_toml: &str, path: &Path) {
         let _result = child.wait().unwrap();
     }
 }
+
+pub fn post_install_existe(file_toml: &str) -> bool {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let instalacion = tomy["instalacion"].as_table().unwrap();
+    instalacion.contains_key("post_install")
+}

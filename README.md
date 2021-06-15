@@ -7,14 +7,13 @@ A Package Manager as a model: PKGBUILD
 </p>
 
 # NOTICIAS
-- Se ha liberado la versión: v1.2 Para todos!!!
+- Se ha liberado la versión: v1.3 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Agregamos `abi_dependencias` y `dependencias_adi` para dependencias que no esten en repositorios nativos, [mas informacion aqui](doc/creando_paquetes.md/#dependencias-adi)
-- Agregamos informacion para arquitectura del cual esta hecho el paquete, [mas informacion aqui](doc/creando_paquetes.md/#paquete)
-- Colocamos la leyenda `actualizando paquete...` cuando ya se tiene una instalacion previa del paquete a instalar
-- Manuales en Ingles y Español, ahora hemos creado paginas para `man` en ambos idiomas!
-- Se agrego un comando para construir binarios sin necesida de construirlos
+- Solucionamos el problema con gestores de paquetes que no tenian una opcion o bandera para confirmar la instalacion, es el caso de apk
+- Agregamos en las dependencias para apk `bash` y `ruby-dev`
+- Agregamos el soporte para pkg de termux
+- Agregamos el soporte de dependencias para npm
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.

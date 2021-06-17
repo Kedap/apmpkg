@@ -82,7 +82,7 @@ Y si quieres tener la documentacion instalada, prueba con:
 ```
 wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-doc-1.3.0-r0.apk;apk apk add --allow-untrusted apmpkg-doc-1.3.0-r0.apk
 ```
-O en su caso se puede instalar desde la rama testing de alpine [https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Repository_pinning]
+O en su caso se puede instalar desde la rama testing de (alpine)[https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Repository_pinning]
 
 ```sh
 apk add apmpkg@testing

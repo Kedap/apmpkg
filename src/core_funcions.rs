@@ -161,9 +161,26 @@ pub fn local_depen(file_toml: &str) -> bool {
             if check_depn.status.to_string() != "exit code: 127" {
                 ready = true;
             } else {
-                println!("Al parecer no, porque no lo instalamos");
-                ready = false;
-                break;
+                //Comprobando que la dependencia este instalado con .adi
+                let mut dependencia = String::from(depen_arr[i].as_str().unwrap());
+                dependencia.push_str(".adi");
+                let existe_adi = Path::new("/etc/apmpkg/paquetes")
+                    .join(&dependencia)
+                    .is_file();
+
+                let mut dependencia_abc = String::from(depen_arr[i].as_str().unwrap());
+                dependencia_abc.push_str(".abc");
+                let existe_abc = Path::new("/etc/apmpkg/paquetes")
+                    .join(&dependencia_abc)
+                    .is_file();
+
+                if existe_adi || existe_abc {
+                    ready = true;
+                } else {
+                    println!("Al parecer no, porque no lo instalamos");
+                    ready = false;
+                    break;
+                }
             }
         }
     }

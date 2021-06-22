@@ -7,7 +7,7 @@ use {
     colored::*,
     psutil,
     read_input::prelude::*,
-    std::{path::Path, process::Command},
+    std::{path::Path, process, process::Command},
     toml::Value,
 };
 
@@ -422,11 +422,18 @@ pub fn post_install(file_toml: &str, path: &Path) {
     let instalacion = tomy["instalacion"].as_table().unwrap();
     if instalacion.contains_key("post_install") {
         println!("{}", "Ejecutando scripts de postinstalacion...".green());
-        let mut child = Command::new("bash")
+        let mut comando = Command::new("bash")
             .arg(path.join(instalacion["post_install"].as_str().unwrap()))
             .spawn()
             .expect("Algo fallo al ejecutar el script de postinstalacion");
-        let _result = child.wait().unwrap();
+        let result = comando.wait().unwrap();
+        if result.to_string() != "exit status: 0" {
+            println!(
+                "{}",
+                "Ocurrio un error al ejecutar el script postinstalacion".red()
+            );
+            process::exit(0x0100);
+        }
     }
 }
 

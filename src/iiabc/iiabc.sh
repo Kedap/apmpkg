@@ -9,7 +9,7 @@
 #                                                              #
 # Autor / Contribudores                                        #
 #                                                              #
-# kedap <dxhqezk@hi2.in>                                       #
+# kedap <kedap.dev@protonmail.com>                             #
 #                                                              #
 ################################################################
 

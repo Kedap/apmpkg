@@ -4,7 +4,7 @@
 //                                                                         //
 // Autor contribuidores:                                                   //
 //                                                                         //
-// kedap <kqybspvj@hi2.in>                                                  //
+// kedap <kedap.dev@protonmail.com>                                        //
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 

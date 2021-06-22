@@ -146,7 +146,6 @@ pub fn local_depen(file_toml: &str) -> bool {
                 break;
             }
         }
-        ready
     } else {
         let depen_arr = &adi["paquete"]["dependencias"].as_array().unwrap();
         for i in 0..depen_arr.len() {
@@ -167,8 +166,8 @@ pub fn local_depen(file_toml: &str) -> bool {
                 break;
             }
         }
-        ready
     }
+    ready
 }
 
 fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {

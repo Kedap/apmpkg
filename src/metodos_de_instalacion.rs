@@ -230,12 +230,9 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
         nombre_bin.push('-');
         nombre_bin.push_str(&meta.version);
         archivos::crate_bin(&dirc, &nombre_bin, &toml);
-        println!("Limpiando...");
-        archivos::remove_dd(&dirc);
-    } else {
-        println!("Limpiando...");
-        archivos::remove_dd(&dirc);
     }
+    println!("Limpiando...");
+    archivos::remove_dd(&dirc);
 
     println!("Ejecutando los ultimos disparadores para la instalacion...");
     let mut pack_db = String::new();
@@ -452,20 +449,21 @@ fn instalar_abi_adi(no_user: bool) {
     pb.inc();
 
     let desempacar_binario = archivos::binario_completo(&toml);
+    println!("Instalacion de librerias extras...");
+    let es_git = archivos::source_git_q(&toml);
+    let local_install = archivos::source_es_local(&toml);
+    let git_o_local: bool;
+    if es_git || local_install {
+        git_o_local = true;
+    } else {
+        git_o_local = false;
+    }
+    let descarga_meta = archivos::read_adi_down(&toml, git_o_local);
+    let mut src_path = String::from("install.d/");
+
     if desempacar_binario {
         //Analizando el codigo extraido
-        println!("Instalacion de librerias extras...");
-        let es_git = archivos::source_git_q(&toml);
-        let local_install = archivos::source_es_local(&toml);
-        let git_o_local: bool;
-        if es_git || local_install {
-            git_o_local = true;
-        } else {
-            git_o_local = false;
-        }
 
-        let descarga_meta = archivos::read_adi_down(&toml, git_o_local);
-        let mut src_path = String::from("install.d/");
         src_path.push_str(&descarga_meta.src);
         src_path.push('/');
         archivos::extern_depen(&toml, &src_path);
@@ -476,22 +474,9 @@ fn instalar_abi_adi(no_user: bool) {
         archivos::install_path(&toml, &src_path);
         let pkgd = Path::new("install.d/");
         core_funcions::post_install(&toml, &pkgd.join(&descarga_meta.src));
-        archivos::opt_src(&toml, &src_path);
-        pb.inc();
     } else {
         //Analizando el codigo extraido
-        println!("Instalacion de librerias extras...");
-        let es_git = archivos::source_git_q(&toml);
-        let local_install = archivos::source_es_local(&toml);
-        let git_o_local: bool;
-        if es_git || local_install {
-            git_o_local = true;
-        } else {
-            git_o_local = false;
-        }
 
-        let descarga_meta = archivos::read_adi_down(&toml, git_o_local);
-        let mut src_path = String::from("install.d/");
         src_path.push_str(&meta.nombre);
         src_path.push_str(".d/");
         src_path.push_str(&descarga_meta.src);
@@ -503,9 +488,9 @@ fn instalar_abi_adi(no_user: bool) {
         println!("Procediendo con la instalacion");
         archivos::install_path(&toml, &src_path);
         core_funcions::post_install(&toml, Path::new(&src_path));
-        archivos::opt_src(&toml, &src_path);
-        pb.inc();
     }
+    archivos::opt_src(&toml, &src_path);
+    pb.inc();
 
     //Colocando en /etc/apmpkg/paquetes
     println!("Ejecutando los ultimos disparadores para la instalacion...");

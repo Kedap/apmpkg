@@ -415,23 +415,16 @@ pub fn crate_bin(path: &str, nombre: &str, meta_file: &str) {
     let adi = tomy.as_table().unwrap();
 
     let conservar_src_dir = binario_completo(meta_file);
+    let mut noombre = String::new();
+    noombre.push_str(nombre);
+    noombre.push_str(".abi.tar.gz");
+    let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
+    let enc = GzEncoder::new(tar_gz, Compression::default());
+    let mut tar = tar::Builder::new(enc);
 
     if conservar_src_dir {
-        let mut noombre = String::new();
-        noombre.push_str(nombre);
-        noombre.push_str(".abi.tar.gz");
-        let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
-        let enc = GzEncoder::new(tar_gz, Compression::default());
-        let mut tar = tar::Builder::new(enc);
         tar.append_dir_all(".", path).expect("Fallo en dir_all");
     } else {
-        let mut noombre = String::new();
-        noombre.push_str(nombre);
-        noombre.push_str(".abi.tar.gz");
-        let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
-        let enc = GzEncoder::new(tar_gz, Compression::default());
-        let mut tar = tar::Builder::new(enc);
-
         // Verificando si es que instala con fuentes locales
         let fuentes_locales = source_es_local(meta_file);
         let des: AdiDescarga;

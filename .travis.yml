@@ -4,5 +4,5 @@ rust:
   - beta
   - nightly
 script:
-  - cargo build --locked --release
-  - cargo test --locked --release
+  - cargo build --verbose 
+  - cargo test --verbose 

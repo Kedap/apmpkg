@@ -76,3 +76,9 @@ pub struct PackageManager {
     pub confirmacion: String,
     pub root: bool,
 }
+
+//Gestionar los mensajes de errores
+#[derive(Clone, Debug)]
+pub struct MsgError {
+    pub mensaje: String,
+}

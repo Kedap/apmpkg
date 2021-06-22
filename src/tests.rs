@@ -1,11 +1,6 @@
 use crate::archivos;
 
 #[test]
-fn suma_test() {
-    assert_eq!(2 + 2, 4);
-}
-
-#[test]
 fn download_test() {
     let testa = archivos::download(
         "https://raw.githubusercontent.com/Kedap/apmpkg/main/ejemplos/nspawn.adi",

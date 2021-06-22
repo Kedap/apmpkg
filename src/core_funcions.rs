@@ -2,12 +2,12 @@
 
 //uses
 use {
-    crate::estructuras::{AdiPaquete, Argumentos, Banderas, PackageManager, SubComandos},
+    crate::estructuras::{AdiPaquete, Argumentos, Banderas, MsgError, PackageManager, SubComandos},
     clap::{load_yaml, App},
     colored::*,
-    psutil,
+    exitcode, psutil,
     read_input::prelude::*,
-    std::{path::Path, process, process::Command},
+    std::{any::type_name, path::Path, process, process::Command},
     toml::Value,
 };
 
@@ -90,6 +90,25 @@ pub fn leer_argumentos() -> Argumentos {
         } else {
             Banderas::Ninguno
         },
+    }
+}
+
+impl MsgError {
+    //Imprimir el error
+    pub fn print(&self) {
+        println!("{} {}", "Error:".red(), &self.mensaje);
+    }
+    pub fn print_salir(&self) {
+        println!("{} {}", "Error:".red(), &self.mensaje);
+        process::exit(exitcode::DATAERR);
+    }
+    pub fn nuevo(mensaje: &str) -> MsgError {
+        MsgError {
+            mensaje: mensaje.to_string(),
+        }
+    }
+    pub fn salir(&self) {
+        process::exit(exitcode::DATAERR);
     }
 }
 
@@ -496,4 +515,11 @@ pub fn pre_install_existe(file_toml: &str) -> bool {
         toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
     let instalacion = tomy["instalacion"].as_table().unwrap();
     instalacion.contains_key("pre_install")
+}
+
+//Funcion para saber el tipo de variable
+//ideal para desarrolladores novatos en rust
+//como yo
+pub fn type_of<T>(_: T) -> &'static str {
+    type_name::<T>()
 }

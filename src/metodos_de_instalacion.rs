@@ -3,7 +3,7 @@
 
 // use
 use {
-    crate::{archivos, core_funcions},
+    crate::{archivos, core_funcions, estructuras::MsgError},
     colored::*,
     pbr::ProgressBar,
     std::{path::Path, process, thread, time::Duration},
@@ -81,34 +81,37 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
             println!("Borrando el directorio...");
             archivos::remove_dd(&dir);
         } else {
-            println!("No se puede continiar a menos que se elimine dicho directorio");
-            process::exit(0x0100);
+            let error =
+                MsgError::nuevo("No se puede continuar a menos que elimine dicho directorio");
+            error.print_salir();
         }
     }
 
     let a = archivos::new_dir(&dir);
     match a {
         Ok(_a) => println!("Creacion del directorio es correcto"),
-        Err(_e) => {
-            println!("{}", "Ocurrio un error al crear el directorio".red());
-            process::exit(0x0100);
+        Err(e) => {
+            let error = MsgError::nuevo(&e.to_string());
+            error.print_salir();
         }
     }
 
     println!("Verificando los conflictos");
     let existe_conflicto = Path::new(&meta.conflicto).exists();
     if existe_conflicto {
-        println!(
+        let mensaje = format!(
             "No se puede instalar, el archivo {} entra en conflicto",
             &meta.conflicto
         );
+        let error = MsgError::nuevo(&mensaje);
+        error.print();
         let mut dirc = String::new();
         dirc.push_str(&meta.nombre);
         dirc.push_str(".d");
         dirc.push('/');
         println!("Limpiando...");
         archivos::remove_dd(&dirc);
-        process::exit(0x0100);
+        error.salir();
     } else {
         println!("No existe el conflicto");
     }
@@ -118,17 +121,15 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     if arch {
         println!("Requisitos cumplidos");
     } else {
-        println!(
-            "{}",
-            "Error: Al parecer no cuentas con la arquitectura requerida".red()
-        );
+        let error = MsgError::nuevo("Al parecer no cuentas con la arquitectura requerida");
+        error.print();
         let mut dirc = String::new();
         dirc.push_str(&meta.nombre);
         dirc.push_str(".d");
         dirc.push('/');
         println!("Limpiando...");
         archivos::remove_dd(&dirc);
-        process::exit(0x0100);
+        error.salir();
     }
 
     let ya_install = core_funcions::local_depen(&toml);
@@ -167,12 +168,9 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
         let f = archivos::download(&des.url, &pack_ver);
         match f {
             Ok(_f) => println!("Correcto"),
-            Err(_e) => {
-                println!(
-                    "{}",
-                    "Ocurrio un error al hacer la peticion, intenta de nuevo".red()
-                );
-                process::exit(0x0100);
+            Err(e) => {
+                let error = MsgError::nuevo(&e.to_string());
+                error.print_salir();
             }
         }
         println!("Se termino la descarga");
@@ -294,8 +292,9 @@ pub fn binario_adi(path: &str) {
             println!("Borrando el directorio...");
             archivos::remove_dd(pkgd.to_str().unwrap());
         } else {
-            println!("No se puede continuar a menos que se elimine dicho directorio");
-            process::exit(0x0100);
+            let error =
+                MsgError::nuevo("No se puede continuar a menos que se elimine dicho directorio");
+            error.print_salir();
         }
     }
 
@@ -304,8 +303,8 @@ pub fn binario_adi(path: &str) {
     match directorio {
         Ok(_a) => println!("La creacion del directorio a sido correcto"),
         Err(e) => {
-            println!("{} {}", "Ocurrio un error al crear el directorio:".red(), e);
-            process::exit(0x0100);
+            let error = MsgError::nuevo(&e.to_string());
+            error.print_salir();
         }
     }
     pb.inc();
@@ -331,12 +330,9 @@ pub fn binario_adi(path: &str) {
         let f = archivos::download(&des.url, &pkgd.join(&acd_file).to_str().unwrap());
         match f {
             Ok(_f) => println!("Correcto"),
-            Err(_e) => {
-                println!(
-                    "{}",
-                    "Ocurrio un error al hacer la peticion, intenta de nuevo".red()
-                );
-                process::exit(0x0100);
+            Err(e) => {
+                let error = MsgError::nuevo(&e.to_string());
+                error.print_salir();
             }
         }
         println!("Se termino la descarga");
@@ -381,8 +377,8 @@ pub fn binario_adi(path: &str) {
         match taa {
             Ok(_taa) => println!("El tarball se descomprimio con exito"),
             Err(_e) => {
-                println!("{}", "Ocurrio un error al descomprimir el tarball".red());
-                process::exit(0x0100);
+                let error = MsgError::nuevo("Ocurrio un error al extraer el tarball");
+                error.print_salir();
             }
         }
     }
@@ -454,11 +450,8 @@ fn instalar_abi_adi(no_user: bool) {
     println!("Verificando conflictos...");
     let conflicto = Path::new(&meta.conflicto).exists();
     if conflicto {
-        println!(
-            "{}",
-            "Ocurrio un problema, ha ocurrido un problema con los conflictos".red()
-        );
-        process::exit(0x0100);
+        let error = MsgError::nuevo("Ocurrio un error al ver los comflictos");
+        error.print_salir();
     } else {
         println!("Pasando al siguiente paso...");
     }

@@ -452,3 +452,31 @@ pub fn post_install_existe(file_toml: &str) -> bool {
     let instalacion = tomy["instalacion"].as_table().unwrap();
     instalacion.contains_key("post_install")
 }
+
+pub fn pre_install(file_toml: &str, path: &Path) {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let instalacion = tomy["instalacion"].as_table().unwrap();
+    if instalacion.contains_key("pre_install") {
+        println!("{}", "Ejecutando scripts de preinstalacion...".green());
+        let mut comando = Command::new("bash")
+            .arg(path.join(instalacion["pre_install"].as_str().unwrap()))
+            .spawn()
+            .expect("Algo fallo al ejecutar el script de postinstalacion");
+        let result = comando.wait().unwrap();
+        if result.to_string() != "exit status: 0" {
+            println!(
+                "{}",
+                "Ocurrio un error al ejecutar el script postinstalacion".red()
+            );
+            process::exit(0x0100);
+        }
+    }
+}
+
+pub fn pre_install_existe(file_toml: &str) -> bool {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let instalacion = tomy["instalacion"].as_table().unwrap();
+    instalacion.contains_key("pre_install")
+}

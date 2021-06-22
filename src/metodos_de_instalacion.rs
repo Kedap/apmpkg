@@ -230,6 +230,7 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     pb.inc();
 
     println!("Iniciando instalacion");
+    core_funcions::pre_install(&toml, &pkgd.join(&des.src));
     archivos::install_path(&toml, &src_path0);
     archivos::opt_src(&toml, &src_path);
     core_funcions::post_install(&toml, &pkgd.join(&des.src));
@@ -495,8 +496,9 @@ fn instalar_abi_adi(no_user: bool) {
 
         //Colocando los archivos en los lugares deseados
         println!("Procediendo con la instalacion");
-        archivos::install_path(&toml, &src_path);
         let pkgd = Path::new("install.d/");
+        core_funcions::pre_install(&toml, &pkgd.join(&descarga_meta.src));
+        archivos::install_path(&toml, &src_path);
         core_funcions::post_install(&toml, &pkgd.join(&descarga_meta.src));
     } else {
         //Analizando el codigo extraido
@@ -510,6 +512,7 @@ fn instalar_abi_adi(no_user: bool) {
 
         //Colocando los archivos en los lugares deseados
         println!("Procediendo con la instalacion");
+        core_funcions::pre_install(&toml, Path::new(&src_path));
         archivos::install_path(&toml, &src_path);
         core_funcions::post_install(&toml, Path::new(&src_path));
     }

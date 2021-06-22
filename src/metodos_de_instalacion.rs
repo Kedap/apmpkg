@@ -37,6 +37,12 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
             println!("Iniciando proceso de instalacion");
         } else {
             println!("{}", "abortando!".red());
+            let mut dirc = String::new();
+            dirc.push_str(&meta.nombre);
+            dirc.push_str(".d");
+            dirc.push('/');
+            println!("Limpiando...");
+            archivos::remove_dd(&dirc);
             process::exit(0x0100);
         }
     }
@@ -96,6 +102,12 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
             "No se puede instalar, el archivo {} entra en conflicto",
             &meta.conflicto
         );
+        let mut dirc = String::new();
+        dirc.push_str(&meta.nombre);
+        dirc.push_str(".d");
+        dirc.push('/');
+        println!("Limpiando...");
+        archivos::remove_dd(&dirc);
         process::exit(0x0100);
     } else {
         println!("No existe el conflicto");
@@ -110,6 +122,12 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
             "{}",
             "Error: Al parecer no cuentas con la arquitectura requerida".red()
         );
+        let mut dirc = String::new();
+        dirc.push_str(&meta.nombre);
+        dirc.push_str(".d");
+        dirc.push('/');
+        println!("Limpiando...");
+        archivos::remove_dd(&dirc);
         process::exit(0x0100);
     }
 
@@ -341,6 +359,12 @@ pub fn binario_adi(path: &str) {
             println!("{}", "Verificacion correcta".green());
         } else {
             println!("{}", "La verificacion no coinside, vuelve intentar".red());
+            let mut dirc = String::new();
+            dirc.push_str(&meta.nombre);
+            dirc.push_str(".d");
+            dirc.push('/');
+            println!("Limpiando...");
+            archivos::remove_dd(&dirc);
             process::exit(0x0100);
         }
     }

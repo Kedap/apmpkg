@@ -192,7 +192,7 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
 pub fn install_depen(file_toml: &str) -> bool {
     println!("Administrando dependencias...");
     let catalogo = [
-        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "snap", "npm", "flatpak",
+        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "slackpkg", "snap", "npm", "flatpak",
     ];
     let mut manpack = Vec::new();
 
@@ -358,6 +358,15 @@ fn manager(pack: String) -> PackageManager {
             buscar: "search".to_string(),
             intalacion: "install".to_string(),
             dinstalacion: "uninstall".to_string(),
+            paquete: String::new(),
+            confirmacion: String::new(),
+            root: true,
+        },
+        "slackpkg" => PackageManager {
+            comando: "slackpkg".to_string(),
+            buscar: "search".to_string(),
+            intalacion: "install".to_string(),
+            dinstalacion: "remove".to_string(),
             paquete: String::new(),
             confirmacion: String::new(),
             root: true,

@@ -12,8 +12,8 @@ fn download_test() {
         "testdir/test.adi",
     );
     match testa {
-        Err(_e) => {
-            panic!("fallo el test de descarga")
+        Err(e) => {
+            panic!("fallo el test de descarga {}", e)
         }
         _ => println!("de pana"),
     }
@@ -29,8 +29,8 @@ fn read_adi_test() {
 fn e_tar_test() {
     let testar = archivos::e_tar("testdir/test-tar.tar.gz", "testdir/test-tar.d");
     match testar {
-        Err(_e) => {
-            panic!("fallo extraer el archivo testdir/test-tar.tar.gz")
+        Err(e) => {
+            panic!("fallo extraer el archivo testdir/test-tar.tar.gz {}", e)
         }
         _ => println!("de pana"),
     }

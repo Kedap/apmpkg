@@ -584,7 +584,7 @@ pub fn existe_abc(path: &str) -> bool {
         .arg(db_path)
         .output()
         .expect("Ocurrio algo con cat");
-    cat_file.status.to_string() != "exit code: 1"
+    cat_file.status.to_string() != "exit status: 1"
 }
 
 pub fn existe_adi() -> bool {
@@ -593,7 +593,7 @@ pub fn existe_adi() -> bool {
         .output()
         .expect("Ocurrio un error al ejecutar cat");
 
-    resultado_cat.status.to_string() != "exit code: 1"
+    resultado_cat.status.to_string() != "exit status: 1"
 }
 
 pub fn spawn_adi(nombre: &str) {

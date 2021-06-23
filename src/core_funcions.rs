@@ -157,7 +157,7 @@ pub fn local_depen(file_toml: &str) -> bool {
                 "Comprobando que {} este instalado",
                 depen_arr[i].as_str().unwrap().to_string()
             );
-            if check_depn.status.to_string() != "exit code: 127" {
+            if check_depn.status.to_string() != "exit status: 127" {
                 ready = true;
             } else {
                 println!("Al parecer no, porque no lo instalamos");
@@ -177,7 +177,7 @@ pub fn local_depen(file_toml: &str) -> bool {
                 "Comprobando que {} este instalado",
                 depen_arr[i].as_str().unwrap().to_string()
             );
-            if check_depn.status.to_string() != "exit code: 127" {
+            if check_depn.status.to_string() != "exit status: 127" {
                 ready = true;
             } else {
                 //Comprobando que la dependencia este instalado con .adi
@@ -213,7 +213,7 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
             .arg(paquete)
             .output()
             .expect("Ocurrio un error cuando se instalaba las dependencias");
-        comando_instalacion.status.to_string() == "exit code: 0"
+        comando_instalacion.status.to_string() == "exit status: 0"
     } else {
         let comando_instalacion = Command::new(gestor.comando)
             .arg(gestor.intalacion)
@@ -221,7 +221,7 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
             .arg(gestor.confirmacion)
             .output()
             .expect("Ocurrio un error cuando se instalaba las dependencias");
-        comando_instalacion.status.to_string() == "exit code: 0"
+        comando_instalacion.status.to_string() == "exit status: 0"
     }
 }
 
@@ -238,8 +238,8 @@ pub fn install_depen(file_toml: &str) -> bool {
             .arg(gestor)
             .output()
             .expect("Algo fallo en install depen");
-        if comando.status.to_string() == "exit code: 1"
-            || comando.status.to_string() == "exit code: 0"
+        if comando.status.to_string() == "exit status: 1"
+            || comando.status.to_string() == "exit status: 0"
         {
             let hi = {
                 let tmp = gestor;

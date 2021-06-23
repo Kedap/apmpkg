@@ -4,7 +4,7 @@
 //                                                                         //
 // Autor contribuidores:                                                   //
 //                                                                         //
-// kedap <kqybspvj@hi2.in>                                                  //
+// kedap <kedap.dev@protonmail.com>                                        //
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -29,11 +29,8 @@ fn instalar(name: &str, flags: Banderas) {
     let abi = archivos::es_abi(name);
     if abi {
         if !Uid::effective().is_root() {
-            println!(
-                "{}",
-                "Para instalar un binario necesitas de permisos root!".red()
-            );
-            process::exit(0x0100);
+            let error = MsgError::nuevo("Para instalar un archivo adi necesitas permisos root!");
+            error.print_salir();
         }
         metodos_de_instalacion::instalar_abi(name, no_user);
     } else {
@@ -42,11 +39,9 @@ fn instalar(name: &str, flags: Banderas) {
             metodos_de_instalacion::instalar_abc(name, bin);
         } else {
             if !Uid::effective().is_root() {
-                println!(
-                    "{}",
-                    "Para instalar un archivo adi necesitas de permisos root!".red()
-                );
-                process::exit(0x0100);
+                let error =
+                    MsgError::nuevo("Para instalar un archivo adi necesitas permisos root!");
+                error.print_salir();
             }
             let paquetes_externos = metodos_de_instalacion::instalar_adi(name, no_user, bin);
             if !paquetes_externos.is_empty() {
@@ -64,12 +59,9 @@ fn instalar_url(name: &str, flags: Banderas) {
     let f = archivos::download(name, "file.pmpf");
     match f {
         Ok(_f) => println!("La descarga se realizo con exito!"),
-        Err(_e) => {
-            println!(
-                "{}",
-                "Ocurrio un error al hacer la peticion, intenta de nuevo".red()
-            );
-            process::exit(0x0100);
+        Err(e) => {
+            let msgerror = MsgError::nuevo(&e.to_string());
+            msgerror.print_salir();
         }
     }
     instalar("file.pmpf", flags);
@@ -80,11 +72,8 @@ fn dinstalar(name: &str, flags: Banderas) {
     let no_user = matches!(flags, Banderas::ConfirmacionRemove);
     println!("Desinstalando el paquete {}", name);
     if !Uid::effective().is_root() {
-        println!(
-            "{}",
-            "Para deinstalar un paquete necesitas de permisos root!".red()
-        );
-        process::exit(0x0100);
+        let error = MsgError::nuevo("Para desintalar un paquete necesitas de permisos root");
+        error.print_salir()
     }
     let bash_file = archivos::existe_abc(name);
 
@@ -127,11 +116,8 @@ fn dinstalar(name: &str, flags: Banderas) {
 
 fn instalar_depen(depen: &str) {
     if !Uid::effective().is_root() {
-        println!(
-            "{}",
-            "Para instalar un binario necesitas de permisos root!".red()
-        );
-        process::exit(0x0100);
+        let error = MsgError::nuevo("Para instalar un binario necesitas de permisos root!");
+        error.print_salir();
     }
     core_funcions::clear();
     println!("Instalando el paquete {}", depen);
@@ -150,12 +136,8 @@ fn crear_protipo(tipo: &str, nombre: &str) {
     if tipo == "adi" || tipo == "abc" {
         println!("Creando un archivo {} con el nombre de {}...", tipo, nombre);
     } else {
-        println!(
-            "{} {}",
-            tipo,
-            "No es un formato soportado para crear:/".red()
-        );
-        process::exit(0x0100);
+        let error = MsgError::nuevo("Tu archivo no es un formato soportado para crear");
+        error.print_salir()
     }
 
     if tipo == "adi" {

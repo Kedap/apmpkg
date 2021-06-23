@@ -103,7 +103,7 @@ El codigo debe de documentarse cuando sea apropiado. Si usted cree que realizo u
 
 ## Testers
 
-Son una parte fudamental en el crecimiento de este proyecto, son aquellos que se encargan de checar todos los pulls requests, probarlos y aceptarlos, si tu quieres ser parte los testers puede mandar un mensaje a [telegram](https://t.me/Kedap_Develop)
+Son una parte fudamental en el crecimiento de este proyecto, son aquellos que se encargan de checar todos los pulls requests, probarlos y aceptarlos, si tu quieres ser parte los testers puede mandar un mensaje a [telegram](https://t.me/Kedap_Develop) o email
 
 ## Desarrollador
 

@@ -3,7 +3,7 @@
 
 // use
 use {
-    crate::{archivos, core_funcions},
+    crate::{archivos, core_funcions, estructuras::MsgError},
     colored::*,
     pbr::ProgressBar,
     std::{path::Path, process, thread, time::Duration},
@@ -37,6 +37,12 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
             println!("Iniciando proceso de instalacion");
         } else {
             println!("{}", "abortando!".red());
+            let mut dirc = String::new();
+            dirc.push_str(&meta.nombre);
+            dirc.push_str(".d");
+            dirc.push('/');
+            println!("Limpiando...");
+            archivos::remove_dd(&dirc);
             process::exit(0x0100);
         }
     }
@@ -75,28 +81,37 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
             println!("Borrando el directorio...");
             archivos::remove_dd(&dir);
         } else {
-            println!("No se puede continiar a menos que se elimine dicho directorio");
-            process::exit(0x0100);
+            let error =
+                MsgError::nuevo("No se puede continuar a menos que elimine dicho directorio");
+            error.print_salir();
         }
     }
 
     let a = archivos::new_dir(&dir);
     match a {
         Ok(_a) => println!("Creacion del directorio es correcto"),
-        Err(_e) => {
-            println!("{}", "Ocurrio un error al crear el directorio".red());
-            process::exit(0x0100);
+        Err(e) => {
+            let error = MsgError::nuevo(&e.to_string());
+            error.print_salir();
         }
     }
 
     println!("Verificando los conflictos");
     let existe_conflicto = Path::new(&meta.conflicto).exists();
     if existe_conflicto {
-        println!(
+        let mensaje = format!(
             "No se puede instalar, el archivo {} entra en conflicto",
             &meta.conflicto
         );
-        process::exit(0x0100);
+        let error = MsgError::nuevo(&mensaje);
+        error.print();
+        let mut dirc = String::new();
+        dirc.push_str(&meta.nombre);
+        dirc.push_str(".d");
+        dirc.push('/');
+        println!("Limpiando...");
+        archivos::remove_dd(&dirc);
+        error.salir();
     } else {
         println!("No existe el conflicto");
     }
@@ -106,11 +121,15 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     if arch {
         println!("Requisitos cumplidos");
     } else {
-        println!(
-            "{}",
-            "Error: Al parecer no cuentas con la arquitectura requerida".red()
-        );
-        process::exit(0x0100);
+        let error = MsgError::nuevo("Al parecer no cuentas con la arquitectura requerida");
+        error.print();
+        let mut dirc = String::new();
+        dirc.push_str(&meta.nombre);
+        dirc.push_str(".d");
+        dirc.push('/');
+        println!("Limpiando...");
+        archivos::remove_dd(&dirc);
+        error.salir();
     }
 
     let ya_install = core_funcions::local_depen(&toml);
@@ -149,12 +168,9 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
         let f = archivos::download(&des.url, &pack_ver);
         match f {
             Ok(_f) => println!("Correcto"),
-            Err(_e) => {
-                println!(
-                    "{}",
-                    "Ocurrio un error al hacer la peticion, intenta de nuevo".red()
-                );
-                process::exit(0x0100);
+            Err(e) => {
+                let error = MsgError::nuevo(&e.to_string());
+                error.print_salir();
             }
         }
         println!("Se termino la descarga");
@@ -212,6 +228,7 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
     pb.inc();
 
     println!("Iniciando instalacion");
+    core_funcions::pre_install(&toml, &pkgd.join(&des.src));
     archivos::install_path(&toml, &src_path0);
     archivos::opt_src(&toml, &src_path);
     core_funcions::post_install(&toml, &pkgd.join(&des.src));
@@ -230,12 +247,9 @@ pub fn instalar_adi(name: &str, no_user: bool, bin: bool) -> Vec<String> {
         nombre_bin.push('-');
         nombre_bin.push_str(&meta.version);
         archivos::crate_bin(&dirc, &nombre_bin, &toml);
-        println!("Limpiando...");
-        archivos::remove_dd(&dirc);
-    } else {
-        println!("Limpiando...");
-        archivos::remove_dd(&dirc);
     }
+    println!("Limpiando...");
+    archivos::remove_dd(&dirc);
 
     println!("Ejecutando los ultimos disparadores para la instalacion...");
     let mut pack_db = String::new();
@@ -278,8 +292,9 @@ pub fn binario_adi(path: &str) {
             println!("Borrando el directorio...");
             archivos::remove_dd(pkgd.to_str().unwrap());
         } else {
-            println!("No se puede continuar a menos que se elimine dicho directorio");
-            process::exit(0x0100);
+            let error =
+                MsgError::nuevo("No se puede continuar a menos que se elimine dicho directorio");
+            error.print_salir();
         }
     }
 
@@ -288,8 +303,8 @@ pub fn binario_adi(path: &str) {
     match directorio {
         Ok(_a) => println!("La creacion del directorio a sido correcto"),
         Err(e) => {
-            println!("{} {}", "Ocurrio un error al crear el directorio:".red(), e);
-            process::exit(0x0100);
+            let error = MsgError::nuevo(&e.to_string());
+            error.print_salir();
         }
     }
     pb.inc();
@@ -315,12 +330,9 @@ pub fn binario_adi(path: &str) {
         let f = archivos::download(&des.url, &pkgd.join(&acd_file).to_str().unwrap());
         match f {
             Ok(_f) => println!("Correcto"),
-            Err(_e) => {
-                println!(
-                    "{}",
-                    "Ocurrio un error al hacer la peticion, intenta de nuevo".red()
-                );
-                process::exit(0x0100);
+            Err(e) => {
+                let error = MsgError::nuevo(&e.to_string());
+                error.print_salir();
             }
         }
         println!("Se termino la descarga");
@@ -344,6 +356,12 @@ pub fn binario_adi(path: &str) {
             println!("{}", "Verificacion correcta".green());
         } else {
             println!("{}", "La verificacion no coinside, vuelve intentar".red());
+            let mut dirc = String::new();
+            dirc.push_str(&meta.nombre);
+            dirc.push_str(".d");
+            dirc.push('/');
+            println!("Limpiando...");
+            archivos::remove_dd(&dirc);
             process::exit(0x0100);
         }
     }
@@ -359,8 +377,8 @@ pub fn binario_adi(path: &str) {
         match taa {
             Ok(_taa) => println!("El tarball se descomprimio con exito"),
             Err(_e) => {
-                println!("{}", "Ocurrio un error al descomprimir el tarball".red());
-                process::exit(0x0100);
+                let error = MsgError::nuevo("Ocurrio un error al extraer el tarball");
+                error.print_salir();
             }
         }
     }
@@ -432,11 +450,8 @@ fn instalar_abi_adi(no_user: bool) {
     println!("Verificando conflictos...");
     let conflicto = Path::new(&meta.conflicto).exists();
     if conflicto {
-        println!(
-            "{}",
-            "Ocurrio un problema, ha ocurrido un problema con los conflictos".red()
-        );
-        process::exit(0x0100);
+        let error = MsgError::nuevo("Ocurrio un error al ver los comflictos");
+        error.print_salir();
     } else {
         println!("Pasando al siguiente paso...");
     }
@@ -452,20 +467,21 @@ fn instalar_abi_adi(no_user: bool) {
     pb.inc();
 
     let desempacar_binario = archivos::binario_completo(&toml);
+    println!("Instalacion de librerias extras...");
+    let es_git = archivos::source_git_q(&toml);
+    let local_install = archivos::source_es_local(&toml);
+    let git_o_local: bool;
+    if es_git || local_install {
+        git_o_local = true;
+    } else {
+        git_o_local = false;
+    }
+    let descarga_meta = archivos::read_adi_down(&toml, git_o_local);
+    let mut src_path = String::from("install.d/");
+
     if desempacar_binario {
         //Analizando el codigo extraido
-        println!("Instalacion de librerias extras...");
-        let es_git = archivos::source_git_q(&toml);
-        let local_install = archivos::source_es_local(&toml);
-        let git_o_local: bool;
-        if es_git || local_install {
-            git_o_local = true;
-        } else {
-            git_o_local = false;
-        }
 
-        let descarga_meta = archivos::read_adi_down(&toml, git_o_local);
-        let mut src_path = String::from("install.d/");
         src_path.push_str(&descarga_meta.src);
         src_path.push('/');
         archivos::extern_depen(&toml, &src_path);
@@ -473,25 +489,13 @@ fn instalar_abi_adi(no_user: bool) {
 
         //Colocando los archivos en los lugares deseados
         println!("Procediendo con la instalacion");
-        archivos::install_path(&toml, &src_path);
         let pkgd = Path::new("install.d/");
+        core_funcions::pre_install(&toml, &pkgd.join(&descarga_meta.src));
+        archivos::install_path(&toml, &src_path);
         core_funcions::post_install(&toml, &pkgd.join(&descarga_meta.src));
-        archivos::opt_src(&toml, &src_path);
-        pb.inc();
     } else {
         //Analizando el codigo extraido
-        println!("Instalacion de librerias extras...");
-        let es_git = archivos::source_git_q(&toml);
-        let local_install = archivos::source_es_local(&toml);
-        let git_o_local: bool;
-        if es_git || local_install {
-            git_o_local = true;
-        } else {
-            git_o_local = false;
-        }
 
-        let descarga_meta = archivos::read_adi_down(&toml, git_o_local);
-        let mut src_path = String::from("install.d/");
         src_path.push_str(&meta.nombre);
         src_path.push_str(".d/");
         src_path.push_str(&descarga_meta.src);
@@ -501,11 +505,12 @@ fn instalar_abi_adi(no_user: bool) {
 
         //Colocando los archivos en los lugares deseados
         println!("Procediendo con la instalacion");
+        core_funcions::pre_install(&toml, Path::new(&src_path));
         archivos::install_path(&toml, &src_path);
         core_funcions::post_install(&toml, Path::new(&src_path));
-        archivos::opt_src(&toml, &src_path);
-        pb.inc();
     }
+    archivos::opt_src(&toml, &src_path);
+    pb.inc();
 
     //Colocando en /etc/apmpkg/paquetes
     println!("Ejecutando los ultimos disparadores para la instalacion...");

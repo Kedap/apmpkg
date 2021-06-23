@@ -7,14 +7,15 @@ A Package Manager as a model: PKGBUILD
 </p>
 
 # NOTICIAS
-- Se ha liberado la versión: v1.3 Para todos!!!
+- Se ha liberado la versión: v1.4 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Solucionamos el problema con gestores de paquetes que no tenian una opcion o bandera para confirmar la instalacion, es el caso de apk
-- Agregamos en las dependencias para apk `bash` y `ruby-dev`
-- Agregamos el soporte para pkg de termux
-- Agregamos el soporte de dependencias para npm
-- Realizamos que posible el hecho de poder ejecutar scripts post instalacion en archivos adi [mas info aqui](doc/creando_paquetes.md/#instalacion)
+- Ahora ya se puede ejecutar scripts pre-instalacion
+- Correccion de pequeños errores
+- Se buscan dependencias tambien si estan instaladas por apmpkg
+- Agregamos el soporte para Slackpkg
+- Se agregaron tests en el codigo
+- Se manejan mejor los errores
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
@@ -35,6 +36,7 @@ Los gestores que son soportado por ApmPKG:
 - [x] Apk
 - [x] Pkg (termux)
 - [x] Npm
+- [x] Slackpkg
 - [ ] Emerge
 - [ ] Yay
 - [ ] Nix
@@ -64,6 +66,7 @@ Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Ked
 - Crear un prototipo para un generar un archivo .adi o .abc, con el comando: `apmpkg crear adi foo` en el caso de crear un archivo .abc se debe de ejecutar lo siguiente: `apmpkg crear abc foo`
 - Construir tus binarios, Con la llegada de la version 1.2 se puede construir binarios sin la necesidad de instalarlos, solo debes de ejecutar: `apmpkg construir foo.adi` o si es un paquete .abc: `apmpkg construir foo.abc`
 - Con la llegada de la version 1.3 se puede ejecutar scripts post instalacion [mas info aqui](doc/creando_paquetes.md/#instalacion)
+- En la version 1.4 se pueden ejecutar scripts pre instalacion
 
 ## Contribuir
 Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar por [aqui](https://github.com/Kedap/apmpkg/issues) y [leer esto](CONTRIBUTING.md)

@@ -53,7 +53,7 @@ pacman -S apmpkg
 
 En el caso de que quieras instalar la version en desarrollo (no recomendado) deberas ejecutar:
 ```sh
-pacman -S apmpkg-git-dev
+pacman -S apmpkg-dev
 ```
 
 ## Zypper

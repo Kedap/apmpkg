@@ -2,12 +2,12 @@
 
 //uses
 use {
-    crate::estructuras::{AdiPaquete, Argumentos, Banderas, PackageManager, SubComandos},
+    crate::estructuras::{AdiPaquete, Argumentos, Banderas, MsgError, PackageManager, SubComandos},
     clap::{load_yaml, App},
     colored::*,
-    psutil,
+    exitcode, psutil,
     read_input::prelude::*,
-    std::{path::Path, process::Command},
+    std::{any::type_name, path::Path, process, process::Command},
     toml::Value,
 };
 
@@ -93,6 +93,25 @@ pub fn leer_argumentos() -> Argumentos {
     }
 }
 
+impl MsgError {
+    //Imprimir el error
+    pub fn print(&self) {
+        println!("{} {}", "Error:".red(), &self.mensaje);
+    }
+    pub fn print_salir(&self) {
+        println!("{} {}", "Error:".red(), &self.mensaje);
+        process::exit(exitcode::DATAERR);
+    }
+    pub fn nuevo(mensaje: &str) -> MsgError {
+        MsgError {
+            mensaje: mensaje.to_string(),
+        }
+    }
+    pub fn salir(&self) {
+        process::exit(exitcode::DATAERR);
+    }
+}
+
 pub fn print_metapkg(pkg: AdiPaquete) {
     println!(
         "
@@ -138,7 +157,7 @@ pub fn local_depen(file_toml: &str) -> bool {
                 "Comprobando que {} este instalado",
                 depen_arr[i].as_str().unwrap().to_string()
             );
-            if check_depn.status.to_string() != "exit code: 127" {
+            if check_depn.status.to_string() != "exit status: 127" {
                 ready = true;
             } else {
                 println!("Al parecer no, porque no lo instalamos");
@@ -146,7 +165,6 @@ pub fn local_depen(file_toml: &str) -> bool {
                 break;
             }
         }
-        ready
     } else {
         let depen_arr = &adi["paquete"]["dependencias"].as_array().unwrap();
         for i in 0..depen_arr.len() {
@@ -159,16 +177,33 @@ pub fn local_depen(file_toml: &str) -> bool {
                 "Comprobando que {} este instalado",
                 depen_arr[i].as_str().unwrap().to_string()
             );
-            if check_depn.status.to_string() != "exit code: 127" {
+            if check_depn.status.to_string() != "exit status: 127" {
                 ready = true;
             } else {
-                println!("Al parecer no, porque no lo instalamos");
-                ready = false;
-                break;
+                //Comprobando que la dependencia este instalado con .adi
+                let mut dependencia = String::from(depen_arr[i].as_str().unwrap());
+                dependencia.push_str(".adi");
+                let existe_adi = Path::new("/etc/apmpkg/paquetes")
+                    .join(&dependencia)
+                    .is_file();
+
+                let mut dependencia_abc = String::from(depen_arr[i].as_str().unwrap());
+                dependencia_abc.push_str(".abc");
+                let existe_abc = Path::new("/etc/apmpkg/paquetes")
+                    .join(&dependencia_abc)
+                    .is_file();
+
+                if existe_adi || existe_abc {
+                    ready = true;
+                } else {
+                    println!("Al parecer no, porque no lo instalamos");
+                    ready = false;
+                    break;
+                }
             }
         }
-        ready
     }
+    ready
 }
 
 fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
@@ -178,7 +213,7 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
             .arg(paquete)
             .output()
             .expect("Ocurrio un error cuando se instalaba las dependencias");
-        comando_instalacion.status.to_string() == "exit code: 0"
+        comando_instalacion.status.to_string() == "exit status: 0"
     } else {
         let comando_instalacion = Command::new(gestor.comando)
             .arg(gestor.intalacion)
@@ -186,14 +221,14 @@ fn instalar_paquete(gestor: PackageManager, paquete: &str) -> bool {
             .arg(gestor.confirmacion)
             .output()
             .expect("Ocurrio un error cuando se instalaba las dependencias");
-        comando_instalacion.status.to_string() == "exit code: 0"
+        comando_instalacion.status.to_string() == "exit status: 0"
     }
 }
 
 pub fn install_depen(file_toml: &str) -> bool {
     println!("Administrando dependencias...");
     let catalogo = [
-        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "snap", "npm", "flatpak",
+        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "slackpkg", "snap", "npm", "flatpak",
     ];
     let mut manpack = Vec::new();
 
@@ -203,8 +238,8 @@ pub fn install_depen(file_toml: &str) -> bool {
             .arg(gestor)
             .output()
             .expect("Algo fallo en install depen");
-        if comando.status.to_string() == "exit code: 1"
-            || comando.status.to_string() == "exit code: 0"
+        if comando.status.to_string() == "exit status: 1"
+            || comando.status.to_string() == "exit status: 0"
         {
             let hi = {
                 let tmp = gestor;
@@ -363,6 +398,15 @@ fn manager(pack: String) -> PackageManager {
             confirmacion: String::new(),
             root: true,
         },
+        "slackpkg" => PackageManager {
+            comando: "slackpkg".to_string(),
+            buscar: "search".to_string(),
+            intalacion: "install".to_string(),
+            dinstalacion: "remove".to_string(),
+            paquete: String::new(),
+            confirmacion: String::new(),
+            root: true,
+        },
         _ => PackageManager {
             comando: "apmpkg".to_string(),
             buscar: String::new(),
@@ -423,11 +467,18 @@ pub fn post_install(file_toml: &str, path: &Path) {
     let instalacion = tomy["instalacion"].as_table().unwrap();
     if instalacion.contains_key("post_install") {
         println!("{}", "Ejecutando scripts de postinstalacion...".green());
-        let mut child = Command::new("bash")
+        let mut comando = Command::new("bash")
             .arg(path.join(instalacion["post_install"].as_str().unwrap()))
             .spawn()
             .expect("Algo fallo al ejecutar el script de postinstalacion");
-        let _result = child.wait().unwrap();
+        let result = comando.wait().unwrap();
+        if result.to_string() != "exit status: 0" {
+            println!(
+                "{}",
+                "Ocurrio un error al ejecutar el script postinstalacion".red()
+            );
+            process::exit(0x0100);
+        }
     }
 }
 
@@ -436,4 +487,39 @@ pub fn post_install_existe(file_toml: &str) -> bool {
         toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
     let instalacion = tomy["instalacion"].as_table().unwrap();
     instalacion.contains_key("post_install")
+}
+
+pub fn pre_install(file_toml: &str, path: &Path) {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let instalacion = tomy["instalacion"].as_table().unwrap();
+    if instalacion.contains_key("pre_install") {
+        println!("{}", "Ejecutando scripts de preinstalacion...".green());
+        let mut comando = Command::new("bash")
+            .arg(path.join(instalacion["pre_install"].as_str().unwrap()))
+            .spawn()
+            .expect("Algo fallo al ejecutar el script de postinstalacion");
+        let result = comando.wait().unwrap();
+        if result.to_string() != "exit status: 0" {
+            println!(
+                "{}",
+                "Ocurrio un error al ejecutar el script postinstalacion".red()
+            );
+            process::exit(0x0100);
+        }
+    }
+}
+
+pub fn pre_install_existe(file_toml: &str) -> bool {
+    let tomy: Value =
+        toml::from_str(file_toml).expect("Al parcer no escribiste bien el archivo .ADI");
+    let instalacion = tomy["instalacion"].as_table().unwrap();
+    instalacion.contains_key("pre_install")
+}
+
+//Funcion para saber el tipo de variable
+//ideal para desarrolladores novatos en rust
+//como yo
+pub fn type_of<T>(_: T) -> &'static str {
+    type_name::<T>()
 }

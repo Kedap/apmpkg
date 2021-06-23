@@ -1,1 +1,4 @@
 target/
+testdir/test-tar.tar.gz
+testdir/test-tar.d/
+testdir/test.adi

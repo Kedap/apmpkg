@@ -64,6 +64,7 @@ sha256sum = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" # SALT
 [instalacion]
 
 #opt_src = true
+pre_install = "pre_apmpkg.sh"
 files = ["main.rb" , "config.conf"]
 ruta = ["/usr/bin/foo", "/etc/foo/config.conf"]
 post_install = "post_apmpkg.sh"
@@ -145,6 +146,7 @@ En **sha256sums** se debe de colcar las sumas sha256 del archivo a descargar, en
 Aqui se enfoca la informacion refrente a la ruta de instalacion, este se inicia con `[instalacion]` ejemplo:
 ```
 #opt_src = true
+pre_install = "pre_install.sh"
 files = ["main.rb" , "config.conf"]
 ruta = ["/usr/bin/foo", "/etc/foo/config.conf"]
 post_install = "post_apmpkg.sh"
@@ -152,7 +154,8 @@ mensaje = "Para poder ejecutar, prueba con 'foo'!"
 ```
 La variable **opt_src** es un boleano que admite true o false si es que se desea que todo el directorio obtenido por git o por la descarga se copia a la carpeta /opt, un ejemplo de esto es el paquete metasploit que se instala en la carpeta opt.
 **files** y **ruta** ambos son arrays que contienen ruta de archivos, files selecciona los archivos que se van a instalar y ruta la ruta donde estos van a ser instalados, el primer archivo seleccionado se va a instalar con `install -Dm 755` ya que se da por hecho que el index 0 de ambos array es un binario.
-Encontraremos con la variable **post_install** que no es mas un variable string que almacena la ruta del script escrito en bash que se ejecutara una vez instalado el paquete
+Encontraremos con la variable **post_install** que no es mas un variable string que almacena la ruta del script escrito en bash que se ejecutara una vez instalado el paquete en el caso de dar otra salida que no sea exit code 0, se dara por fallido
+En la variable pre_install se encuentra la ruta en donde esta el script de bash, al igual que el script post_install este se dara por fallido si retorna otra salida que no sea 0
 
 ## Abc
 Su nombre es el acronimo de:

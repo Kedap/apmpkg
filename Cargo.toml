@@ -1,7 +1,7 @@
 [package]
 name = "apmpkg"
-version = "1.3.0"
-authors = ["kedap <dxhqezk@hi2.in>"]
+version = "1.4.0"
+authors = ["kedap <kedap.dev@protonmail.com>"]
 edition = "2018"
 description = "Un administrador de paquetes universal para linux como modelo: PKGBUILD"
 readme = "README.md"
@@ -25,3 +25,4 @@ flate2 = "1.0"
 sha2 = "0.9.3"
 nix = "0.20.0"
 psutil = "3.2.0"
+exitcode = "1.1.2"

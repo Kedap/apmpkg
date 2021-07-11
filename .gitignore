@@ -1,4 +1,4 @@
 target/
 testdir/test-tar.tar.gz
-testdir/test-tar.d/
-testdir/test.adi
+testdir/extraer_tar.d
+testdir/test_descarga.adi

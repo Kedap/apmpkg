@@ -27,6 +27,7 @@ pub enum Banderas {
 pub enum GestoresLenguajes {
     Gem(Gem),
     Pip(Pip),
+    Npm(Npm),
     Ninguno,
 }
 
@@ -72,6 +73,13 @@ pub struct Pip {
     pub requeriments: bool,
     pub paquetes: Vec<Value>,
     pub file: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct Npm {
+    pub package_json_bool: bool,
+    pub package_json_ruta: String,
+    pub package: Vec<Value>,
 }
 
 #[derive(Debug, Clone)]

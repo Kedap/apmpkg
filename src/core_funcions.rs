@@ -259,8 +259,7 @@ fn instalar_paquete(gestor: GestorNativo, paquete: &str) -> bool {
 
 pub fn instalar_dependencias(adi_paquete: AdiPaquete) -> bool {
     let catalogo = [
-        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "slackpkg", "snap",
-        /*"npm"*/ "flatpak",
+        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "slackpkg", "snap", "flatpak",
     ];
     let mut gestores = Vec::new();
     let depen_arr = &adi_paquete.dependencias;
@@ -329,8 +328,7 @@ pub fn instalar_dependencias(adi_paquete: AdiPaquete) -> bool {
 
 pub fn instalar_dependencia_vector(depen_arr: Vec<String>) -> bool {
     let catalogo = [
-        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "slackpkg", "snap",
-        /*"npm"*/ "flatpak",
+        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "slackpkg", "snap", "flatpak",
     ];
     let mut gestores = Vec::new();
 
@@ -465,6 +463,59 @@ pub fn instalar_dependencias_externas(ruta_proyecto: &str, adi_paquete: Adi) {
                         .spawn()
                         .expect("Ocurrio un error al ejecutar pip3");
                     let _result = child.wait().unwrap();
+                }
+            }
+        }
+        GestoresLenguajes::Npm(npm) => {
+            let ruta_actual = match env::current_dir() {
+                Ok(v) => v,
+                Err(e) => {
+                    let error = MsgError::new(&e.to_string());
+                    error.print_salir();
+                    Path::new(".").to_path_buf()
+                }
+            };
+            let cambio = env::set_current_dir(ruta_proyecto);
+            match cambio {
+                Ok(_v) => _v,
+                Err(e) => {
+                    let error = MsgError::new(&e.to_string());
+                    error.print_salir();
+                }
+            }
+            //Separacion si se instalan dependencias desde package.json
+            if npm.package_json_bool {
+                let mut comando_npm = Command::new("npm")
+                    .arg("install")
+                    .spawn()
+                    .expect("Ocurrio un error al ejecutar npm");
+                let result = comando_npm.wait().unwrap();
+                if result.to_string() != "exit status: 0" {
+                    let error = MsgError::new(
+                        "Algo salio mal al resolver las dependencias de package.json",
+                    );
+                    error.print_salir();
+                }
+            } else {
+                for modulo in npm.package {
+                    let mut child = Command::new("npm")
+                        .arg("install")
+                        .arg(modulo.as_str().unwrap())
+                        .spawn()
+                        .expect("Algo salio mal al resolver las dependcias");
+                    let result = child.wait().unwrap();
+                    if result.to_string() != "exit status: 0" {
+                        let error = MsgError::new("Algo salio mal al resolver las dependencias");
+                        error.print_salir();
+                    }
+                }
+            }
+            let actual = env::set_current_dir(ruta_actual);
+            match actual {
+                Ok(_v) => _v,
+                Err(e) => {
+                    let error = MsgError::new(&e.to_string());
+                    error.print_salir()
                 }
             }
         }
@@ -724,6 +775,22 @@ impl Adi {
                 },
             };
             GestoresLenguajes::Pip(pip_struct)
+        } else if adi_tomy.contains_key("npm") {
+            let npm_tabla = adi_tomy["npm"].as_table().unwrap();
+            let npm_estructura = Npm {
+                package_json_bool: npm_tabla["package_json"].as_bool().unwrap(),
+                package_json_ruta: if npm_tabla.contains_key("ruta_package_json") {
+                    npm_tabla["ruta_package_json"].as_str().unwrap().to_string()
+                } else {
+                    String::new()
+                },
+                package: if npm_tabla.contains_key("modulos") {
+                    npm_tabla["modulos"].as_array().unwrap().to_vec()
+                } else {
+                    Vec::new()
+                },
+            };
+            GestoresLenguajes::Npm(npm_estructura)
         } else {
             GestoresLenguajes::Ninguno
         };

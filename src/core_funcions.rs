@@ -43,8 +43,8 @@ pub fn leer_argumentos() -> Argumentos {
             } else {
                 SubComandos::Ninguno
             }
-        } else if matches.is_present("instalard") {
-            SubComandos::InstalarDependencia(matches.value_of("instalard").unwrap().to_string())
+        } else if matches.is_present("dependencia") {
+            SubComandos::InstalarDependencia(matches.value_of("dependencia").unwrap().to_string())
         } else if let Some(matches) = matches.subcommand_matches("crear") {
             if matches.is_present("tipo") && matches.is_present("nombre") {
                 SubComandos::Crear {

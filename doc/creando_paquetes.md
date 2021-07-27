@@ -7,8 +7,9 @@ Tabla de contenidos
 	2. [Dependencias externas](#dependencias-adi)
 	3. [Gemas de ruby](#gem)
 	4. [Pip2 / pip3](#pip)
-	5. [descarga](#descarga)
-	6. [instalacion](#instalacion)
+        5. [Npm](#npm)
+	6. [descarga](#descarga)
+	7. [instalacion](#instalacion)
 2. [Compilando e instalando desde un Archivo de Bash y Compilando](#abc)
 	1. [Errores con abc](#complicaciones-abc)
 3. [Generar un archivo facilmente](#comando-de-creacion)
@@ -52,6 +53,11 @@ file = "Gemfile"
 #requirements = false / true
 #packages = ["requests", "pytest-shutil", "objdict"]
 #file = "requeriments.txt"
+
+#[npm]
+#package_json = true / false
+#ruta_package_json = "package.json"
+#modulos = ["angular", "electron"]
 
 [descarga]
 
@@ -129,6 +135,18 @@ En **requirements** es un boleano donde se debe de colocar true si es que el pro
 En **packages** es un array donde se especifican las dependencias, esta no se debe de poner si es que requeriments esta en false.
 Por el contrario **file** es un string donde se especifica la ruta del archivo requeriments.txt para que apartir de aqui se instalan las dependencias con pip
 
+## Npm
+En este apartado podemos encontar un espacio para administrar de manera correcta los modulos de npm, en un archivo adi se puede observar asi:
+```
+#[npm]
+#package_json = true / false
+#ruta_package_json = "package.json"
+#modulos = ["angular", "electron"]
+```
+
+En la variable **package_json** es booleano que indica si se instalaran los modulos desde un `package_json`
+En la **ruta_package_json** es un string de la ruta en donde se encuentra el `package_json` dentro del proyecto
+Sobre el array **modulos** en el caso de que package_json sea falso este debera contener los modulos que se deberan de instalar
 ## Descarga
 La seccion de descarga es para ello, donde se especifica los detalles de la descarga, se inicia `[descarga]`en uno de los ejemplos:
 ```

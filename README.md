@@ -7,15 +7,12 @@ A Package Manager as a model: PKGBUILD
 </p>
 
 # NOTICIAS
-- Se ha liberado la versión: v1.4 Para todos!!!
+- Se ha liberado la versión: v1.4.1 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Ahora ya se puede ejecutar scripts pre-instalacion
-- Correccion de pequeños errores
-- Se buscan dependencias tambien si estan instaladas por apmpkg
-- Agregamos el soporte para Slackpkg
-- Se agregaron tests en el codigo
-- Se manejan mejor los errores
+- Se cambio slackpkg por slapt-get para administrar mejor los paquetes en Slackware
+- Arreglo sobre npm para instalar modulos y no dependencias que no sean modulos de js
+- Correcciones menores
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
@@ -35,8 +32,7 @@ Los gestores que son soportado por ApmPKG:
 - [x] Yum
 - [x] Apk
 - [x] Pkg (termux)
-- [x] Npm
-- [x] Slackpkg
+- [x] Slapt-get
 - [ ] Emerge
 - [ ] Yay
 - [ ] Nix

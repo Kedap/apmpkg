@@ -95,7 +95,6 @@ pub fn remover(nombre: &str, banderas: Banderas) {
 
 fn instalar_depen(dependencia: &str) {
     if !Uid::effective().is_root() {
-        println!("simon ese");
         let error = MsgError::new("Para instalar dependencias necesitas de permisos root!");
         error.print_salir();
     }

@@ -223,10 +223,10 @@ fn gestor(gestor: String) -> GestorNativo {
             instalacion: "add".to_string(),
             confirmacion: String::new(),
         },
-        "slackpkg" => GestorNativo {
-            nombre: "slackpkg".to_string(),
-            buscar: "search".to_string(),
-            instalacion: "install".to_string(),
+        "slapt-get" => GestorNativo {
+            nombre: "slapt-get".to_string(),
+            buscar: "--search".to_string(),
+            instalacion: "--install".to_string(),
             confirmacion: String::new(),
         },
         _ => GestorNativo {
@@ -259,7 +259,16 @@ fn instalar_paquete(gestor: GestorNativo, paquete: &str) -> bool {
 
 pub fn instalar_dependencias(adi_paquete: AdiPaquete) -> bool {
     let catalogo = [
-        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "slackpkg", "snap", "flatpak",
+        "pkg",
+        "apt",
+        "pacman",
+        "dnf",
+        "zypper",
+        "yum",
+        "apk",
+        "slapt-get",
+        "snap",
+        "flatpak",
     ];
     let mut gestores = Vec::new();
     let depen_arr = &adi_paquete.dependencias;
@@ -328,7 +337,16 @@ pub fn instalar_dependencias(adi_paquete: AdiPaquete) -> bool {
 
 pub fn instalar_dependencia_vector(depen_arr: Vec<String>) -> bool {
     let catalogo = [
-        "pkg", "apt", "pacman", "dnf", "zypper", "yum", "apk", "slackpkg", "snap", "flatpak",
+        "pkg",
+        "apt",
+        "pacman",
+        "dnf",
+        "zypper",
+        "yum",
+        "apk",
+        "slapt-get",
+        "snap",
+        "flatpak",
     ];
     let mut gestores = Vec::new();
 

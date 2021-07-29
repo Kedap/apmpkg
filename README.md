@@ -7,15 +7,12 @@ A Package Manager as a model: PKGBUILD
 </p>
 
 # NOTICIAS
-- Se ha liberado la versión: v1.4 Para todos!!!
+- Se ha liberado la versión: v1.4.1 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Ahora ya se puede ejecutar scripts pre-instalacion
-- Correccion de pequeños errores
-- Se buscan dependencias tambien si estan instaladas por apmpkg
-- Agregamos el soporte para Slackpkg
-- Se agregaron tests en el codigo
-- Se manejan mejor los errores
+- Se cambio slackpkg por slapt-get para administrar mejor los paquetes en Slackware
+- Arreglo sobre npm para instalar modulos y no dependencias que no sean modulos de js
+- Correcciones menores
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
@@ -35,8 +32,7 @@ Los gestores que son soportado por ApmPKG:
 - [x] Yum
 - [x] Apk
 - [x] Pkg (termux)
-- [x] Npm
-- [x] Slackpkg
+- [x] Slapt-get
 - [ ] Emerge
 - [ ] Yay
 - [ ] Nix
@@ -47,6 +43,7 @@ De igual manera se pueden crear binarios para una instalacion offline [binarios]
 * * *
 Aunque sea algo dificl o raro, de igual manera podemos instalar apmpkg con el mismo apmpkg, aun porque creemos que la distribucion de paquetes es importante tratamos de poner a disposicion y de crear binarios nativos para cada distribucion en donde son soportados los gestores de paquetes,  pero primero debes de tener las depencias, entre ellos: 
 - pip3/pip2
+- npm
 - bundle
 - wget
 - fakeroot
@@ -58,7 +55,7 @@ Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Ked
 # Caracteristicas
 ![Esquema](img/esquema.png)
 
-- Creacion de paquetes de para lenguajes de script, un claro ejemplo es python y ruby. Con soporte con pip y bundle [mas info aqui](doc/creando_paquetes.md/#adi)
+- Creacion de paquetes de para lenguajes de scripting, un claro ejemplo es python, javascript/typescript y ruby. Con soporte con pip, bundle y npm [mas info aqui](doc/creando_paquetes.md/#adi)
 - Facilidad de creacion de paquetes sobre el modelo de [PKGBUILD de archlinux](https://wiki.archlinux.org/index.php/PKGBUILD) es decir que tenemos soporte para AUR, aun que tenemos ciertas [limitaciones para decir que tenemos soporte para todos los PKGBUILD's existentes](doc/creando_paquetes.md/#complicaciones-abc) pero de igual manera estamos trabajando en eso
 - Resolucion de dependencias con los gestores de paquetes antes mencionados, trabajaremos para que la lista sea mas extensa
 - Descargar y/o compilar desde una url, ejemplo: `apmpkg instalar -u https://foo.com/bar`
@@ -78,6 +75,14 @@ Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar p
 No, solo para aquellas que tenemos soporte para las dependencias, gestores de paquetes y arquitectura de estos.
 de igual manera no todas las dependencias se llaman igual en todas las distribuciones que al igual se 
 soluciona al preguntar por algun nombre de dependencias alternativas que se encuentre en sus gestor de paquete de preferencia
+
+**¿Porque no existe un binario para X distribucion si el gestor X esta disponible?**
+
+Aunque intentemos hacer eso no podemos, generamos los binario de las distribuciones mas utilizadas y aparte cada distribucion tiene sus arquitecturas y maneras de empaquetado, en el caso de que no brindemos dicho binario se recomienda altamente [compilarlo](doc/modos_de_instalacion.md)
+
+**¿Existe una documentacion en ingles / Is there an English documentation?**
+
+Esta en nuestro planes agregar una documentacion en ingles. It will soon be available 
 
 **¿Porque no implentan X caracteristica?**
 

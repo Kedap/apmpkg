@@ -1,11 +1,11 @@
 name: ApmPKG
-version: "v1.4.0"
+version: "v1.4.1"
 author: Kedap. <kedap.dev@protonmail.com>
 about: Un administrador de paquetes universal para linux como modelo PKGBUILD
 args:
-    - instalard:
-        short: di
-        long: Instalar_dependencia
+    - dependencia:
+        short: d
+        long: instalar_dependencia
         help: Instala la dependencia especificada
         takes_value: true
 subcommands:

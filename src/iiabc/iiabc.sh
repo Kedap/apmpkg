@@ -5,7 +5,7 @@
 ################################################################
 #                                                              #
 # Interpretador para la Instalacion con archivos .ABC (IIABC)  #
-# v1.4.0                                                       #
+# v1.4.1                                                       #
 #                                                              #
 # Autor / Contribudores                                        #
 #                                                              #

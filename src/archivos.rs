@@ -1,538 +1,12 @@
-// Manejador de archivos
+//Modulo para la manipulacion de archivos
 
-//uses
 use {
-    crate::{
-        core_funcions,
-        estructuras::{AdiDescarga, AdiGem, AdiPaquete, AdiPip},
-        lang_managers,
-    },
-    colored::*,
+    crate::estructuras::{Adi, AdiInstalacion, Fuente, GestoresLenguajes, MsgError},
     flate2::{read::GzDecoder, write::GzEncoder, Compression},
     sha2::{Digest, Sha256},
-    std::{fs, fs::File, io, path::Path, process, process::Command},
+    std::{fs, fs::File, io, path::Path, process::Command},
     tar::Archive,
-    toml::Value,
 };
-
-#[tokio::main]
-pub async fn download(url: &str, name: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let cuerpo = reqwest::get(url).await?.bytes().await?;
-    let f = write_f(name, &cuerpo);
-    match f {
-        Ok(_f) => println!("Correcto"),
-        Err(_e) => {
-            println!(
-                "{}",
-                "Ocurrio un error al hacer la peticion, intenta de nuevo".red()
-            );
-            process::exit(0x0100);
-        }
-    }
-    Ok(())
-}
-
-pub fn read_fs(file: &str) -> String {
-    println!("Leyendo el archivo {}...", file);
-    fs::read_to_string(file).expect("Archivo no encontrado!!! ")
-}
-
-pub fn write_f(name: &str, file: &[u8]) -> io::Result<()> {
-    let mut salida = File::create(name).expect("Algo fallo al crear el archivo");
-    let mut conte = file;
-    io::copy(&mut conte, &mut salida)?;
-    println!("El archivo {} fue creado correctamente", name);
-    Ok(())
-}
-
-pub fn read_adi_down(file: &str, gito: bool) -> AdiDescarga {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    if !adi.contains_key("paquete")
-        || !adi.contains_key("descarga")
-        || !adi.contains_key("instalacion")
-    {
-        println!("Douh, eso no parece un archivo .adi");
-        process::exit(0x0100);
-    }
-    if gito {
-        let source = {
-            AdiDescarga {
-                url: String::new(),
-                src: tomy["descarga"]["carpeta"].as_str().unwrap().to_string(),
-                sha256sum: tomy["descarga"]["sha256sum"].as_str().unwrap().to_string(),
-            }
-        };
-        source
-    } else {
-        let source = {
-            AdiDescarga {
-                url: tomy["descarga"]["url"].as_str().unwrap().to_string(),
-                src: tomy["descarga"]["carpeta"].as_str().unwrap().to_string(),
-                sha256sum: tomy["descarga"]["sha256sum"].as_str().unwrap().to_string(),
-            }
-        };
-        source
-    }
-}
-pub fn read_adi(file: &str) -> AdiPaquete {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    if !adi.contains_key("paquete")
-        || !adi.contains_key("descarga")
-        || !adi.contains_key("instalacion")
-    {
-        println!("Douh, eso no parece un archivo .adi");
-        process::exit(0x0100);
-    }
-    let mut adi_f = put_adi_pack(tomy);
-    adi_f.depen = pkg_depen(file);
-    adi_f
-}
-
-pub fn extern_depen(file: &str, path_src: &str) {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    let null_arr = adi["paquete"]["dependencias"].as_array().unwrap();
-
-    // Probando con gem/bundle o pip
-    if adi.contains_key("gem") {
-        println!("{}", "Se han dectectados gemas de ruby!".yellow());
-        let gemm = adi["gem"]["gemfile"]
-            .as_bool()
-            .expect("Eso no es un booleano");
-        if gemm {
-            let payload = {
-                AdiGem {
-                    gemfile: gemm,
-                    file: adi["gem"]["file"].as_str().expect("wtf?").to_string(),
-                    gemas: null_arr.to_vec(),
-                }
-            };
-            println!("Instalando desde un Gemfile");
-            lang_managers::analized_gem(payload, path_src);
-        } else {
-            let gemas = adi["gem"]["gemas"]
-                .as_array()
-                .expect("Debe de ser un array!");
-            let payload = {
-                AdiGem {
-                    gemfile: false,
-                    file: String::new(),
-                    gemas: gemas.to_vec(),
-                }
-            };
-            println!("Instalando gemas...");
-            lang_managers::analized_gem(payload, path_src);
-        }
-    } else if adi.contains_key("pip") {
-        println!(
-            "{}",
-            "Se ha dectectado paquetes python por instalar!".yellow()
-        );
-        let version = adi["pip"]["version"]
-            .as_integer()
-            .expect("Eso no es un numero");
-        let null_arr = adi["paquete"]["dependencias"].as_array().unwrap();
-
-        match version {
-            2 => println!("Instalando con pip2"),
-            3 => println!("Instalando con pip3"),
-            _ => {
-                println!("{}", "Douh, esa version no la conosco, beep boop".red());
-                process::exit(0x0100);
-            }
-        }
-        let archivo = adi["pip"]["requirements"].as_bool().expect("Cuantico?");
-
-        if archivo {
-            println!("Instalando desde un archivo requirements.txt");
-            let payload = {
-                AdiPip {
-                    version,
-                    requirements: archivo,
-                    file: adi["pip"]["file"].as_str().expect("?").to_string(),
-                    packages: null_arr.to_vec(),
-                }
-            };
-            lang_managers::analized_pip(payload, path_src);
-        } else {
-            println!("Instalando packages de python");
-            let pack = adi["pip"]["packages"]
-                .as_array()
-                .expect("Eso no es un array");
-            println!("Instalando paquetes de python");
-            let payload = {
-                AdiPip {
-                    version,
-                    requirements: archivo,
-                    file: String::new(),
-                    packages: pack.to_vec(),
-                }
-            };
-            lang_managers::analized_pip(payload, path_src);
-        }
-    } else {
-        println!(
-            "{}",
-            "Al parecer no hay archivos para pip o bundle/gem. Yeah, si nada que hacer aqui"
-                .green()
-        );
-    }
-}
-
-fn put_adi_pack(adi: Value) -> AdiPaquete {
-    AdiPaquete {
-        nombre: adi["paquete"]["nombre"].as_str().unwrap().to_string(),
-        version: adi["paquete"]["version"].as_str().unwrap().to_string(),
-        rama: adi["paquete"]["rama"].as_str().unwrap().to_string(),
-        descrip: adi["paquete"]["descrip"].as_str().unwrap().to_string(),
-        pagina: adi["paquete"]["pagina"].as_str().unwrap().to_string(),
-        licensia: adi["paquete"]["licensia"].as_str().unwrap().to_string(),
-        depen: String::new(),
-        conflicto: adi["paquete"]["conflicto"].as_str().unwrap().to_string(),
-    }
-}
-
-pub fn pkg_depen(file: &str) -> String {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    let depen = &adi["paquete"]["dependencias"].as_array().unwrap();
-    let mut depen_str = String::new();
-    let ultimo = depen.len();
-    for i in 0..depen.len() {
-        depen_str.push_str(&depen[i].as_str().unwrap());
-        if i == ultimo {
-            let _ = String::new();
-        } else {
-            depen_str.push(' ');
-        }
-    }
-    depen_str
-}
-
-pub fn new_dir(name: &str) -> std::io::Result<()> {
-    fs::create_dir(name)?;
-    Ok(())
-}
-
-pub fn e_tar(path: &str, target: &str) -> Result<(), std::io::Error> {
-    let tar_gz = File::open(path)?;
-    let tar = GzDecoder::new(tar_gz);
-    let mut archive = Archive::new(tar);
-    archive.unpack(target)?;
-
-    Ok(())
-}
-
-pub fn move_dd(source: &str, target: &str) {
-    let mut aa = Command::new("mv")
-        .arg(source)
-        .arg(target)
-        .spawn()
-        .expect("Cielos, ocurrio un error al mover los archivos");
-    let _result = aa.wait().unwrap();
-}
-
-pub fn copy_dd(source: &str, target: &str) {
-    let mut child = Command::new("cp")
-        .arg(source)
-        .arg(target)
-        .spawn()
-        .expect("WTF porque no tienes cp?");
-    let _result = child.wait().unwrap();
-}
-
-pub fn hash_sum(path: &str, check: &str) -> bool {
-    let mut file = File::open(path).expect("Ocurrio un error al abrir el archivo");
-    let mut suma = Sha256::new();
-    io::copy(&mut file, &mut suma).expect("Error al copiar");
-    let fhash = format!("{:x}", suma.finalize());
-
-    fhash == check
-}
-
-pub fn copy_df(source: &str, target: &str) {
-    let mut child = Command::new("cp")
-        .arg("-r")
-        .arg(source)
-        .arg(target)
-        .spawn()
-        .expect("Algo a fallado al copiar los directorios");
-    let _result = child.wait().unwrap();
-}
-
-pub fn install_path(file: &str, root_src: &str) {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-
-    let select = &adi["instalacion"]["files"].as_array().unwrap();
-    let insta = &adi["instalacion"]["ruta"].as_array().unwrap();
-    println!("Iniciando instalacion");
-
-    for i in 0..select.len() {
-        let mut aak = String::new();
-        aak.push_str(root_src);
-        aak.push_str(&select[i].as_str().unwrap().to_string());
-        if i == 0 {
-            let mut child = Command::new("install")
-                .arg("-Dm")
-                .arg("755")
-                .arg(aak)
-                .arg(&insta[i].as_str().unwrap())
-                .spawn()
-                .expect("Install?");
-            let _result = child.wait().unwrap();
-        } else {
-            let mut child = Command::new("rsync")
-                .arg("-a")
-                .arg(&aak)
-                .arg(&insta[i].as_str().unwrap().to_string())
-                .spawn()
-                .expect("Ocurrio un error al instalar paquetes");
-            let _result = child.wait().unwrap();
-        }
-    }
-}
-
-pub fn remove_df(path: &str) {
-    let mut child = Command::new("rm")
-        .arg(path)
-        .spawn()
-        .expect("Algo raro sucedio ejecutando rm");
-    let _result = child.wait().unwrap();
-}
-
-pub fn remove_ddf(path: &str) {
-    Command::new("rm")
-        .arg("-r")
-        .arg(path)
-        .output()
-        .expect("Algo muy raro sucedio con RM -R");
-}
-
-pub fn dinstall_path(file: &str) {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-
-    let remove = &adi["instalacion"]["ruta"].as_array().unwrap();
-
-    for i in 0..remove.len() {
-        remove_ddf(&remove[i].as_str().unwrap().to_string());
-    }
-}
-
-pub fn opt_remove(file: &str) {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    let insta = adi["instalacion"].as_table().unwrap();
-
-    if insta.contains_key("opt_src") {
-        let si = insta["opt_src"].as_bool().unwrap();
-        if si {
-            let carpeta = adi["descarga"]["carpeta"].as_str().unwrap().to_string();
-            let mut opt_src = String::new();
-            opt_src.push_str("/opt/");
-            opt_src.push_str(&carpeta);
-            remove_ddf(&opt_src);
-        } else {
-            let _h = true;
-        }
-    }
-}
-
-pub fn source_git_q(file: &str) -> bool {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    let fuente = &adi["descarga"].as_table().unwrap();
-    fuente.contains_key("git")
-}
-
-pub fn source_es_local(file: &str) -> bool {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    let fuente_local = &adi["descarga"].as_table().unwrap();
-    fuente_local.contains_key("local")
-}
-
-pub fn leer_fuente_local(file: &str) -> String {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    adi["descarga"]["local"].as_str().unwrap().to_string()
-}
-
-pub fn read_git(file: &str) -> String {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    adi["descarga"]["git"].as_str().unwrap().to_string()
-}
-
-pub fn git_clone(url_git: &str, target: &str) {
-    let mut child = Command::new("git")
-        .arg("clone")
-        .arg(url_git)
-        .arg(target)
-        .spawn()
-        .expect("No tenis git?");
-    let _result = child.wait().unwrap();
-}
-
-pub fn remove_dd(dir: &str) {
-    fs::remove_dir_all(dir).expect("Ocurrio un error al borrar el archivo");
-}
-
-pub fn opt_src(file: &str, dir: &str) {
-    let tomy: Value = toml::from_str(file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    let insta = adi["instalacion"].as_table().unwrap();
-    if insta.contains_key("opt_src") {
-        let si = insta["opt_src"].as_bool().unwrap();
-        if si {
-            move_dd(dir, "/opt/");
-        } else {
-            let _h = true;
-        }
-    }
-}
-
-// Funcion para crear un binario apartir de un .ADI
-pub fn crate_bin(path: &str, nombre: &str, meta_file: &str) {
-    println!("Iniciando la creacion de un Archivos Binario de Instalacion...");
-    let tomy: Value = toml::from_str(meta_file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-
-    let conservar_src_dir = binario_completo(meta_file);
-    let mut noombre = String::new();
-    noombre.push_str(nombre);
-    noombre.push_str(".abi.tar.gz");
-    let tar_gz = File::create(noombre).expect("Algo fallo al crear el tar_gz");
-    let enc = GzEncoder::new(tar_gz, Compression::default());
-    let mut tar = tar::Builder::new(enc);
-
-    if conservar_src_dir {
-        tar.append_dir_all(".", path).expect("Fallo en dir_all");
-    } else {
-        // Verificando si es que instala con fuentes locales
-        let fuentes_locales = source_es_local(meta_file);
-        let des: AdiDescarga;
-        if fuentes_locales {
-            des = read_adi_down(meta_file, true);
-        } else {
-            des = read_adi_down(meta_file, false);
-        }
-        let mut dirc = String::new();
-        dirc.push_str(path);
-        dirc.push_str(&des.src);
-        dirc.push('/');
-        let tmp = &dirc;
-        let dirpath = Path::new(tmp);
-
-        let archivos = &adi["instalacion"]["files"].as_array().unwrap();
-        for i in 0..archivos.len() {
-            let mut archivo = String::new();
-            archivo.push_str(&dirc);
-            archivo.push_str(&archivos[i].as_str().unwrap().to_string());
-            //Arregla el problema de no comprimir carpetas, ejemplo funkin
-            let dir_archivos = Path::new(&archivo);
-            let es_directorio: bool = dir_archivos.is_dir();
-            if es_directorio {
-                tar.append_dir_all(dir_archivos, dir_archivos).unwrap();
-            } else {
-                tar.append_path(archivo).unwrap();
-            }
-        }
-
-        if core_funcions::post_install_existe(&meta_file) {
-            //Agregando el script post instalcion
-            let instalacion = tomy["instalacion"].as_table().unwrap();
-            tar.append_path(dirpath.join(instalacion["post_install"].as_str().unwrap()))
-                .unwrap();
-        }
-
-        let out_adi = String::from("apkg.adi");
-        let f = write_f(&out_adi, meta_file.as_bytes());
-        match f {
-            Ok(_f) => println!("Es archivo .adi se copio con exito"),
-            Err(_e) => {
-                println!(
-                    "{}",
-                    "Ocurrio un error al copiar el archivo .adi al binario".red()
-                );
-                process::exit(0x0100);
-            }
-        }
-        tar.append_path(&out_adi).unwrap();
-
-        println!("{}", "Limpiando...".yellow());
-        remove_df(&out_adi);
-    }
-
-    println!("Creacion del binario a sido de manera exitosa!!!");
-}
-
-pub fn binario_completo(toml_file: &str) -> bool {
-    let tomy: Value = toml::from_str(toml_file)
-        .expect("Al parecer no has escrito bien el archivo ADI o no es un archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    let mut conservar_src_dir = false;
-    let insta = adi["instalacion"].as_table().unwrap();
-    let gito = source_git_q(&toml_file);
-
-    if adi.contains_key("gem") || adi.contains_key("pip") {
-        conservar_src_dir = true;
-    } else if insta.contains_key("opt_src") {
-        let boleano = insta["opt_src"].as_bool().unwrap();
-        if boleano {
-            conservar_src_dir = true;
-        } else {
-            conservar_src_dir = false;
-        }
-    } else if gito {
-        conservar_src_dir = true;
-    }
-    conservar_src_dir
-}
-
-pub fn dependencias_adi(file_toml: &str) -> Vec<String> {
-    let tomy: Value =
-        toml::from_str(file_toml).expect("Al parecer no escribiste bien el archivo ADI");
-    let adi = tomy.as_table().unwrap();
-    let paquete = adi["paquete"].as_table().unwrap();
-    if paquete.contains_key("abi_dependencias") {
-        let abi_depend_arr = paquete["abi_dependencias"]
-            .as_array()
-            .expect("La variable abi_dependencias debe de ser un array!");
-        let abi_depend_table = adi["dependencias_adi"]
-            .as_table()
-            .expect("Debe de colocar la tabla de dependencias_adi!");
-
-        let mut salida = Vec::new();
-        for i in 0..abi_depend_arr.len() {
-            salida.push(
-                abi_depend_table[&abi_depend_arr[i].as_str().unwrap().to_string()]
-                    .as_str()
-                    .unwrap()
-                    .to_string(),
-            );
-        }
-        salida
-    } else {
-        Vec::new()
-    }
-}
 
 pub fn es_abi(path: &str) -> bool {
     let comando_file = Command::new("file")
@@ -551,14 +25,13 @@ pub fn es_abi(path: &str) -> bool {
     abi_file.push_str(": application/gzip; charset=binary\n");
 
     if comando_salida == abi_file {
-        println!("El archivo es soportado!!!");
         true
     } else if comando_salida == adi_file {
-        println!("El archivo es soportado!!!");
         false
     } else {
-        println!("{}", "El archivo no es soportado, prueba con otro".red());
-        process::exit(0x0100);
+        let error = MsgError::new("El archivo no es soportado, prueba con otro");
+        error.print_salir();
+        false
     }
 }
 
@@ -576,15 +49,122 @@ pub fn es_abc(path: &str) -> bool {
     comando_salida == abc_salida
 }
 
-pub fn existe_abc(path: &str) -> bool {
-    let mut db_path = String::from("/etc/apmpkg/paquetes/");
-    db_path.push_str(path);
-    db_path.push_str(".abc");
-    let cat_file = Command::new("cat")
-        .arg(db_path)
-        .output()
-        .expect("Ocurrio algo con cat");
-    cat_file.status.to_string() != "exit status: 1"
+pub fn leer_archivo(ruta: &str) -> String {
+    match fs::read_to_string(ruta) {
+        Ok(v) => v,
+        Err(e) => {
+            let error = MsgError::new(&e.to_string());
+            error.print_salir();
+            String::new()
+        }
+    }
+}
+
+pub fn git_clone(repositorio: &str, destino: &str) {
+    let mut child = Command::new("git")
+        .arg("clone")
+        .arg(repositorio)
+        .arg(destino)
+        .spawn()
+        .expect("Algo fallo con git_clone");
+    let _result = child.wait().unwrap();
+}
+
+#[tokio::main]
+pub async fn descarga(url: &str, ruta: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let cuerpo = reqwest::get(url).await?.bytes().await?;
+    let ar = escribir_archivo(ruta, &cuerpo);
+    match ar {
+        Ok(_v) => _v,
+        Err(e) => {
+            let error = MsgError::new(&e.to_string());
+            error.print_salir();
+        }
+    }
+    Ok(())
+}
+
+pub fn escribir_archivo(nombre: &str, contenido: &[u8]) -> io::Result<()> {
+    let mut archivo = File::create(nombre).expect("Algo fallo al crear el archivo");
+    let mut cont = contenido;
+    io::copy(&mut cont, &mut archivo)?;
+    Ok(())
+}
+
+pub fn copiar_archivo(desde: &str, destino: &str) {
+    let mut child = Command::new("cp")
+        .arg("-r")
+        .arg(desde)
+        .arg(destino)
+        .spawn()
+        .expect("Algo fallo con cp");
+    let _result = child.wait().unwrap();
+}
+
+pub fn crear_directorio(directorio: &str) -> std::io::Result<()> {
+    fs::create_dir_all(directorio)?;
+    Ok(())
+}
+
+pub fn verificacion_hash(ruta: &str, suma_esperada: &str) -> bool {
+    let mut archivo = File::open(ruta).expect("Ocurrio un error al abrir el archivo");
+    let mut suma = Sha256::new();
+    io::copy(&mut archivo, &mut suma).expect("Error al copiar");
+    let fhash = format!("{:x}", &suma.finalize());
+
+    fhash == suma_esperada
+}
+
+pub fn extraer_tar(ruta_tar: &str, ruta_destino: &str) -> Result<(), std::io::Error> {
+    let tar_gz = File::open(ruta_tar)?;
+    let tar = GzDecoder::new(tar_gz);
+    let mut archivo = Archive::new(tar);
+    archivo.unpack(ruta_destino)?;
+
+    Ok(())
+}
+
+pub fn instalar_archivos(adi_instalacion: AdiInstalacion, carpeta_src: &str) {
+    let fuente = adi_instalacion.fuente;
+    let destino = adi_instalacion.destino;
+    let carpeta_fuente = Path::new(carpeta_src);
+
+    for i in 0..fuente.len() {
+        let archivo = carpeta_fuente.join(fuente[i].as_str().unwrap());
+        if i == 0 {
+            let mut child = Command::new("install")
+                .arg("-Dm")
+                .arg("755")
+                .arg(archivo)
+                .arg(destino[i].as_str().unwrap())
+                .spawn()
+                .expect("Algo fallo con install");
+            let _result = child.wait().unwrap();
+        } else {
+            let mut child = Command::new("rsync")
+                .arg("-a")
+                .arg(archivo)
+                .arg(destino[i].as_str().unwrap())
+                .spawn()
+                .expect("Ocurrio un error con rsync");
+            let _result = child.wait().unwrap();
+        }
+    }
+
+    if adi_instalacion.fuente_opt {
+        copiar_archivo(carpeta_src, "/opt/");
+    }
+}
+
+pub fn borrar_archivo(ruta: &str) {
+    let resultado = fs::remove_file(ruta);
+    match resultado {
+        Ok(_v) => _v,
+        Err(e) => {
+            let error = MsgError::new(&e.to_string());
+            error.print_salir();
+        }
+    }
 }
 
 pub fn existe_adi() -> bool {
@@ -596,20 +176,99 @@ pub fn existe_adi() -> bool {
     resultado_cat.status.to_string() != "exit status: 1"
 }
 
-pub fn spawn_adi(nombre: &str) {
-    Command::new("bash")
-        .arg("/etc/apmpkg/iiabc/iiabc.sh")
-        .arg("-a")
-        .arg(nombre)
-        .spawn()
-        .expect("Ocurrio un error al crear el archivo adi");
+pub fn binario_completo(adi: Adi) -> bool {
+    let conservar: bool;
+    if let GestoresLenguajes::Ninguno = adi.gestor {
+        conservar = false;
+    } else if adi.instalacion.fuente_opt {
+        conservar = true;
+    } else if let Fuente::Git(_repositorio) = adi.descarga.fuente {
+        conservar = true;
+    } else {
+        conservar = true;
+    }
+
+    conservar
 }
 
-pub fn spawn_abc(nombre: &str) {
-    Command::new("bash")
-        .arg("/etc/apmpkg/iiabc/iiabc.sh")
-        .arg("-bb")
-        .arg(nombre)
-        .spawn()
-        .expect("Ocurrio un error al crear el archivo .abc");
+pub fn construir_binario(adi: Adi, ruta: &Path, ruta_adi: &str) {
+    let binario_completo = binario_completo(adi.clone());
+    let mut nombre_binario = adi.paquete.nombre;
+    nombre_binario.push('-');
+    nombre_binario.push_str(&adi.paquete.version);
+    nombre_binario.push_str(".abi.tar.gz");
+    let tar_gz = File::create(nombre_binario).expect("Algo fallo al crear el archivo tar_gz");
+    let enc = GzEncoder::new(tar_gz, Compression::default());
+    let mut tar = tar::Builder::new(enc);
+
+    if binario_completo {
+        tar.append_dir_all(".", ruta)
+            .expect("Algo fallo al crear el archivo comprimido");
+    } else {
+        let ruta_proyecto = ruta.join(adi.descarga.carpeta.clone());
+        let archivos = adi.instalacion.fuente.clone();
+
+        for archivo in archivos {
+            if ruta_proyecto.join(archivo.as_str().unwrap()).is_dir() {
+                tar.append_dir_all(
+                    &ruta_proyecto.join(archivo.as_str().unwrap()),
+                    &ruta_proyecto.join(archivo.as_str().unwrap()),
+                )
+                .expect("Algo fallo al comprimir los archivos");
+            } else {
+                tar.append_path(&ruta_proyecto.join(archivo.as_str().unwrap()))
+                    .expect("Algo fallo al comprimir los archivos");
+            }
+        }
+    }
+
+    copiar_archivo(ruta_adi, "apkg.adi");
+    tar.append_path("apkg.adi").unwrap();
+    let borrar_archivo = fs::remove_file("apkg.adi");
+    match borrar_archivo {
+        Ok(_v) => _v,
+        Err(e) => {
+            let error = MsgError::new(&e.to_string());
+            error.print_salir();
+        }
+    }
+
+    if !adi.instalacion.pre_instalacion.is_empty() {
+        tar.append_path(
+            ruta.join(adi.descarga.carpeta.clone())
+                .join(adi.instalacion.pre_instalacion.clone()),
+        )
+        .unwrap();
+    }
+
+    if !adi.instalacion.post_instalacion.is_empty() {
+        tar.append_path(
+            ruta.join(adi.descarga.carpeta.clone())
+                .join(adi.instalacion.post_instalacion),
+        )
+        .unwrap();
+    }
+}
+
+pub fn remover_archivos(adi: Adi) {
+    let adi_descarga = adi.descarga.clone();
+    let adi_instalacion = adi.instalacion;
+
+    for archivos in adi_instalacion.destino {
+        remover_rm(&archivos.as_str().unwrap());
+    }
+
+    if adi_instalacion.fuente_opt {
+        let mut opt_ruta = String::from("/opt/");
+        opt_ruta.push_str(&adi_descarga.carpeta);
+        remover_rm(&opt_ruta);
+    }
+}
+
+pub fn remover_rm(ruta: &str) {
+    Command::new("rm")
+        .arg("-rf")
+        .arg(ruta)
+        .output()
+        .expect("Algo raro sucedio con rm -r");
 }

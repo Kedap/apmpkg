@@ -2,7 +2,7 @@
 
 #Variables de cajon
 NOMBRE='iiabc'
-VERSION='1.4.0'
+VERSION='1.4.1'
 TRUE=1
 FALSE=0
 ROJO='\033[91m'
@@ -193,6 +193,11 @@ generar_adi(){
 	echo '##requirements = false'>> $nombre.adi
 	echo '##packages = ["requests"]'>> $nombre.adi
 	echo >> $nombre.adi
+        echo '#[npm]'>> $nombre.adi
+        echo '#package_json = true / false'>> $nombre.adi
+        echo '#ruta_package_json = "package.json"'>> $nombre.adi
+        echo '#modulos = ["angular", "electron"]'>> $nombre.adi
+	echo >> $nombre.adi
 	echo '[descarga]'>> $nombre.adi
 	echo >> $nombre.adi
 	echo '#git = "https://git.foo.com/bar.git"'>> $nombre.adi
@@ -204,8 +209,11 @@ generar_adi(){
 	echo >> $nombre.adi
 	echo '[instalacion]'>> $nombre.adi
 	echo >> $nombre.adi
+        echo '#opt_src = true'>> $nombre.adi
+        echo 'pre_install = "pre_apmpkg.sh"'>> $nombre.adi
 	echo 'files = ["path/del/binario"]'>> $nombre.adi
 	echo 'ruta = ["/usr/bin/foobar"]'>> $nombre.adi
+        echo 'post_install = "post_apmpkg.sh"'>> $nombre.adi
 	echo '#mensaje = "Eso es una prototipo!"'>> $nombre.adi
 }
 

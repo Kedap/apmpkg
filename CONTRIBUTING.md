@@ -16,11 +16,11 @@ Todas las solitudes de nuevas de funciones deben de ser enviadas a [el reatreado
 
 ## Reportes de bugs
 
-Todos los parches deben enviarse a github como [pull requests](https://github.com/Kedap/apmpkg/pulls) si usted deseea empezar a contribuir en ApmPKG puede empezar a atender [Buscando ayuda](https://github.com/Kedap/apmpkg/labels/buscando%20ayuda) o [Solicitud de funciones](https://github.com/Kedap/apmpkg/labels/mejora)
+Todos los parches deben enviarse a github como [pull requests](https://github.com/Kedap/apmpkg/pulls) si usted deseea empezar a contribuir en ApmPKG puede empezar a atender [Buscando ayuda](https://github.com/Kedap/apmpkg/labels/help%20wanted%20%3Asos%3A), [Solicitud de funciones](https://github.com/Kedap/apmpkg/labels/enhancement%20%20%E2%AD%90%EF%B8%8F) o en [la pagina de contribucion](https://github.com/Kedap/apmpkg/contribute)
 
 ## Flujo de trabajo
 
-Primero y antes que nada debe de checar los iusses para empezar a trabajar. Si lo que usted desea es empezar a colaborar desde ahora como lo dice aqui arriba puede empezar a atender el [rastreador de problemas](https://github.com/Kedap/apmpkg/issues) tomando como prioridad a los que contiene la etqueta de [buscando ayuda](https://github.com/Kedap/apmpkg/labels/buscando%20ayuda). Pero esto haciendo un nuevo fork a partir del ultimo commit de la rama develop y NO desde master. De manera no obligatorio **pero se recomienda modificar la [caja de descripcion](#caja-de-descripcion)** colocando los datos correspondientes. Una ves que hayas terminado puedes hacer el pull requests pero a la rama develop en donde un tester debe de aceptar dicha mejora, si tu contribuyes a algo beneficioso es muy probable que sea aceptada
+Primero y antes que nada debe de checar los iusses para empezar a trabajar. Si lo que usted desea es empezar a colaborar desde ahora como lo dice aqui arriba puede empezar a atender el [rastreador de problemas](https://github.com/Kedap/apmpkg/issues) tomando como prioridad a los que contiene la etqueta de [bug](https://github.com/Kedap/apmpkg/labels/bug%20%3Alady_beetle%3A). Pero esto haciendo un nuevo fork a partir del ultimo commit de la rama develop y NO desde master. De manera no obligatorio **pero se recomienda modificar la [caja de descripcion](#caja-de-descripcion)** colocando los datos correspondientes. Una ves que hayas terminado puedes hacer el pull requests pero a la rama develop en donde un tester debe de aceptar dicha mejora, si tu contribuyes a algo beneficioso es muy probable que sea aceptada
 
 ## Caja de descripcion
 

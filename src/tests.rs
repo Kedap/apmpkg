@@ -1,32 +1,27 @@
-use crate::archivos;
+use crate::{archivos, estructuras::Adi};
 
 #[test]
-fn download_test() {
-    let testa = archivos::download(
+fn descarga_test() {
+    let testeo = archivos::descarga(
         "https://raw.githubusercontent.com/Kedap/apmpkg/main/ejemplos/nspawn.adi",
-        "testdir/test.adi",
+        "testdir/test_descarga.adi",
     );
-    match testa {
-        Err(e) => {
-            panic!("fallo el test de descarga {}", e)
-        }
-        _ => println!("de pana"),
+    match testeo {
+        Err(e) => panic!("fallo el test de descarga: {}", e),
+        _ => {}
     }
 }
 
 #[test]
-fn read_adi_test() {
-    let file = archivos::read_fs("testdir/nspawn.adi");
-    let _adi_file = archivos::read_adi(&file);
+fn leer_adi_test() {
+    Adi::nuevo("testdir/nspawn.adi");
 }
 
 #[test]
-fn e_tar_test() {
-    let testar = archivos::e_tar("testdir/test-tar.tar.gz", "testdir/test-tar.d");
-    match testar {
-        Err(e) => {
-            panic!("fallo extraer el archivo testdir/test-tar.tar.gz {}", e)
-        }
-        _ => println!("de pana"),
+fn extraer_tar_test() {
+    let testeo = archivos::extraer_tar("testdir/test-tar.tar.gz", "testdir/extraer_tar.d");
+    match testeo {
+        Err(e) => panic!("fallo al test de extraer tar: {}", e),
+        _ => {}
     }
 }

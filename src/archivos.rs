@@ -259,13 +259,15 @@ pub fn remover_archivos(adi: Adi) {
     }
 
     if adi_instalacion.fuente_opt {
-        remover_rm(&adi_descarga.carpeta);
+        let mut opt_ruta = String::from("/opt/");
+        opt_ruta.push_str(&adi_descarga.carpeta);
+        remover_rm(&opt_ruta);
     }
 }
 
 pub fn remover_rm(ruta: &str) {
     Command::new("rm")
-        .arg("-r")
+        .arg("-rf")
         .arg(ruta)
         .output()
         .expect("Algo raro sucedio con rm -r");

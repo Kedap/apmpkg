@@ -332,7 +332,7 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
             }
         }
         //Barra de progreso
-        let contador = 9;
+        let contador = 10;
         let mut pb = ProgressBar::new(contador);
         pb.format("(->.)");
 
@@ -366,6 +366,14 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
                 error.print_salir();
             }
         }
+
+        pb.message("Resolviendo dependencias externas");
+        pb.inc();
+        let root_proyecto = &directorio.join(&adi.descarga.carpeta);
+        core_funcions::instalar_dependencias_externas(
+            &root_proyecto.to_str().unwrap(),
+            adi.clone(),
+        );
 
         pb.message("Iniciando instalacion ");
         pb.inc();

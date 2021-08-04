@@ -25,7 +25,7 @@ Apt es el gestor de paquetes para debian y sus derivados, para hacer un instalac
 De esta manera apt buscara por las dependencias necesarias para ApmPKG
 
 ## Dnf
-Dnf, la siguiente generacion de yum, recomendamos altamente utilizar dnf para la instalacion de ApmPKG para que sea una instalacion deseada como se debe, para instalar con esta herramienta es necesario ejecutar lo siguiente:
+Dnf, la siguiente generacion de yum, recomendamos altamente utilizar dnf para la instalacion de ApmPKG para que sea una instalacion deseada como se debe, en el caso de que no funcione la instalacion con este binario se puede utilizar el otro destinado para zypper, para instalar con esta herramienta es necesario ejecutar lo siguiente:
 
 `wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-1.3.0-1.fc34.x86_64.rpm; dnf localinstall apmpkg-1.3.0-1.fc34.x86_64.rpm`
 
@@ -115,7 +115,7 @@ $ cargo build --release
 ```
 ## Post-instalacion
 ### Manual
-Para instalar los manuales solo ejecute:
+Para instalar los manuales solo ejecute al igual se necesita tener instalado man para poder leer las paginas manuales ya que muchas distribuciones no se tiene instalado por defecto
 ```
 # mkdir -p /usr/local/share/man/man1
 # cp man/* /usr/local/share/man/man1

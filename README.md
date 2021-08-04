@@ -1,5 +1,5 @@
 # ApmPKG
-[![version](https://img.shields.io/github/v/release/kedap/apmpkg)](https://github.com/Kedap/apmpkg/releases/) [![Build Status](https://travis-ci.com/Kedap/apmpkg.svg?branch=main)](https://travis-ci.com/Kedap/apmpkg) [![Paquete arch](https://img.shields.io/aur/version/apmpkg)](https://aur.archlinux.org/packages/apmpkg) [![AUR develop](https://img.shields.io/aur/version/apmpkg-git-dev)](https://aur.archlinux.org/packages/apmpkg-git-dev)
+[![version](https://img.shields.io/github/v/release/kedap/apmpkg)](https://github.com/Kedap/apmpkg/releases/) [![Build Status](https://travis-ci.com/Kedap/apmpkg.svg?branch=main)](https://travis-ci.com/Kedap/apmpkg) [![Paquete arch](https://img.shields.io/aur/version/apmpkg)](https://aur.archlinux.org/packages/apmpkg) [![AUR develop](https://img.shields.io/aur/version/apmpkg-git-dev)](https://aur.archlinux.org/packages/apmpkg-git-dev) [![Github Action Rust](https://img.shields.io/github/workflow/status/kedap/apmpkg/Rust)](https://github.com/Kedap/apmpkg/actions)
 
 A Package Manager as a model: PKGBUILD
 <p align="center">

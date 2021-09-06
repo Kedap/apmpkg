@@ -8,19 +8,19 @@ Tabla de contenido
 4. [Caja de descripcion](#caja-de-descripcion)
 5. [Documentacion](#documentacion)
 6. [Testers](#testers)
-7. [Ser desarrolladores](#desarrollador)
-8. [Pasos de lanzamiento](#lanzamiento)
+7. [Pasos de lanzamiento](#lanzamiento)
 
 ## Ideas
 Todas las solitudes de nuevas de funciones deben de ser enviadas a [el reatreador de problemas de ApmPKG](https://github.com/Kedap/apmpkg/issues). Esto para reducir la cantidad de duplicados.
 
 ## Reportes de bugs
 
-Todos los parches deben enviarse a github como [pull requests](https://github.com/Kedap/apmpkg/pulls) si usted deseea empezar a contribuir en ApmPKG puede empezar a atender [Buscando ayuda](https://github.com/Kedap/apmpkg/labels/help%20wanted%20%3Asos%3A), [Solicitud de funciones](https://github.com/Kedap/apmpkg/labels/enhancement%20%20%E2%AD%90%EF%B8%8F) o en [la pagina de contribucion](https://github.com/Kedap/apmpkg/contribute)
+Todos los parches deben enviarse a github como [pull requests](https://github.com/Kedap/apmpkg/pulls) si usted deseea empezar a contribuir en ApmPKG puede empezar a atender [Buscando ayuda](https://github.com/Kedap/apmpkg/labels/help%20wanted%20%3Asos%3A), [Solicitud de funciones](https://github.com/Kedap/apmpkg/labels/enhancement%20%20%E2%AD%90%EF%B8%8F) o en [la pagina de proyectos](https://github.com/Kedap/apmpkg/projects)
 
 ## Flujo de trabajo
 
 Primero y antes que nada debe de checar los iusses para empezar a trabajar. Si lo que usted desea es empezar a colaborar desde ahora como lo dice aqui arriba puede empezar a atender el [rastreador de problemas](https://github.com/Kedap/apmpkg/issues) tomando como prioridad a los que contiene la etqueta de [bug](https://github.com/Kedap/apmpkg/labels/bug%20%3Alady_beetle%3A). Pero esto haciendo un nuevo fork a partir del ultimo commit de la rama develop y NO desde master. De manera no obligatorio **pero se recomienda modificar la [caja de descripcion](#caja-de-descripcion)** colocando los datos correspondientes. Una ves que hayas terminado puedes hacer el pull requests pero a la rama develop en donde un tester debe de aceptar dicha mejora, si tu contribuyes a algo beneficioso es muy probable que sea aceptada
+para mejor organizacion consulte [la pagina de proyectos](https://github.com/Kedap/apmpkg/projects)
 
 ## Caja de descripcion
 
@@ -33,7 +33,7 @@ La caja de descripcion es aquella que se ubica en la parte superior de cada arch
 ## Comprobando conexion a github (ping) v1.0.0  ##
 ##                                              ##
 ## Autores:                                     ##
-## kedap (דנטה) <dxhqezk@hi2.in>                ##
+## kedap (דנטה) <kedap.dev@protonmail.com>       ##
 ##                                              ##
 ##################################################
 echo "Checando conexion con github"
@@ -49,7 +49,7 @@ Despues:
 ## Comprobando conexion a github (ping) v1.0.0  ##
 ##                                              ##
 ## Autores:                                     ##
-## kedap (דנטה) <dxhqezk@hi2.in>                ##
+## kedap (דנטה) <kedap.dev@protonmail.com>      ##
 ## foo (bar) <example@example>                  ##
 ##                                              ##
 ## [iusse #1]                                   ##
@@ -80,7 +80,7 @@ Esto es un resumen del archivo y su version, nos enfocaremos mas en la version y
 
 ```
 Autores:
-kedap (דנטה) <dxhqezk@hi2.in>
+kedap (דנטה) <kedap.dev@protonmail.com>
 foo (bar) <example@example>
 ```
 
@@ -105,21 +105,15 @@ El codigo debe de documentarse cuando sea apropiado. Si usted cree que realizo u
 
 Son una parte fudamental en el crecimiento de este proyecto, son aquellos que se encargan de checar todos los pulls requests, probarlos y aceptarlos, si tu quieres ser parte los testers puede mandar un mensaje a [telegram](https://t.me/Kedap_Develop) o email
 
-## Desarrollador
-
-Desarrollador de version son aquellos que sobresalen en sus aportaciones en este proyecto y son invitados a ser los desarrolladores para realizar la proxima version son los que trabajan para implementacion de nuevas cosas y resolver los iusses para implementarlos si tu deseeas ser parte de este equipo debes de aportar con pull requests positivos para el proyecto y nosotros te contactaremos para que formes parte de este equipo.
-
 ## Lanzamiento
 
 El ciclo de lanzamiento es el siguiente 
 1. Iniciamos con la version 0.1-beta desde la rama master 
 2. Se crea una rama de desarrollo llamada develop
-3. En esta rama trabajan los [desarrolladores de version](#desarrollador) 
-4. Se solucionan algunos issues implementacion de mejoras (estas estaran escritas en la caja de descripcion) 
-5. Es posible que algunos iusses no se les tome importancia, revisaste en la caja de descrpcion y no se soluciona dicho iusse asi que tu decides colaborar 
-6. Creas un fork a partir del ultimo commit de la rama de develop y empiezas a trabajar 
-7. Terminas de trabajar en aquel issues y haces el pull requests a la rama develop y es aceptada. El fork que creaste es elminada pero implementada a la develop 
-8. Ahora se terminan los detalles en la rama develop para hacer pull request a la rama master 
-9. Se hace pull request a master y se afinan mas detalles
-10. Se lanza la siguiente version!
-
+3. Se solucionan algunos issues implementacion de mejoras tomando las seleccinadas para la siguiente version (consulte la [la pagina de proyectos](https://github.com/Kedap/apmpkg/projects) para mas informacion) 
+4. Es posible que algunos iusses no se les tome importancia, revisaste y no se soluciona dicho iusse que quieres asi que tu decides colaborar 
+5. Creas un fork a partir del ultimo commit de la rama de develop y empiezas a trabajar 
+6. Terminas de trabajar en aquel issues y haces el pull requests a la rama develop y es aceptada. La rama que creaste es elminada pero implementada a la develop 
+7. Ahora se terminan los detalles en la rama develop para hacer pull request a la rama master 
+8. Se hace pull request a master y se afinan mas detalles
+9. Se lanza la siguiente version!

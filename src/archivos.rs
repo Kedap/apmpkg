@@ -184,6 +184,8 @@ pub fn binario_completo(adi: Adi) -> bool {
         conservar = true;
     } else if let Fuente::Git(_repositorio) = adi.descarga.fuente {
         conservar = true;
+    } else if !adi.instalacion.pre_instalacion.is_empty() {
+        conservar = true;
     } else {
         conservar = true;
     }

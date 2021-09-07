@@ -332,7 +332,7 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
             }
         }
         //Barra de progreso
-        let contador = 9;
+        let contador = 8;
         let mut pb = ProgressBar::new(contador);
         pb.format("(->.)");
 
@@ -378,17 +378,6 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
                 adi.clone(),
             );
 
-            pb.message("Ejecutando scripts pre-instalacion");
-            pb.inc();
-            if !adi.instalacion.pre_instalacion.is_empty() {
-                let pre_instalacion_hecha =
-                    core_funcions::pre_instalacion(adi.instalacion.clone(), &ruta_archivos);
-                if !pre_instalacion_hecha {
-                    let error = MsgError::new("Algo fallo al ejecutar los scripts pre-instalacion");
-                    error.print_salir();
-                }
-            }
-
             pb.message("Instalando archivos ");
             pb.inc();
             let temporal = ruta_archivos.as_path();
@@ -414,19 +403,6 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
                 &ruta_proyecto.to_str().unwrap(),
                 adi.clone(),
             );
-
-            pb.message("Ejecutando scripts pre-instalacion");
-            pb.inc();
-            if !adi.instalacion.pre_instalacion.is_empty() {
-                let pre_instalacion_hecha = core_funcions::pre_instalacion(
-                    adi.instalacion.clone(),
-                    ruta_proyecto.as_path(),
-                );
-                if !pre_instalacion_hecha {
-                    let error = MsgError::new("Algo fallo al ejecutar el script pre-instalacion");
-                    error.print_salir();
-                }
-            }
 
             pb.message("Instalando archivos");
             pb.inc();
@@ -526,7 +502,7 @@ pub fn remover_adi(nombre: &str, confirmacion: bool) {
 }
 
 pub fn construir_binario_adi(ruta: &str) {
-    let mut pb = ProgressBar::new(5);
+    let mut pb = ProgressBar::new(7);
     pb.format("(->.)");
     pb.message("Leyendo archivo ");
     pb.inc();
@@ -631,6 +607,19 @@ pub fn construir_binario_adi(ruta: &str) {
                 let error = MsgError::new(&e.to_string());
                 error.print_salir();
             }
+        }
+    }
+
+    pb.message("Ejecutando scripts pre-instalacion");
+    pb.inc();
+    if !adi.instalacion.pre_instalacion.is_empty() {
+        let pre_instalacion_hecha = core_funcions::pre_instalacion(
+            adi.instalacion.clone(),
+            directorio.join(adi.descarga.carpeta.clone()).as_path(),
+        );
+        if !pre_instalacion_hecha {
+            let error = MsgError::new("Ocurrio un error al ejecutar el script post instalacion");
+            error.print_salir()
         }
     }
 

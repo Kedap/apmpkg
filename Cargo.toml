@@ -1,6 +1,6 @@
 [package]
 name = "apmpkg"
-version = "1.4.1"
+version = "1.5.0"
 authors = ["kedap <kedap.dev@protonmail.com>"]
 edition = "2018"
 description = "Un administrador de paquetes universal para linux como modelo: PKGBUILD"

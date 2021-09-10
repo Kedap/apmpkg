@@ -9,12 +9,13 @@ A Package Manager as a model: PKGBUILD
 [Spanish]("./README.md")
 
 # NEWS
-- Version has been released: v1.4.1 For everybody!!!
+- Version has been released: v1.5 For everybody!!!
 - Creation of the binaries for all available distributions
 - ApmPKG is uploaded is in [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Changed slackpkg to slapt-get to better manage packages in Slackware
-- Fix on npm to install modules and not dependencies other than js modules
-- Minor fixes
+- Adding support for Nix
+- Fixing the bug caused with `apmpkg create abc hello-world`
+- You can add files in `/home` of different users
+- In binary installation the pre-installation scripts are not executed
 
 * * *
 A package manager that wants to be a powerful universal tool for Linux in order to create and install packages.
@@ -35,9 +36,9 @@ The managers that are supported by ApmPKG:
 - [x] Apk
 - [x] Pkg (termux)
 - [x] Slapt-get
+- [x] Nix
 - [ ] Emerge
 - [ ] Yay
-- [ ] Nix
 
 In the same way, binaries can be created for an offline installation. [binary](doc/modos_de_instalacion.md/#instalacion-desde-un-archivo-binario-de-instalacion) to know [more information here](doc/modos_de_instalacion.md)
 
@@ -66,6 +67,7 @@ For this you can go to the section of [release](https://github.com/Kedap/apmpkg/
 - Build your binaries, With the arrival of version 1.2 you can build binaries without the need to install them, you just have to run: `apmpkg construir foo.adi` or if it is an .abc package: `apmpkg construir foo.abc`
 - With the arrival of version 1.3 you can run post installation scripts [more information here](doc/creando_paquetes.md/#instalacion)
 - In the version 1.4 pre-install scripts can be run
+- Apartir de la version 1.5 se pueden colocar archivos dentro de `/home`
 
 ## Contribute
 If you have a good idea or want to contribute to this project you can start with [here](https://github.com/Kedap/apmpkg/issues) and [read this](CONTRIBUTING.md)

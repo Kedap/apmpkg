@@ -78,8 +78,8 @@ sha256sum = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" # SALT
 
 #opt_src = true
 pre_install = "pre_apmpkg.sh"
-files = ["main.rb" , "config.conf"]
-ruta = ["/usr/bin/foo", "/etc/foo/config.conf"]
+files = ["main.rb" , "config.conf", "porfile_user_default.py"]
+ruta = ["/usr/bin/foo", "/etc/foo/config.conf", ".local/share/porfile_app.py"]
 post_install = "post_apmpkg.sh"
 mensaje = "Para poder ejecutar, prueba con 'foo'!"
 ```
@@ -187,14 +187,15 @@ Here the information regarding the installation path is focused, this starts wit
 ```
 #opt_src = true
 pre_install = "pre_install.sh"
-files = ["main.rb" , "config.conf"]
-ruta = ["/usr/bin/foo", "/etc/foo/config.conf"]
+files = ["main.rb" , "config.conf", "porfile_user_default.py"]
+ruta = ["/usr/bin/foo", "/etc/foo/config.conf", ".local/share/porfile_app.py"]
 post_install = "post_apmpkg.sh"
 mensaje = "Para poder ejecutar, prueba con 'foo'!"
 ```
 The **opt_src** variable is a boolean that admits true or false if you want the entire directory obtained by git or by the download to be copied to the /opt folder, an example of this is the metasploit package that is installed in the opt folder.
 
-**files** and **path** are both arrays that contain file paths, files select the files to be installed and path the path where they are to be installed, the first selected file will be installed with ` install -Dm 755` since the index 0 of both arrays is assumed to be binary.
+**files** and **path** are both arrays that contain file paths, files select the files to be installed and path the path where they are to be installed, the first selected file will be installed with ` install -Dm 755` since the index 0 of both arrays is assumed to be binary. in case you want to place a file inside `/home` you must put a relative path (not root)
+as in this example ".local/share/foo.bar" will be installed inside `/home` in any of the existing users
 
 We will find with the **post_install** variable that is no longer a string variable that stores the path of the script written in bash that will be executed once the package is installed in the case of giving another output that is not exit code 0, it will be given by failed 
 

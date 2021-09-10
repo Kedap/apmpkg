@@ -73,8 +73,8 @@ sha256sum = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" # SALT
 
 #opt_src = true
 pre_install = "pre_apmpkg.sh"
-files = ["main.rb" , "config.conf"]
-ruta = ["/usr/bin/foo", "/etc/foo/config.conf"]
+files = ["main.rb" , "config.conf", "porfile_user_default.py"]
+ruta = ["/usr/bin/foo", "/etc/foo/config.conf", ".local/share/porfile_app.py"]
 post_install = "post_apmpkg.sh"
 mensaje = "Para poder ejecutar, prueba con 'foo'!"
 ```
@@ -182,14 +182,15 @@ Aqui se enfoca la informacion refrente a la ruta de instalacion, este se inicia 
 ```
 #opt_src = true
 pre_install = "pre_install.sh"
-files = ["main.rb" , "config.conf"]
-ruta = ["/usr/bin/foo", "/etc/foo/config.conf"]
+files = ["main.rb" , "config.conf", "porfile_user_default.py"]
+ruta = ["/usr/bin/foo", "/etc/foo/config.conf", ".local/share/porfile_app.py"]
 post_install = "post_apmpkg.sh"
 mensaje = "Para poder ejecutar, prueba con 'foo'!"
 ```
 La variable **opt_src** es un boleano que admite true o false si es que se desea que todo el directorio obtenido por git o por la descarga se copia a la carpeta /opt, un ejemplo de esto es el paquete metasploit que se instala en la carpeta opt.
 
-**files** y **ruta** ambos son arrays que contienen ruta de archivos, files selecciona los archivos que se van a instalar y ruta la ruta donde estos van a ser instalados, el primer archivo seleccionado se va a instalar con `install -Dm 755` ya que se da por hecho que el index 0 de ambos array es un binario.
+**files** y **ruta** ambos son arrays que contienen ruta de archivos, files selecciona los archivos que se van a instalar y ruta la ruta donde estos van a ser instalados, el primer archivo seleccionado se va a instalar con `install -Dm 755` ya que se da por hecho que el index 0 de ambos array es un binario. en el caso de que quiera colocar un archivo dentro de `/home` debe de colocar una ruta relativa (no root) 
+como en este ejemplo ".local/share/foo.bar" se instalara dentro de `/home` en cualquiera de los usuarios existentes
 
 Encontraremos con la variable **post_install** que no es mas un variable string que almacena la ruta del script escrito en bash que se ejecutara una vez instalado el paquete en el caso de dar otra salida que no sea exit code 0, se dara por fallido
 

@@ -9,12 +9,13 @@ A Package Manager as a model: PKGBUILD
 [English]("./README_en.md")
 
 # NOTICIAS
-- Se ha liberado la versión: v1.4.1 Para todos!!!
+- Se ha liberado la versión: v1.5 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Se cambio slackpkg por slapt-get para administrar mejor los paquetes en Slackware
-- Arreglo sobre npm para instalar modulos y no dependencias que no sean modulos de js
-- Correcciones menores
+- Agregando soporte para Nix
+- Arreglando el bug ocacionado con `apmpkg crear abc hello-world`
+- Se puede agregar archivos en `/home` de distintos usuarios
+- En instalacion binaria no se ejecuta los scripts pre-instalacion
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.
@@ -35,9 +36,9 @@ Los gestores que son soportado por ApmPKG:
 - [x] Apk
 - [x] Pkg (termux)
 - [x] Slapt-get
+- [x] Nix
 - [ ] Emerge
 - [ ] Yay
-- [ ] Nix
 
 De igual manera se pueden crear binarios para una instalacion offline [binarios](doc/modos_de_instalacion.md/#instalacion-desde-un-archivo-binario-de-instalacion) para saber [mas infomarcion aqui](doc/modos_de_instalacion.md)
 
@@ -66,6 +67,7 @@ Para ello puedes dirijirte a la seccion de [lanzamientos](https://github.com/Ked
 - Construir tus binarios, Con la llegada de la version 1.2 se puede construir binarios sin la necesidad de instalarlos, solo debes de ejecutar: `apmpkg construir foo.adi` o si es un paquete .abc: `apmpkg construir foo.abc`
 - Con la llegada de la version 1.3 se puede ejecutar scripts post instalacion [mas info aqui](doc/creando_paquetes.md/#instalacion)
 - En la version 1.4 se pueden ejecutar scripts pre instalacion
+- Apartir de la version 1.5 se pueden colocar archivos dentro de `/home`
 
 ## Contribuir
 Si tienes una buena idea o quieres contribuir con este proyecto puedes empezar por [aqui](https://github.com/Kedap/apmpkg/issues) y [leer esto](CONTRIBUTING.md)

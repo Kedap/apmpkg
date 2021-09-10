@@ -1,7 +1,7 @@
 # INSTALLATION MODES
 In ApmPKG we have 2 ways to install packages, obviously already made before as stated in [creating packages](./creando_paquetes_en.md) to share these packages can be done from a [.adi file](creating_packages.md # adi), [file .abc](creating_packages.md#abc) and/or from a binary file (.abi.tar.gz) made by yourself or someone else. Although it is the same for all possible files. Let's see the installation modes:
 
-[spanish](./modos_de_instalacion.md)
+[Spanish](./modos_de_instalacion.md)
 
 Table of Contents:
 1. [Install from an ADI file](#installing-from-a-download-and-installation-file)

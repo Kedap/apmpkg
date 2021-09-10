@@ -1,7 +1,7 @@
 # MODOS DE INSTALACION
 En ApmPKG tenemos 2 formas de instalar paquetes, obviamente antes ya hechos como se dice en [creando paquetes](creando_paquetes.md) para compartir estos paquetes se pueden hacer desde un [archivo .adi](creando_paquetes.md#adi), [archivo.abc](creando_paquetes.md#abc) y/o desde un archivo binario (.abi.tar.gz) realizados por usted mismo o por otra persona. Aunque es lo mismo para todos lo archivos posibles. Veamos los modos de instalacion:
 
-[english](./modos_de_instalacion_en.md)
+[English](./modos_de_instalacion_en.md)
 
 Tabla de contenido:
 1. [Instalacion desde un archivo ADI](#instalacion-desde-un-archivo-de-descarga-e-instalacion)

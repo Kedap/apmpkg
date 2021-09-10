@@ -2,7 +2,7 @@
 
 The most recommended option is to go to the [releases section](https://github.com/Kedap/apmpkg/releases/) and download the binaries, in the same way it will try to distribute for most distributions and platforms! IT CAN BE INSTALLED FROM APMPKG! In the same way, in this markdown it will give the way to take the ApmPKG installation to your machine.
 
-[spanish](./instalacion.md)
+[Spanish](./instalacion_en.md)
 
 Table of Contents:
 1. [Install from binaries](#installation-of-binaries)

@@ -1,7 +1,7 @@
 # Guia para crear paquetes utilizando ApmPKG
 En esta guia aprenderas todo lo que se debe de saber al crear paquetes para ApmPKG, de esta manera podemos extender su uso mucho mas y tener paquetes para linux
 
-[english](./creando_paquetes_en.md)
+[English](./creando_paquetes_en.md)
 
 Tabla de contenidos
 1. [Contruyendo con un Archivo de Descarga e Instalacion: ADI](#adi)

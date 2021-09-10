@@ -1,7 +1,7 @@
 # Guide to creating packages using ApmPKG
 In this guide you will learn everything you need to know when creating packages for ApmPKG, in this way we can extend its use much more and have packages for linux
 
-[spanish](./modos_de_instalacion.md)
+[Spanish](./creando_paquetes.md)
 
 Table of Contents
 1. [Build a Archivo de Descarga e Instalacion (Download and Installation File): ADI](#adi)

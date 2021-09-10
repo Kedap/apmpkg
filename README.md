@@ -6,7 +6,7 @@ A Package Manager as a model: PKGBUILD
   <img src="https://raw.githubusercontent.com/Kedap/apmpkg/main/img/logo.png" />
 </p>
 
-[Spanish]("./README.md")
+[English]("./README_en.md")
 
 # NOTICIAS
 - Se ha liberado la versión: v1.4.1 Para todos!!!

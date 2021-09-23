@@ -8,7 +8,7 @@ url="https://github.com/kedap/apmpkg"
 arch="x86_64 armv7 armhf aarch64 x86 ppc64le" # limited by rust/cargo
 license="Apache-2.0"
 depends="git fakeroot wget ruby-bundler py3-pip rsync bash ruby-dev npm"
-makedepends="cargo openssl-dev patchutils"
+makedepends="openssl-dev"
 subpackages="$pkgname-doc"
 source="$pkgname-$pkgver.tar.gz::https://github.com/Kedap/apmpkg/archive/refs/tags/$pkgver.tar.gz"
 

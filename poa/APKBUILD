@@ -17,7 +17,7 @@ build() {
 }
 
 check() {
-	cargo test --all --release --locked --verbose
+	cargo test --release --locked --verbose
 }
 
 package() {

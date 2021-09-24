@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#echo "Put the binary"
-#install -Dm 755 "target/release/$2" -t "$2/usr/bin"
-#if [[ $? -ne 0 ]]; then
-  #echo "Oops... A error"
-  #exit 1
-#fi
+echo "Put the binary"
+install -Dm 755 "target/release/$2" -t "$2/usr/bin"
+if [[ $? -ne 0 ]]; then
+  echo "Oops... A error"
+  exit 1
+fi
 
 echo "Creating iiabc tree..."
 mkdir -p apmpkg/etc/apmpkg/iiabc

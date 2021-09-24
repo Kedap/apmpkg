@@ -27,3 +27,17 @@ if [[ $? -ne 0 ]]; then
   echo "Oops... A error"
   exit 1
 fi
+
+echo "Put manpage (español)"
+install -Dm 644 "man/apmpkg.1" -t apmpkg/usr/share/man/man1
+if [[ $? -ne 0 ]]; then
+  echo "Oops... A error"
+  exit 1
+fi
+
+echo "Put manpage (english)"
+install -Dm 644 "man/apmpkg-en.1" -t apmpkg/usr/share/man/man1
+if [[ $? -ne 0 ]]; then
+  echo "Oops... A error"
+  exit 1
+fi

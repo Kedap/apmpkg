@@ -1,5 +1,5 @@
 Package: apmpkg
-Version: 1.4.1
+Version: 1.5.0
 Priority: optional
 Architecture: amd64
 Depends: git, python3-pip, wget, fakeroot, bundle, bundler, rsync, npm

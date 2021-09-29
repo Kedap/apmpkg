@@ -1,7 +1,7 @@
 # Contributor: kedap <kedap.dev@protonmail.com>
 # Maintainer: kedap <kedap.dev@protonmail.com>
 pkgname=apmpkg
-pkgver=1.4.1
+pkgver=1.5.0
 pkgrel=0
 pkgdesc="A Package Manager as a model: PKGBUILD"
 url="https://github.com/kedap/apmpkg"
@@ -9,26 +9,18 @@ arch="x86_64 armv7 armhf aarch64 x86 ppc64le" # limited by rust/cargo
 license="Apache-2.0"
 depends="git fakeroot wget ruby-bundler py3-pip rsync bash ruby-dev npm"
 makedepends="openssl-dev"
-subpackages="$pkgname-doc"
-source="$pkgname-$pkgver.tar.gz::https://github.com/Kedap/apmpkg/archive/refs/tags/$pkgver.tar.gz"
+source="$pkgname-$pkgver.tar.gz::https://github.com/kedap/apmpkg/archive/refs/tags/$pkgver.tar.gz"
 
 build() {
 	cargo build --release --locked --verbose
 }
 
-check() {
-	cargo test --release --locked --verbose
-}
-
 package() {
-	install -Dm 755 target/release/$pkgname -t "$pkgdir"/usr/bin
+	install -Dm 755 target/release/apmpkg -t "$pkgdir"/usr/bin
 	mkdir -p "$pkgdir"/etc/apmpkg
 	cp -r src/iiabc "$pkgdir"/etc/apmpkg
 	mkdir -p $pkgdir/etc/apmpkg/paquetes
-
-	#Install documentation
-	install -Dm0644 man/*.1 -t "$pkgdir"/usr/share/man/man1
 }
 
 sha512sums="
-0e7ba0c127c5e61f855917d0fa732bf776830492cd63410cce9b4c4d5cf1ef139e31e840496724b273e9bb99a6ce1b575fb5215b5709cd7e0237ebd8c0b696a0  apmpkg-1.4.1.tar.gz"
+0e7ba0c127c5e61f855917d0fa732bf776830492cd63410cce9b4c4d5cf1ef139e31e840496724b273e9bb99a6ce1b575fb5215b5709cd7e0237ebd8c0b696a0  apmpkg-1.5.0.tar.gz"

@@ -1,5 +1,5 @@
 Name:           apmpkg
-Version:        1.4.1
+Version:        1.5.0
 Release:        1%{?dist}
 Summary:        Package Manager
 
@@ -23,18 +23,18 @@ cargo build --release --locked
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -Dm 755 "target/release/%{name}" -t "%{buildroot}/usr/bin"
+install -Dm 755 "target/release/apmpkg" -t "%{buildroot}/usr/bin"
 mkdir -p %{buildroot}/etc/apmpkg/iiabc
 cp -r src/iiabc/ %{buildroot}/etc/apmpkg/
 mkdir -p %{buildroot}/etc/apmpkg/paquetes
-install -Dm 644 "man/%{name}.1" -t %{buildroot}/usr/share/man/man1
-install -Dm 644 "man/%{name}-en.1" -t %{buildroot}/usr/share/man/man1
+install -Dm 644 "man/apmpkg.1" -t %{buildroot}/usr/share/man/man1
+install -Dm 644 "man/apmpkg-en.1" -t %{buildroot}/usr/share/man/man1
 
 
 %files
 %license LICENSE
 /usr/share/man/man1/*
-/usr/bin/%{name}
+/usr/bin/apmpkg
 /etc/apmpkg/*
 
 

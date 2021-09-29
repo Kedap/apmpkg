@@ -1,7 +1,7 @@
 # Maintainer: kedap <kedap.dev@protonmail.com>
 
 pkgname=apmpkg
-pkgver=1.4.1
+pkgver=1.5.0
 pkgrel=1
 pkgdesc="Un administrador de paquetes universal para linux como modelo: PKGBUILD"
 arch=('x86_64')
@@ -12,21 +12,21 @@ optdepends=('flatpak: for install dependencies'
 depends=('git' 'python-pip' 'python2-pip' 'wget' 'fakeroot' 'ruby-bundler' 'rsync' 'npm')
 makedepends=('cargo')
 conflicts=('apmpkg-git-dev' 'apmpkg-dev')
-source=("https://github.com/Kedap/${pkgname}/archive/refs/tags/${pkgver}.tar.gz")
-sha256sums=('448bffda17d7568088ed907791f118a602b79297877834f245d2054583d159ad')
+source=("https://github.com/kedap/apmpkg/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('SKIP')
 
 build() {
-	cd "$pkgname-$pkgver"
+	cd "apmpkg-${pkgver}"
 	cargo build --release --locked
 }
 
 check() {
-	cd "$pkgname-$pkgver"
+	cd "apmpkg-${pkgver}"
 	cargo test --release --locked
 }
 
 package() {
-	cd "$pkgname-$pkgver"
+	cd "apmpkg-${pkgver}"
 	install -Dm 755 "target/release/${pkgname}" -t "${pkgdir}/usr/bin"
 	mkdir -p ${pkgdir}/etc/apmpkg/iiabc
 	cp -r src/iiabc/ ${pkgdir}/etc/apmpkg/

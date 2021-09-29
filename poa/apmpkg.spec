@@ -39,5 +39,5 @@ install -Dm 644 "man/apmpkg-en.1" -t %{buildroot}/usr/share/man/man1
 
 
 %changelog
-* Sat Jul 31 2021 kedap <kedap.dev@protonmail.com>
-- Slapt-get for Slackpkg and Npm fixed
+* Wed Sep 29 2021 kedap <kedap.dev@protonmail.com>
+- Nix support and home files

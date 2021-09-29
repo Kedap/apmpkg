@@ -6,7 +6,7 @@ A Package Manager as a model: PKGBUILD
   <img src="https://raw.githubusercontent.com/Kedap/apmpkg/main/img/logo.png" />
 </p>
 
-[Spanish]("./README.md")
+[Spanish](./README.md)
 
 # NEWS
 - Version has been released: v1.5 For everybody!!!

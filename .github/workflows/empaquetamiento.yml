@@ -1,0 +1,204 @@
+on:
+  pull_request:
+    branches: [main]
+    types: ["labeled"]
+name: construir
+jobs:
+  crear_release:
+    name: Creando lanzamiento
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.release.outputs.upload_url }}
+    steps:
+      - name: Creando lanzamiento
+        uses: actions/create-release@v1
+        id: release
+        with:
+          draft: false
+          prerelease: false
+          release_name: "ApmPKG v1.5.0 Nix y archivos dentro de home"
+          tag_name: 1.5.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+  artefactos_debian:
+    name: Creando artefactos para debian
+    runs-on: ubuntu-latest
+    needs: crear_release
+    outputs:
+      link: ${{ steps.construir_deb.outputs.link }}
+    steps:
+      - name: Construir y subir (debian)
+        uses: kedap/poa@debian
+        id: construir_deb
+        with:
+          repositorio: "${{ github.repository }}"
+          nombre: "apmpkg"
+          rama: "develop" #Cambiame posteriormente por develop o algo asi
+          ruta-control: "poa/control"
+          ruta-script: "poa/debian.sh"
+  descarga_subida_debian:
+    name: Descargando y subiendo artefactos para debian
+    runs-on: ubuntu-latest
+    needs: [artefactos_debian, crear_release]
+    steps:
+      - name: Descargando artefactos de debian
+        run: curl -O ${{ needs.artefactos_debian.outputs.link }}
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v2
+        with:
+          name: paquete_debian_64.deb
+          path: ./apmpkg-amd64.deb
+      - name: Subir artefactos debian
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ needs.crear_release.outputs.upload_url }}
+          asset_path: ./apmpkg-amd64.deb
+          asset_name: apmpkg-amd64.deb
+          asset_content_type: application/vnd.debian.binary-package
+  artefacto_apmpkg:
+    name: Creando artefactos para apmpkg y subirlos a upload.sh
+    runs-on: ubuntu-latest
+    needs: crear_release
+    outputs:
+      link: ${{ steps.construir_abi.outputs.link }}
+    steps:
+      - name: Construir y subir (apmpkg)
+        uses: kedap/poa@apmpkg
+        id: construir_abi
+        with:
+          repositorio: "${{ github.repository }}"
+          nombre: "apmpkg"
+          rama: "develop"
+          ruta-abc: "poa/apmpkg.abc"
+  descarga_subida_apmpkg:
+    name: Descargando y subiendo artefactos para apmpkg
+    runs-on: ubuntu-latest
+    needs: [artefacto_apmpkg, crear_release]
+    steps:
+      - name: Descargando artefactos de apmpkg
+        run: curl -O ${{ needs.artefacto_apmpkg.outputs.link }}
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v2
+        with:
+          name: paquete_abi.abi.tar.gz
+          path: ./apmpkg-1.5.0.abi.tar.gz
+      - name: Subir
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ needs.crear_release.outputs.upload_url }}
+          asset_path: ./apmpkg-1.5.0.abi.tar.gz
+          asset_name: apmpkg-1.5.0.abi.tar.gz
+          asset_content_type: application/gzip
+  artefacto_rpm_fedora:
+    name: Creando artefactos rpm (fedora) y subirlos a upload.sh
+    runs-on: ubuntu-latest
+    needs: crear_release
+    outputs:
+      link: ${{ steps.construir_rpm_fedora.outputs.link }}
+    steps:
+      - name: Construir y subir (rpm fedora)
+        uses: kedap/poa@rpm_fedora
+        id: construir_rpm_fedora
+        with:
+          repositorio: "${{ github.repository }}"
+          nombre: "apmpkg"
+          ruta-spec: "poa/apmpkg.spec"
+          version: 1.5.0
+          rama: "develop"
+  descarga_subida_rpm_fedora:
+    name: Descargando y subiendo artefactos rpm (fedora)
+    runs-on: ubuntu-latest
+    needs: [artefacto_rpm_fedora, crear_release]
+    steps:
+      - name: Descargando artefactos de fedora
+        run: curl -O ${{ needs.artefacto_rpm_fedora.outputs.link }}
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v2
+        with:
+          name: paquete_rpm_fedora.rpm
+          path: ./apmpkg*.rpm
+      - name: Subir
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ needs.crear_release.outputs.upload_url }}
+          asset_path: ./apmpkg-1.5.0-1.fc34.x86_64.rpm
+          asset_name: apmpkg-1.5.0-1.fc34.x86_64.rpm
+          asset_content_type: application/x-rpm
+  artefacto_zst_pacman:
+    name: Creando artefactos para archlinux (pacman) y subirlos a upload.sh
+    runs-on: ubuntu-latest
+    needs: crear_release
+    outputs:
+      link: ${{ steps.construir_zst.outputs.link }}
+    steps:
+      - name: Construir y subir (zst pacman)
+        uses: kedap/poa@archlinux
+        id: construir_zst
+        with:
+          repositorio: "${{ github.repository }}"
+          nombre: "apmpkg"
+          rama: "develop"
+          ruta-pkgbuild: "poa/PKGBUILD"
+  descarga_subida_zst_pacman:
+    name: Descargando y subiendo artefactos para archlinux (pacman)
+    runs-on: ubuntu-latest
+    needs: [artefacto_zst_pacman, crear_release]
+    steps:
+      - name: Descargando artefactos de pacman
+        run: curl -O ${{ needs.artefacto_zst_pacman.outputs.link }}
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v2
+        with:
+          name: paquete_pacman.pkg.tar.zst
+          path: ./apmpkg*.pkg.*
+      - name: Subir
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ needs.crear_release.outputs.upload_url }}
+          asset_path: ./apmpkg-1.5.0-1-x86_64.pkg.tar.zst
+          asset_name: apmpkg-1.5.0-1.pkg.tar.zst
+          asset_content_type: application/zstd
+  artefacto_apk:
+    name: Creando artefactos para alpine subirlos a upload.sh
+    runs-on: ubuntu-latest
+    needs: crear_release
+    outputs:
+      link: ${{ steps.construir_apk.outputs.link }}
+    steps:
+      - name: Construir y subir (apk alpine)
+        uses: kedap/poa@alpine
+        id: construir_apk
+        with:
+          repositorio: "${{ github.repository }}"
+          nombre: "apmpkg"
+          rama: "develop"
+          ruta-apkbuild: "poa/APKBUILD"
+  descarga_subida_apk:
+    name: Descargando y subiendo artefactos para alpine (apk)
+    runs-on: ubuntu-latest
+    needs: [artefacto_apk, crear_release]
+    steps:
+      - name: Descargando artefactos de alpine
+        run: curl -O ${{ needs.artefacto_apk.outputs.link }}
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v2
+        with:
+          name: paquete_alpine.apk
+          path: ./apmpkg*.apk
+      - name: Subir
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ needs.crear_release.outputs.upload_url }}
+          asset_path: ./apmpkg-1.5.0-r0.apk
+          asset_name: apmpkg-1.5.0-r0.apk
+          asset_content_type: application/gzip

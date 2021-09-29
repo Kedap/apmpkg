@@ -127,6 +127,7 @@ fn crear(tipo: &str, nombre: &str) {
         std::process::Command::new("bash")
             .arg("/etc/apmpkg/iiabc/iiabc.sh")
             .arg("-bb")
+            .arg(nombre)
             .spawn()
             .expect("Algo fallo al crear el archivo .abc");
         println!("La creacion del archivo {}.abc a sido correcta", nombre);

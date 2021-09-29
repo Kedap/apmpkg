@@ -5,7 +5,7 @@
 ################################################################
 #                                                              #
 # Interpretador para la Instalacion con archivos .ABC (IIABC)  #
-# v1.4.1                                                       #
+# v1.5.0                                                       #
 #                                                              #
 # Autor / Contribudores                                        #
 #                                                              #
@@ -94,6 +94,10 @@ create_bin(){
 	# Sumas
 	if [ "$sha256sums" == "SKIP" ]; then
 		warn "Omitiendo la suma sha256"
+		msg1 "Extrayendo fuentes..."
+		cd $src_dir
+		tar -xf source.tar.gz
+		cd ..
 	else
 		msg1 "Verificando la integridad de los archivos..."
 		echo $sha256sums $pkgname.d/source.tar.gz | sha256sum -c > /dev/null 2>&1

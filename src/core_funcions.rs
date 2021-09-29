@@ -223,6 +223,12 @@ fn gestor(gestor: String) -> GestorNativo {
             instalacion: "add".to_string(),
             confirmacion: String::new(),
         },
+        "nix" => GestorNativo {
+            nombre: "nix-env".to_string(),
+            buscar: "search".to_string(),
+            instalacion: "-i".to_string(),
+            confirmacion: String::new(),
+        },
         "slapt-get" => GestorNativo {
             nombre: "slapt-get".to_string(),
             buscar: "--search".to_string(),
@@ -266,6 +272,7 @@ pub fn instalar_dependencias(adi_paquete: AdiPaquete) -> bool {
         "zypper",
         "yum",
         "apk",
+        "nix",
         "slapt-get",
         "snap",
         "flatpak",
@@ -303,12 +310,21 @@ pub fn instalar_dependencias(adi_paquete: AdiPaquete) -> bool {
                 //);
                 listo = true
             } else {
-                let mut child = Command::new(gestor.nombre.clone())
-                    .arg(gestor.buscar.clone())
-                    .arg(dependencia)
-                    .spawn()
-                    .expect("Ocurrio un error al buscar posibles dependencias");
-                let _result = child.wait().unwrap();
+                if gestor.nombre == "nix-env" {
+                    let mut child = Command::new("nix")
+                        .arg("search")
+                        .arg(dependencia)
+                        .spawn()
+                        .expect("Ocurrio un error al buscar posibles dependencias");
+                    let _result = child.wait().unwrap();
+                } else {
+                    let mut child = Command::new(gestor.nombre.clone())
+                        .arg(gestor.buscar.clone())
+                        .arg(dependencia)
+                        .spawn()
+                        .expect("Ocurrio un error al buscar posibles dependencias");
+                    let _result = child.wait().unwrap();
+                }
                 println!(
                     "\nQue paquete sastiface la dependencia {}?",
                     dependencia.green()
@@ -344,6 +360,7 @@ pub fn instalar_dependencia_vector(depen_arr: Vec<String>) -> bool {
         "zypper",
         "yum",
         "apk",
+        "nix",
         "slapt-get",
         "snap",
         "flatpak",

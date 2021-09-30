@@ -22,21 +22,21 @@ This is just a guide on how it is recommended to install the binaries with the p
 
 ## Apt
 Apt is the package manager for debian and its derivatives, to do an installation using apt just by typing the following commands in your terminal:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-1.3.0-amd64.deb; apt install ./apmpkg-1.3.0-amd64.deb`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-amd64.deb; apt install ./apmpkg-1.5.0-amd64.deb`
 
 In this way apt searches for the necessary dependencies for ApmPKG
 
 ## Dnf
 Dnf, the next generation of yum, we highly recommend using dnf for the installation of ApmPKG so that it is a desired installation as it should, in the event that the installation does not work with this binary you can use the other one destined for zypper, to install with this tool it is necessary to execute the following:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-1.3.0-1.fc34.x86_64.rpm; dnf localinstall apmpkg-1.3.0-1.fc34.x86_64.rpm`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-1.fc34.x86_64.rpm; dnf localinstall apmpkg-1.5.0-1.fc34.x86_64.rpm`
 
 In this way you will already have Apm PKG installed on your computer
 
 ## Pacman
-Pacman ...<. the archlinux package manager, in the same way it can be installed with this manager, you just need to run:
+Pacman the archlinux package manager, in the same way it can be installed with this manager, you just need to run:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-1.3.0-3-x86_64.pkg.tar.zst; pacman -U apmpkg-1.3.0-3-x86_64.pkg.tar.zst`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-1.pkg.tar.zst; pacman -U apmpkg-1.5.0-1.pkg.tar.zst`
 
 Or in a better way you can have the latest versions with the repository [krep0](https://krep0.bitbucket.io/archlinux/), if you don't have it in your pacman.conf, you should do the following:
 Place the following lines in `/etc/pacman.conf`:
@@ -61,11 +61,11 @@ pacman -S apmpkg-dev
 ## Zypper
 Zypper is the OpenSUSE package manager and for ApmPKG to be installed, you just need to execute the following:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-1.3.0-1.fc34.x86_64.rpm; zypper in apmpkg-1.3.0-1.fc34.x86_64.rpm`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-1.fc34.x86_64.rpm; zypper in apmpkg-1.5.0-1.fc34.x86_64.rpm`
 
-## Apmpkg
+## ApmPKG
 A universal package manager for linux written in rust and bash. As we said before that to install ApmPKG it can also be used to download ApmPKG, obviously you will not be able to download ApmPKG in ApmPKG without first having it installed, this method is used more to update ApmPKG, because you just need to write the following command.
-`apmpkg instalar -u https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-1.3.0.abi.tar.gz`
+`apmpkg instalar -u https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0.abi.tar.gz`
 
 ## Yay
 *Yet another yogurt* or with any other helper to install AUR packages, ApmPKG is also in [AUR](https://aur.archlinux.org/packages/apmpkg) and what better way than to install it with yay, with the following command
@@ -78,11 +78,11 @@ Similarly there are more ApmPKG versions in AUR.
 Alpine linux package manager, and in this update we have support for it,
 why don't you install it with:
 ```
-wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-1.3.0-r0.apk; apk add --allow-untrusted apmpkg-1.3.0-r0.apk
+wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-r0.apk; apk add --allow-untrusted apmpkg-1.5.0-r0.apk
 ```
 And if you want to have the documentation installed, try with:
 ```
-wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-doc-1.3.0-r0.apk;apk apk add --allow-untrusted apmpkg-doc-1.3.0-r0.apk
+wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-doc-1.5.0-r0.apk;apk apk add --allow-untrusted apmpkg-doc-1.5.0-r0.apk
 ```
 Or in your case it can be installed from the testing branch of [alpine](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Repository_pinning)
 
@@ -92,9 +92,9 @@ apk add apmpkg@testing
 
 ## Binary
 In the [releases section](https://github.com/Kedap/apmpkg/releases/) you can download and install it with the following command:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
 But if you want to run it in a portable way you can do it:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.3.0/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
 
 
 # Build

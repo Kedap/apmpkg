@@ -2,7 +2,7 @@
 name = "apmpkg"
 version = "1.5.0"
 authors = ["kedap <kedap.dev@protonmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "Un administrador de paquetes universal para linux como modelo: PKGBUILD"
 readme = "README.md"
 repository = "https://github.com/Kedap/apmpkg"

@@ -36,7 +36,7 @@ fn instalar(ruta_archivo: &str, banderas: Banderas) {
             let error = MsgError::new("Para instalar un archivo abi necesitas permisos root!");
             error.print_salir();
         }
-        metodos_de_instalacion::instalar_abi(&ruta_archivo, confirmacion);
+        metodos_de_instalacion::instalar_abi(ruta_archivo, confirmacion);
     } else {
         //Si es que existe de otra manera que el abc o adi
         let abc = archivos::es_abc(ruta_archivo);
@@ -57,7 +57,7 @@ fn instalar_url(url: &str, banderas: Banderas) {
     barrita.format("(->.)");
     barrita.message("Descargando... ");
     barrita.inc();
-    let descarga = archivos::descarga(&url, "file.ada");
+    let descarga = archivos::descarga(url, "file.ada");
     match descarga {
         Ok(_v) => barrita.finish_print(" "),
         Err(e) => {

@@ -129,13 +129,13 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
     match fuentes {
         Fuente::Git(repositorio) => archivos::git_clone(
             &repositorio,
-            &directorio
+            directorio
                 .join(paquete.descarga.carpeta.clone())
                 .to_str()
                 .unwrap(),
         ),
         Fuente::Url(url) => {
-            let creando = archivos::crear_directorio(&directorio.to_str().unwrap());
+            let creando = archivos::crear_directorio(directorio.to_str().unwrap());
             match creando {
                 Ok(_v) => _v,
                 Err(e) => {
@@ -143,8 +143,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
                     error.print_salir();
                 }
             }
-            let descarga =
-                archivos::descarga(&url, &directorio.join(acd.clone()).to_str().unwrap());
+            let descarga = archivos::descarga(&url, directorio.join(acd.clone()).to_str().unwrap());
             match descarga {
                 Ok(_v) => _v,
                 Err(e) => {
@@ -154,7 +153,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
             }
         }
         Fuente::Local(ruta) => {
-            let creando = archivos::crear_directorio(&directorio.to_str().unwrap());
+            let creando = archivos::crear_directorio(directorio.to_str().unwrap());
             match creando {
                 Ok(_v) => _v,
                 Err(e) => {
@@ -162,7 +161,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
                     error.print_salir();
                 }
             }
-            archivos::copiar_archivo(&ruta, &directorio.join(&acd).to_str().unwrap());
+            archivos::copiar_archivo(&ruta, directorio.join(&acd).to_str().unwrap());
         }
     }
 
@@ -171,7 +170,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
     if paquete.descarga.sumasha == "SALTAR" {
         println!("{}", "¡Se a saltado la verificacion!".yellow());
     } else if !archivos::verificacion_hash(
-        &directorio.join(acd.clone()).to_str().unwrap(),
+        directorio.join(acd.clone()).to_str().unwrap(),
         &paquete.descarga.sumasha,
     ) {
         let error = MsgError::new("Las sumas no son coinciden");
@@ -184,8 +183,8 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
         let _rr = _repositorio;
     } else {
         let tar = archivos::extraer_tar(
-            &directorio.join(&acd).to_str().unwrap(),
-            &directorio.to_str().unwrap(),
+            directorio.join(&acd).to_str().unwrap(),
+            directorio.to_str().unwrap(),
         );
         match tar {
             Ok(_v) => _v,
@@ -199,10 +198,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
     pb.message("Iniciando la instalacion de dependencias del proyecto ");
     pb.inc();
     let root_proyecto = &directorio.join(&paquete.descarga.carpeta);
-    core_funcions::instalar_dependencias_externas(
-        &root_proyecto.to_str().unwrap(),
-        paquete.clone(),
-    );
+    core_funcions::instalar_dependencias_externas(root_proyecto.to_str().unwrap(), paquete.clone());
 
     pb.message("Ejecutando scripts pre-instalacion ");
     pb.inc();
@@ -221,7 +217,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
     pb.inc();
     let tmp = directorio.join(paquete.descarga.carpeta.clone());
     let dir = tmp.as_path();
-    archivos::instalar_archivos(paquete.instalacion.clone(), &dir.to_str().unwrap());
+    archivos::instalar_archivos(paquete.instalacion.clone(), dir.to_str().unwrap());
 
     pb.message("Ejecutando scripts post-instalacion ");
     pb.inc();
@@ -242,7 +238,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
     nombre_adi.push_str(".adi");
     let tmp_adi = Path::new("/etc/apmpkg/paquetes").join(nombre_adi);
     let archivo_adi = tmp_adi.as_path();
-    archivos::copiar_archivo(ruta_archivo, &archivo_adi.to_str().unwrap());
+    archivos::copiar_archivo(ruta_archivo, archivo_adi.to_str().unwrap());
 
     //Creando el binario
     if binario {
@@ -374,20 +370,20 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
             let ruta_archivos = directorio.join(adi.descarga.carpeta.clone());
 
             core_funcions::instalar_dependencias_externas(
-                &ruta_archivos.to_str().unwrap(),
+                ruta_archivos.to_str().unwrap(),
                 adi.clone(),
             );
 
             pb.message("Instalando archivos ");
             pb.inc();
             let temporal = ruta_archivos.as_path();
-            archivos::instalar_archivos(adi.instalacion.clone(), &temporal.to_str().unwrap());
+            archivos::instalar_archivos(adi.instalacion.clone(), temporal.to_str().unwrap());
 
             pb.message("Ejecutando scripts post-instalacion");
             pb.inc();
             if !adi.instalacion.post_instalacion.is_empty() {
                 let post_instalacion_hecha =
-                    core_funcions::post_instalacion(adi.instalacion.clone(), &temporal);
+                    core_funcions::post_instalacion(adi.instalacion.clone(), temporal);
                 if !post_instalacion_hecha {
                     let error =
                         MsgError::new("Algo fallo al ejecutar los scripts post-instalacion");
@@ -400,20 +396,20 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
             let ruta_proyecto = directorio.join(carpeta).join(adi.descarga.carpeta.clone());
 
             core_funcions::instalar_dependencias_externas(
-                &ruta_proyecto.to_str().unwrap(),
+                ruta_proyecto.to_str().unwrap(),
                 adi.clone(),
             );
 
             pb.message("Instalando archivos");
             pb.inc();
             let temporal = ruta_proyecto.as_path();
-            archivos::instalar_archivos(adi.instalacion.clone(), &temporal.to_str().unwrap());
+            archivos::instalar_archivos(adi.instalacion.clone(), temporal.to_str().unwrap());
 
             pb.message("Ejecutando scripts post-instalacion");
             pb.inc();
             if !adi.instalacion.post_instalacion.is_empty() {
                 let post_instalacion_hecha =
-                    core_funcions::post_instalacion(adi.instalacion.clone(), &temporal);
+                    core_funcions::post_instalacion(adi.instalacion.clone(), temporal);
                 if !post_instalacion_hecha {
                     let error =
                         MsgError::new("Algo fallo al ejecutar los scripts post-instalacion");
@@ -429,7 +425,7 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
         nombre_adi.push_str(".adi");
         archivos::copiar_archivo(
             "install.d/apkg.adi",
-            &ruta_adi.join(nombre_adi).to_str().unwrap(),
+            ruta_adi.join(nombre_adi).to_str().unwrap(),
         );
         let borrar_dir = fs::remove_dir_all(directorio);
         match borrar_dir {
@@ -543,13 +539,13 @@ pub fn construir_binario_adi(ruta: &str) {
     match fuentes {
         Fuente::Git(repositorio) => archivos::git_clone(
             &repositorio,
-            &directorio
+            directorio
                 .join(adi.descarga.carpeta.clone())
                 .to_str()
                 .unwrap(),
         ),
         Fuente::Url(url) => {
-            let creando = archivos::crear_directorio(&directorio.to_str().unwrap());
+            let creando = archivos::crear_directorio(directorio.to_str().unwrap());
             match creando {
                 Ok(_v) => _v,
                 Err(e) => {
@@ -557,8 +553,7 @@ pub fn construir_binario_adi(ruta: &str) {
                     error.print_salir();
                 }
             }
-            let descarga =
-                archivos::descarga(&url, &directorio.join(acd.clone()).to_str().unwrap());
+            let descarga = archivos::descarga(&url, directorio.join(acd.clone()).to_str().unwrap());
             match descarga {
                 Ok(_v) => _v,
                 Err(e) => {
@@ -568,7 +563,7 @@ pub fn construir_binario_adi(ruta: &str) {
             }
         }
         Fuente::Local(ruta) => {
-            let creando = archivos::crear_directorio(&directorio.to_str().unwrap());
+            let creando = archivos::crear_directorio(directorio.to_str().unwrap());
             match creando {
                 Ok(_v) => _v,
                 Err(e) => {
@@ -576,7 +571,7 @@ pub fn construir_binario_adi(ruta: &str) {
                     error.print_salir();
                 }
             }
-            archivos::copiar_archivo(&ruta, &directorio.join(&acd).to_str().unwrap());
+            archivos::copiar_archivo(&ruta, directorio.join(&acd).to_str().unwrap());
         }
     }
 
@@ -585,7 +580,7 @@ pub fn construir_binario_adi(ruta: &str) {
     if adi.descarga.sumasha == "SALTAR" {
         println!("{}", "¡Se a saltado la verificacion!".yellow());
     } else if !archivos::verificacion_hash(
-        &directorio.join(acd.clone()).to_str().unwrap(),
+        directorio.join(acd.clone()).to_str().unwrap(),
         &adi.descarga.sumasha,
     ) {
         let error = MsgError::new("Las sumas no son coinciden");
@@ -598,8 +593,8 @@ pub fn construir_binario_adi(ruta: &str) {
         let _rr = _repositorio;
     } else {
         let tar = archivos::extraer_tar(
-            &directorio.join(&acd).to_str().unwrap(),
-            &directorio.to_str().unwrap(),
+            directorio.join(&acd).to_str().unwrap(),
+            directorio.to_str().unwrap(),
         );
         match tar {
             Ok(_v) => _v,
@@ -625,7 +620,7 @@ pub fn construir_binario_adi(ruta: &str) {
 
     pb.message("Construyendo binario ");
     pb.inc();
-    archivos::construir_binario(adi, &directorio, ruta);
+    archivos::construir_binario(adi, directorio, ruta);
     let salida_borrar = fs::remove_dir_all(directorio);
     match salida_borrar {
         Ok(_v) => _v,

@@ -15,17 +15,17 @@ debug = true
 [dependencies]
 colored = "2"
 clap = {version = "~2.27.0", features = ["yaml"]}
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = "0.11"
 tokio = { version = "1", features = ["full"] }
 read_input = "0.8"
-toml = "0.5.8"
+toml = "0.5"
 pbr = "1.0.4"
 tar = "0.4"
 flate2 = "1.0"
-sha2 = "0.9.3"
+sha2 = "0.10"
 nix = "0.20.0"
-psutil = "3.2.0"
+psutil = { git = "https://github.com/mygnu/rust-psutil", branch = "update-dependencies", default-features = false, features = ["host"] }
 exitcode = "1.1.2"
 
 [dev-dependencies]
-testdir = "0.4.0"
+testdir = "0.4"

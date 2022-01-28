@@ -9,7 +9,7 @@ A Package Manager as a model: PKGBUILD
 [English](./README_en.md)
 
 # NOTICIAS
-- Se ha liberado la versión: v1.5 Para todos!!!
+- Se ha liberado la versión: v1.5.1 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
 - Agregando soporte para Nix

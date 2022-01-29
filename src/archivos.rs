@@ -3,6 +3,8 @@
 use {
     crate::estructuras::{Adi, AdiInstalacion, GestoresLenguajes, MsgError},
     flate2::{read::GzDecoder, write::GzEncoder, Compression},
+    git2,
+    git2_credentials::CredentialHandler,
     read_input::prelude::*,
     sha2::{Digest, Sha256},
     std::{fs, fs::File, io, path::Path, process::Command},
@@ -69,6 +71,47 @@ pub fn git_clone(repositorio: &str, destino: &str) {
         .spawn()
         .expect("Algo fallo con git_clone");
     let _result = child.wait().unwrap();
+}
+
+pub fn git_clono(url: &str, destino: &str) -> Result<(), git2::Error> {
+    let ramas = ["main", "master"];
+    let mut error_clone = git2::Error::from_str("NULL_ERROR");
+    for rama in ramas {
+        let mut cb = git2::RemoteCallbacks::new();
+        let git_config = match git2::Config::open_default() {
+            Ok(v) => v,
+            Err(e) => {
+                let error = MsgError::new(&e.to_string());
+                error.print_salir();
+                /*Se coloca la siguiente linea de codigo ya que con la anterior se cierra el programa,
+                pero aun asi es necesario retornar el un valor del tipo git2::Config*/
+                git2::Config::open_default().unwrap()
+            }
+        };
+        let mut ch = CredentialHandler::new(git_config);
+        cb.credentials(move |url, username, allowed| {
+            ch.try_next_credential(url, username, allowed)
+        });
+        let mut fo = git2::FetchOptions::new();
+        fo.remote_callbacks(cb)
+            .download_tags(git2::AutotagOption::All)
+            .update_fetchhead(true);
+        if let Err(e) = fs::create_dir_all(destino) {
+            let error = MsgError::new(&e.to_string());
+            error.print_salir();
+        }
+
+        if let Err(e) = git2::build::RepoBuilder::new()
+            .branch(rama)
+            .fetch_options(fo)
+            .clone(url, Path::new(destino))
+        {
+            error_clone = e;
+        } else {
+            return Ok(());
+        }
+    }
+    Err(error_clone)
 }
 
 #[tokio::main]

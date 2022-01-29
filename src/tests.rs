@@ -31,7 +31,7 @@ fn extraer_tar_test() {
 fn clono_test() {
     let dir: PathBuf = testdir!();
     let path = dir.join("dotfiles/");
-    let _testeo = archivos::git_clono(
+    let _testeo = archivos::git_clone(
         "https://github.com/Kedap/dotfiles.git",
         path.to_str().unwrap(),
     )

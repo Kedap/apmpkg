@@ -127,13 +127,18 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
     acd.push_str(".acd.tar");
     let fuentes = paquete.descarga.fuente.clone();
     match fuentes {
-        Fuente::Git(repositorio) => archivos::git_clone(
-            &repositorio,
-            directorio
-                .join(paquete.descarga.carpeta.clone())
-                .to_str()
-                .unwrap(),
-        ),
+        Fuente::Git(repositorio) => {
+            if let Err(e) = archivos::git_clone(
+                &repositorio,
+                directorio
+                    .join(paquete.descarga.carpeta.clone())
+                    .to_str()
+                    .unwrap(),
+            ) {
+                let error = MsgError::new(&e.to_string());
+                error.print_salir();
+            }
+        }
         Fuente::Url(url) => {
             let creando = archivos::crear_directorio(directorio.to_str().unwrap());
             match creando {
@@ -537,13 +542,18 @@ pub fn construir_binario_adi(ruta: &str) {
     acd.push_str(".acd.tar");
     let fuentes = adi.descarga.fuente.clone();
     match fuentes {
-        Fuente::Git(repositorio) => archivos::git_clone(
-            &repositorio,
-            directorio
-                .join(adi.descarga.carpeta.clone())
-                .to_str()
-                .unwrap(),
-        ),
+        Fuente::Git(repositorio) => {
+            if let Err(e) = archivos::git_clone(
+                &repositorio,
+                directorio
+                    .join(adi.descarga.carpeta.clone())
+                    .to_str()
+                    .unwrap(),
+            ) {
+                let error = MsgError::new(&e.to_string());
+                error.print_salir();
+            }
+        }
         Fuente::Url(url) => {
             let creando = archivos::crear_directorio(directorio.to_str().unwrap());
             match creando {

@@ -63,17 +63,7 @@ pub fn leer_archivo(ruta: &str) -> String {
     }
 }
 
-pub fn git_clone(repositorio: &str, destino: &str) {
-    let mut child = Command::new("git")
-        .arg("clone")
-        .arg(repositorio)
-        .arg(destino)
-        .spawn()
-        .expect("Algo fallo con git_clone");
-    let _result = child.wait().unwrap();
-}
-
-pub fn git_clono(url: &str, destino: &str) -> Result<(), git2::Error> {
+pub fn git_clone(url: &str, destino: &str) -> Result<(), git2::Error> {
     let ramas = ["main", "master"];
     let mut error_clone = git2::Error::from_str("NULL_ERROR");
     for rama in ramas {

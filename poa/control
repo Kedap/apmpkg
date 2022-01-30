@@ -2,6 +2,6 @@ Package: apmpkg
 Version: 1.5.0
 Priority: optional
 Architecture: amd64
-Depends: git, python3-pip, wget, fakeroot, bundle, bundler, rsync, npm
+Depends: git, python3-pip, wget, fakeroot, bundler, rsync, npm
 Maintainer: kedap <kedap.dev@protonmail.com>
 Description: A Package Manager as model PKGBUILD

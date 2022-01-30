@@ -137,5 +137,25 @@ Para instalar los manuales solo ejecute al igual se necesita tener instalado man
 # mkdir -p /usr/local/share/man/man1
 # cp man/* /usr/local/share/man/man1
 ```
+### Completions
+Para instalar los completions solo necesitas ejecutar lo siguiente segun tu shell
+
+#### Bash
+Para instalar los completions de bash deberas ejecutar lo siguiente:
+```
+[user@pc-pro]$ install -Dm644 completions/apmpkg.bash-completion /usr/share/bash-completion/completions/apmpkg
+```
+
+#### Zsh
+Para instalar en Zsh
+```
+% install -Dm644 completions/_apmpkg /usr/share/zsh/site-functions/_apmpkg
+```
+
+#### Fish
+Si utiliza la shell de Fish lo que tendra que ejecutar sera lo siguiente:
+```
+user@pc-pro ~ install -Dm644 completions/apmpkg.fish /usr/share/fish/vendor_completions.d/apmpkg.fish
+```
 ## Ejecucion
 `apmpkg --help`

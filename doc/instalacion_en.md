@@ -42,9 +42,23 @@ Or in a better way you can have the latest versions with the repository [krep0](
 Place the following lines in `/etc/pacman.conf`:
 ```toml
 [krep0]
-SigLevel = Optional TrustAll
 Server = https://$repo.bitbucket.io/archlinux/$arch
+Server = http://164.90.155.18/repository/archlinux
 ```
+Now we will have to configure the public keys with which the packages are signed, there are two easy ways, manual and automated.
+The automated way is to run the following command:
+
+```sh
+$ curl -O https://krep0.bitbucket.io/archlinux/key-krep0.sh
+$ bash key-krep0.sh
+```
+
+Or if you want to do it manually run:
+
+```sh
+$ curl -O https://krep0.bitbucket.io/archlinux/kedap.pub && sudo pacman-key -a kedap.pub
+```
+
 And update with `pacman -Syu`
 
 Once you have krep0 in your pacman.conf you must execute the following to install apmpkg:

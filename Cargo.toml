@@ -14,7 +14,7 @@ debug = true
 
 [dependencies]
 colored = "2"
-clap = {version = "~2.27.0", features = ["yaml"]}
+clap = {version = "~2.33.0", features = ["yaml"]}
 reqwest = "0.11"
 tokio = { version = "1", features = ["full"] }
 read_input = "0.8"
@@ -28,6 +28,8 @@ psutil = { git = "https://github.com/mygnu/rust-psutil", branch = "update-depend
 exitcode = "1.1.2"
 git2 = "0.13"
 git2_credentials = "0.7"
+lms_lib = "0.4"
+syncre_lib = { git = "https://github.com/kedap/syncre" }
 
 [dev-dependencies]
 testdir = "0.4"

@@ -28,7 +28,6 @@ psutil = { git = "https://github.com/mygnu/rust-psutil", branch = "update-depend
 exitcode = "1.1.2"
 git2 = "0.13"
 git2_credentials = "0.7"
-lms_lib = "0.4"
 syncre_lib = { git = "https://github.com/kedap/syncre" }
 
 [dev-dependencies]

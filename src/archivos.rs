@@ -5,7 +5,6 @@ use {
     flate2::{read::GzDecoder, write::GzEncoder, Compression},
     git2,
     git2_credentials::CredentialHandler,
-    lms_lib::{core, parse::Flag},
     read_input::prelude::*,
     sha2::{Digest, Sha256},
     std::{fs, fs::File, io, path::Path, process::Command},
@@ -137,21 +136,6 @@ pub fn copiar_archivo(desde: &str, destino: &str) {
     let _result = child.wait().unwrap();
 }
 
-pub fn sincronizar_archivos(fuente: &str, destino: &str) -> Result<(), io::Error> {
-    // Proximamente se agregaran las caracteristicas de lms_lib a syncre_lib
-    // por lo mientras se tendran que mantener las dos lineas de codigo para
-    // un mejor funcionamiento
-    if fuente.chars().last().unwrap() == '/' {
-        archive::copy_sync_ow(Path::new(fuente), Path::new(destino))?;
-        core::synchronize(fuente, destino, Flag::empty())
-    } else {
-        let nombre_carpeta = Path::new(fuente).file_name().unwrap();
-        let destino_final = Path::new(destino).join(nombre_carpeta);
-        archive::copy_sync_ow(Path::new(fuente), &destino_final)?;
-        core::synchronize(fuente, destino_final.to_str().unwrap(), Flag::empty())
-    }
-}
-
 pub fn crear_directorio(directorio: &str) -> std::io::Result<()> {
     fs::create_dir_all(directorio)?;
     Ok(())
@@ -226,7 +210,7 @@ pub fn instalar_archivos(adi_instalacion: AdiInstalacion, carpeta_src: &str) {
                 let destino_usuario = Path::new("/home")
                     .join(usuario.clone())
                     .join(destino[i].as_str().unwrap());
-                if let Err(e) = sincronizar_archivos(
+                if let Err(e) = archive::synchronize(
                     archivo.to_str().unwrap(),
                     destino_usuario.to_str().unwrap(),
                 ) {
@@ -237,7 +221,7 @@ pub fn instalar_archivos(adi_instalacion: AdiInstalacion, carpeta_src: &str) {
                 let destino_usuario = Path::new("/home")
                     .join(usuario.clone())
                     .join(destino[i].as_str().unwrap());
-                if let Err(e) = sincronizar_archivos(
+                if let Err(e) = archive::synchronize(
                     archivo.to_str().unwrap(),
                     destino_usuario.to_str().unwrap(),
                 ) {
@@ -247,7 +231,7 @@ pub fn instalar_archivos(adi_instalacion: AdiInstalacion, carpeta_src: &str) {
             }
         } else {
             if let Err(e) =
-                sincronizar_archivos(archivo.to_str().unwrap(), destino[i].as_str().unwrap())
+                archive::synchronize(archivo.to_str().unwrap(), destino[i].as_str().unwrap())
             {
                 let error = MsgError::new(&e.to_string());
                 error.print_salir();

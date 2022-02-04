@@ -9,13 +9,13 @@ A Package Manager as a model: PKGBUILD
 [Spanish](./README.md)
 
 # NEWS
-- Version has been released: v1.5 For everybody!!!
+- Version has been released: v1.5.1 For everybody!!!
 - Creation of the binaries for all available distributions
 - ApmPKG is uploaded is in [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Adding support for Nix
-- Fixing the bug caused with `apmpkg create abc hello-world`
-- You can add files in `/home` of different users
-- In binary installation the pre-installation scripts are not executed
+- Added completions for Bash and Zsh
+- Installation with debian binaries no longer causes errors
+- ApmPKG uses libraries instead of using commands, with the exception of `install`
+- About the documentation for [krep0](krep0.bitbucket.io/) has already been updated
 
 * * *
 A package manager that wants to be a powerful universal tool for Linux in order to create and install packages.

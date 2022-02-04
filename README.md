@@ -12,10 +12,10 @@ A Package Manager as a model: PKGBUILD
 - Se ha liberado la versión: v1.5.1 Para todos!!!
 - Creacion de los binarios para todas las distribuciones disponibles
 - Se a subido ApmPKG esta en [AUR](https://aur.archlinux.org/packages/apmpkg/)
-- Agregando soporte para Nix
-- Arreglando el bug ocacionado con `apmpkg crear abc hello-world`
-- Se puede agregar archivos en `/home` de distintos usuarios
-- En instalacion binaria no se ejecuta los scripts pre-instalacion
+- Se agregaron completions para Bash y Zsh
+- La instalacion con los binarios de debian ya no ocasionan errores
+- ApmPKG utiliza librerias en vez de utilizar comandos, por excepcion de `install`
+- Sobre la documentacion para [krep0](krep0.bitbucket.io/) ya ha sido actualizada
 
 * * *
 Un gestor de paquetes que desea ser una poderosa herramienta universal para linux con el fin de la cracion e instalacion de paquetes.

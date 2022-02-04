@@ -1832,7 +1832,7 @@ dependencies = [
 [[package]]
 name = "syncre_lib"
 version = "0.1.0"
-source = "git+https://github.com/kedap/syncre#ee9470aa43636784c3cc81953f4b30c57c6f9208"
+source = "git+https://github.com/kedap/syncre#19f52a5004ae7243216f78da72a320f8e026c89c"
 dependencies = [
  "bytes",
  "md4",

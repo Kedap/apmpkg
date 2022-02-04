@@ -8,6 +8,7 @@ use {
     read_input::prelude::*,
     sha2::{Digest, Sha256},
     std::{fs, fs::File, io, path::Path, process::Command},
+    syncre_lib::archive,
     tar::Archive,
 };
 
@@ -209,33 +210,32 @@ pub fn instalar_archivos(adi_instalacion: AdiInstalacion, carpeta_src: &str) {
                 let destino_usuario = Path::new("/home")
                     .join(usuario.clone())
                     .join(destino[i].as_str().unwrap());
-                let mut child = Command::new("rsync")
-                    .arg("-a")
-                    .arg(archivo)
-                    .arg(destino_usuario.to_str().unwrap())
-                    .spawn()
-                    .expect("Ocurrio un error con rsync");
-                let _result = child.wait().unwrap();
+                if let Err(e) = archive::synchronize(
+                    archivo.to_str().unwrap(),
+                    destino_usuario.to_str().unwrap(),
+                ) {
+                    let error = MsgError::new(&e.to_string());
+                    error.print_salir();
+                }
             } else {
                 let destino_usuario = Path::new("/home")
                     .join(usuario.clone())
                     .join(destino[i].as_str().unwrap());
-                let mut child = Command::new("rsync")
-                    .arg("-a")
-                    .arg(archivo)
-                    .arg(destino_usuario.to_str().unwrap())
-                    .spawn()
-                    .expect("Ocurrio un error con rsync");
-                let _result = child.wait().unwrap();
+                if let Err(e) = archive::synchronize(
+                    archivo.to_str().unwrap(),
+                    destino_usuario.to_str().unwrap(),
+                ) {
+                    let error = MsgError::new(&e.to_string());
+                    error.print_salir();
+                }
             }
         } else {
-            let mut child = Command::new("rsync")
-                .arg("-a")
-                .arg(archivo)
-                .arg(destino[i].as_str().unwrap())
-                .spawn()
-                .expect("Ocurrio un error con rsync");
-            let _result = child.wait().unwrap();
+            if let Err(e) =
+                archive::synchronize(archivo.to_str().unwrap(), destino[i].as_str().unwrap())
+            {
+                let error = MsgError::new(&e.to_string());
+                error.print_salir();
+            }
         }
     }
 

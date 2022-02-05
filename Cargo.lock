@@ -246,9 +246,9 @@ dependencies = [
 
 [[package]]
 name = "block-buffer"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1d36a02058e76b040de25a4464ba1c80935655595b661505c8b39b664828b95"
+checksum = "03588e54c62ae6d763e2a80090d50353b785795361b4ff5b3bf0a5097fc31c0b"
 dependencies = [
  "generic-array 0.14.5",
 ]
@@ -491,7 +491,7 @@ version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b697d66081d42af4fba142d56918a3cb21dc8eb63372c6b85d14f44fb9c5979b"
 dependencies = [
- "block-buffer 0.10.0",
+ "block-buffer 0.10.1",
  "crypto-common",
  "generic-array 0.14.5",
 ]
@@ -1832,7 +1832,7 @@ dependencies = [
 [[package]]
 name = "syncre_lib"
 version = "0.1.0"
-source = "git+https://github.com/kedap/syncre#eed0b1c6984d039592b9f25f7cedb4534e88b5c3"
+source = "git+https://github.com/kedap/syncre#a060b6e354ce8e549f5df6eb38f161a9b813acc4"
 dependencies = [
  "bytes",
  "md4",

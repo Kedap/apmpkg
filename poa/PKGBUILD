@@ -9,7 +9,7 @@ url="https://github.com/Kedap/apmpkg"
 license=('Apache')
 optdepends=('flatpak: for install dependencies'
   'snapd: for install dependencies')
-depends=('git' 'python-pip' 'python2-pip' 'wget' 'fakeroot' 'ruby-bundler' 'rsync' 'npm')
+depends=('git' 'python-pip' 'wget' 'fakeroot' 'ruby-bundler' 'rsync' 'npm')
 makedepends=('cargo')
 conflicts=('apmpkg-git-dev' 'apmpkg-dev')
 source=("https://github.com/kedap/${pkgname}/archive/refs/tags/${pkgver}.tar.gz")

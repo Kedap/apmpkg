@@ -45,5 +45,5 @@ install -Dm 644 "completions/apmpkg.fish" -t %{buildroot}/usr/share/fish/vendor_
 
 
 %changelog
-* Fri Feb 04 2022 kedap <kedap.dev@protonmail.com>
-- Adding Bash, Zsh and Fish completions
+* Fri Feb 12 2022 kedap <kedap.dev@protonmail.com>
+- Adding Bash, Zsh and Fish completions and fix bugs. see more https://github.com/kedap/apmpkg

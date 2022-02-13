@@ -42,9 +42,24 @@ O de mejor manera puedes tener las ultimas version con el repositorio [krep0](ht
 Colocar las siguientes lineas en `/etc/pacman.conf`:
 ```toml
 [krep0]
-SigLevel = Optional TrustAll
 Server = https://$repo.bitbucket.io/archlinux/$arch
+Server = http://164.90.155.18/repository/archlinux
 ```
+
+Despues deberas de configurar las llaves publicas con las cuales estan firmados los paquetes, existen dos formas faciles, la manual y la automatizada.
+La forma automatizada es la de ejecutar el siguiente comando:
+
+```sh
+$ curl -O https://krep0.bitbucket.io/archlinux/key-krep0.sh
+$ bash key-krep0.sh
+```
+
+O si quieres hacerlo de manera manual ejecuta:
+
+```sh
+$ curl -O https://krep0.bitbucket.io/archlinux/kedap.pub && sudo pacman-key -a kedap.pub
+```
+
 Y actualizar con `pacman -Syu`
 
 Una vez que ya tengas krep0 en tu pacman.conf deberas de ejecutar lo siguiente para instalar apmpkg:
@@ -121,6 +136,26 @@ Para instalar los manuales solo ejecute al igual se necesita tener instalado man
 ```
 # mkdir -p /usr/local/share/man/man1
 # cp man/* /usr/local/share/man/man1
+```
+### Completions
+Para instalar los completions solo necesitas ejecutar lo siguiente segun tu shell
+
+#### Bash
+Para instalar los completions de bash deberas ejecutar lo siguiente:
+```
+[user@pc-pro]$ install -Dm644 completions/apmpkg.bash-completion /usr/share/bash-completion/completions/apmpkg
+```
+
+#### Zsh
+Para instalar en Zsh
+```
+% install -Dm644 completions/_apmpkg /usr/share/zsh/site-functions/_apmpkg
+```
+
+#### Fish
+Si utiliza la shell de Fish lo que tendra que ejecutar sera lo siguiente:
+```
+user@pc-pro ~ install -Dm644 completions/apmpkg.fish /usr/share/fish/vendor_completions.d/apmpkg.fish
 ```
 ## Ejecucion
 `apmpkg --help`

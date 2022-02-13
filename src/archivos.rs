@@ -1,11 +1,14 @@
 //Modulo para la manipulacion de archivos
 
 use {
-    crate::estructuras::{Adi, AdiInstalacion, Fuente, GestoresLenguajes, MsgError},
+    crate::estructuras::{Adi, AdiInstalacion, GestoresLenguajes, MsgError},
     flate2::{read::GzDecoder, write::GzEncoder, Compression},
+    git2,
+    git2_credentials::CredentialHandler,
     read_input::prelude::*,
     sha2::{Digest, Sha256},
     std::{fs, fs::File, io, path::Path, process::Command},
+    syncre_lib::archive,
     tar::Archive,
 };
 
@@ -61,14 +64,45 @@ pub fn leer_archivo(ruta: &str) -> String {
     }
 }
 
-pub fn git_clone(repositorio: &str, destino: &str) {
-    let mut child = Command::new("git")
-        .arg("clone")
-        .arg(repositorio)
-        .arg(destino)
-        .spawn()
-        .expect("Algo fallo con git_clone");
-    let _result = child.wait().unwrap();
+pub fn git_clone(url: &str, destino: &str) -> Result<(), git2::Error> {
+    let ramas = ["main", "master"];
+    let mut error_clone = git2::Error::from_str("NULL_ERROR");
+    for rama in ramas {
+        let mut cb = git2::RemoteCallbacks::new();
+        let git_config = match git2::Config::open_default() {
+            Ok(v) => v,
+            Err(e) => {
+                let error = MsgError::new(&e.to_string());
+                error.print_salir();
+                /*Se coloca la siguiente linea de codigo ya que con la anterior se cierra el programa,
+                pero aun asi es necesario retornar el un valor del tipo git2::Config*/
+                git2::Config::open_default().unwrap()
+            }
+        };
+        let mut ch = CredentialHandler::new(git_config);
+        cb.credentials(move |url, username, allowed| {
+            ch.try_next_credential(url, username, allowed)
+        });
+        let mut fo = git2::FetchOptions::new();
+        fo.remote_callbacks(cb)
+            .download_tags(git2::AutotagOption::All)
+            .update_fetchhead(true);
+        if let Err(e) = fs::create_dir_all(destino) {
+            let error = MsgError::new(&e.to_string());
+            error.print_salir();
+        }
+
+        if let Err(e) = git2::build::RepoBuilder::new()
+            .branch(rama)
+            .fetch_options(fo)
+            .clone(url, Path::new(destino))
+        {
+            error_clone = e;
+        } else {
+            return Ok(());
+        }
+    }
+    Err(error_clone)
 }
 
 #[tokio::main]
@@ -142,68 +176,65 @@ pub fn instalar_archivos(adi_instalacion: AdiInstalacion, carpeta_src: &str) {
                 .spawn()
                 .expect("Algo fallo con install");
             let _result = child.wait().unwrap();
-        } else {
-            if Path::new(destino[i].as_str().unwrap()).is_relative() {
-                if usuario.is_empty() {
-                    let directorys = match fs::read_dir("/home") {
-                        Ok(v) => v,
-                        Err(e) => {
-                            let error = MsgError::new(&e.to_string());
-                            error.print_salir();
-                            panic!();
-                        }
-                    };
-                    println!("¿Para que usuario quieres instalar este paquete?");
-                    for usuario in directorys {
-                        println!(
-                            "{}",
-                            usuario
-                                .unwrap()
-                                .path()
-                                .file_name()
-                                .unwrap()
-                                .to_str()
-                                .unwrap()
-                        );
-                    }
-
-                    print!("> ");
-                    usuario = input().get();
-                    if usuario.is_empty() {
-                        let error = MsgError::new("Eso no parece el nombre de un usuario");
+        } else if Path::new(destino[i].as_str().unwrap()).is_relative() {
+            if usuario.is_empty() {
+                let directorys = match fs::read_dir("/home") {
+                    Ok(v) => v,
+                    Err(e) => {
+                        let error = MsgError::new(&e.to_string());
                         error.print_salir();
+                        panic!();
                     }
+                };
+                println!("¿Para que usuario quieres instalar este paquete?");
+                for usuario in directorys {
+                    println!(
+                        "{}",
+                        usuario
+                            .unwrap()
+                            .path()
+                            .file_name()
+                            .unwrap()
+                            .to_str()
+                            .unwrap()
+                    );
+                }
 
-                    let destino_usuario = Path::new("/home")
-                        .join(usuario.clone())
-                        .join(destino[i].as_str().unwrap());
-                    let mut child = Command::new("rsync")
-                        .arg("-a")
-                        .arg(archivo)
-                        .arg(destino_usuario.to_str().unwrap())
-                        .spawn()
-                        .expect("Ocurrio un error con rsync");
-                    let _result = child.wait().unwrap();
-                } else {
-                    let destino_usuario = Path::new("/home")
-                        .join(usuario.clone())
-                        .join(destino[i].as_str().unwrap());
-                    let mut child = Command::new("rsync")
-                        .arg("-a")
-                        .arg(archivo)
-                        .arg(destino_usuario.to_str().unwrap())
-                        .spawn()
-                        .expect("Ocurrio un error con rsync");
-                    let _result = child.wait().unwrap();
+                print!("> ");
+                usuario = input().get();
+                if usuario.is_empty() {
+                    let error = MsgError::new("Eso no parece el nombre de un usuario");
+                    error.print_salir();
+                }
+
+                let destino_usuario = Path::new("/home")
+                    .join(usuario.clone())
+                    .join(destino[i].as_str().unwrap());
+                if let Err(e) = archive::synchronize(
+                    archivo.to_str().unwrap(),
+                    destino_usuario.to_str().unwrap(),
+                ) {
+                    let error = MsgError::new(&e.to_string());
+                    error.print_salir();
                 }
             } else {
-                let mut child = Command::new("rsync")
-                    .arg("-a")
-                    .arg(archivo)
-                    .arg(destino[i].as_str().unwrap())
-                    .spawn()
-                    .expect("Ocurrio un error con rsync");
-                let _result = child.wait().unwrap();
+                let destino_usuario = Path::new("/home")
+                    .join(usuario.clone())
+                    .join(destino[i].as_str().unwrap());
+                if let Err(e) = archive::synchronize(
+                    archivo.to_str().unwrap(),
+                    destino_usuario.to_str().unwrap(),
+                ) {
+                    let error = MsgError::new(&e.to_string());
+                    error.print_salir();
+                }
+            }
+        } else {
+            if let Err(e) =
+                archive::synchronize(archivo.to_str().unwrap(), destino[i].as_str().unwrap())
+            {
+                let error = MsgError::new(&e.to_string());
+                error.print_salir();
             }
         }
     }
@@ -237,12 +268,6 @@ pub fn binario_completo(adi: Adi) -> bool {
     let conservar: bool;
     if let GestoresLenguajes::Ninguno = adi.gestor {
         conservar = false;
-    } else if adi.instalacion.fuente_opt {
-        conservar = true;
-    } else if let Fuente::Git(_repositorio) = adi.descarga.fuente {
-        conservar = true;
-    } else if !adi.instalacion.pre_instalacion.is_empty() {
-        conservar = true;
     } else {
         conservar = true;
     }
@@ -357,7 +382,7 @@ pub fn remover_archivos(adi: Adi) {
                 remover_rm(destino_usuario.to_str().unwrap());
             }
         } else {
-            remover_rm(&archivos.as_str().unwrap());
+            remover_rm(archivos.as_str().unwrap());
         }
     }
 

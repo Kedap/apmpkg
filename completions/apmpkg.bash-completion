@@ -1,0 +1,147 @@
+_apmpkg() {
+    local i cur prev opts cmds
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    cmd=""
+    opts=""
+
+    for i in ${COMP_WORDS[@]}
+    do
+        case "${i}" in
+            apmpkg)
+                cmd="apmpkg"
+                ;;
+            
+            construir)
+                cmd+="_construir"
+                ;;
+            crear)
+                cmd+="_crear"
+                ;;
+            help)
+                cmd+="_help"
+                ;;
+            instalar)
+                cmd+="_instalar"
+                ;;
+            remover)
+                cmd+="_remover"
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    case "${cmd}" in
+        apmpkg)
+            opts=" -d -h -V  --instalar_dependencia --help --version   instalar remover crear construir help"
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+                return 0
+            fi
+            case "${prev}" in
+                
+                --instalar_dependencia)
+                    COMPREPLY=("<dependencia>")
+                    return 0
+                    ;;
+                    -d)
+                    COMPREPLY=("<dependencia>")
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        
+        apmpkg_construir)
+            opts=" -h -V  --help --version  <paquete> "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        apmpkg_crear)
+            opts=" -h -V  --help --version  <tipo> <nombre> "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        apmpkg_help)
+            opts=" -h -V  --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        apmpkg_instalar)
+            opts=" -c -u -b -h -V  --confirmar --url --binario --help --version  <paquete> "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+                return 0
+            fi
+            case "${prev}" in
+                
+                --url)
+                    COMPREPLY=("<url>")
+                    return 0
+                    ;;
+                    -u)
+                    COMPREPLY=("<url>")
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        apmpkg_remover)
+            opts=" -c -h -V  --confirmar --help --version  <paquete> "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+    esac
+}
+
+complete -F _apmpkg -o bashdefault -o default apmpkg

@@ -1,13 +1,13 @@
 # Contributor: kedap <kedap.dev@protonmail.com>
 # Maintainer: kedap <kedap.dev@protonmail.com>
 pkgname=apmpkg
-pkgver=1.5.0
+pkgver=1.5.1
 pkgrel=0
 pkgdesc="A Package Manager as a model: PKGBUILD"
 url="https://github.com/kedap/apmpkg"
 arch="x86_64 armv7 armhf aarch64 x86 ppc64le" # limited by rust/cargo
 license="Apache-2.0"
-depends="git fakeroot wget ruby-bundler py3-pip rsync bash ruby-dev npm"
+depends="git fakeroot wget ruby-bundler py3-pip bash ruby-dev npm"
 makedepends="openssl-dev"
 source="$pkgname-$pkgver.tar.gz::https://github.com/kedap/apmpkg/archive/refs/tags/$pkgver.tar.gz"
 
@@ -23,4 +23,4 @@ package() {
 }
 
 sha512sums="
-0e7ba0c127c5e61f855917d0fa732bf776830492cd63410cce9b4c4d5cf1ef139e31e840496724b273e9bb99a6ce1b575fb5215b5709cd7e0237ebd8c0b696a0  apmpkg-1.5.0.tar.gz"
+0e7ba0c127c5e61f855917d0fa732bf776830492cd63410cce9b4c4d5cf1ef139e31e840496724b273e9bb99a6ce1b575fb5215b5709cd7e0237ebd8c0b696a0  apmpkg-1.5.1.tar.gz"

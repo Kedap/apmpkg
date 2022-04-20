@@ -1,5 +1,5 @@
 # Guide to creating packages using ApmPKG
-In this guide you will learn everything you need to know when creating packages for ApmPKG, in this way we can extend its use much more and have packages for linux
+In this guide you will learn everything you need to know when creating packages for ApmPKG, in this way we can extend its use much more and have packages for Linux
 
 [Spanish](./creando_paquetes.md)
 
@@ -8,7 +8,7 @@ Table of Contents
 	1. [Package data](#package)
 	2. [External dependencies](#dependencies-adi)
 	3. [Ruby gems](#gem)
-	4. [Pip2 / pip3](#pip)
+	4. [Pip2 / Pip3](#pip)
     5. [Npm](#npm)
 	6. [download](#download)
 	7. [installation](#installation)
@@ -18,7 +18,7 @@ Table of Contents
 4. [FAQs / Frequently Asked Questions](#frequent-questions)
 
 # Adi
-Your name from the acronym for (spanish):
+Your name from the acronym for (Spanish):
 **A**rchivo de
 **D**escarga e
 **I**nstalacion
@@ -137,7 +137,7 @@ The **gemfile** variable is a boolean (true/false) that it must be placed in a m
 **gems** this is an array where the gems on which it depends are specified, it is recommended that it must be few, few gems how to create a Gemfile but not so many, it is designed for projects that depend on 2 or 3 gems
 
 ## Pip
-Like ruby, python also has dependencies, these will be installed with pip by ApmPKG, in the same way this field is not mandatory unless the project requires it, we have support for pip2 and pip3, this is placed with `[pip] `below what it must contain:
+Like ruby, python also has dependencies, these will be installed with pip by ApmPKG, in the same way this field is not mandatory unless the project requires it, we have support for Pip2 and Pip3, this is placed with `[pip] `below what it must contain:
 ```
 version = 3 # 2
 requirements = true # false
@@ -146,7 +146,7 @@ file = "requeriments.txt"
 ```
 In **version** it must contain an integer and the version number of python / pip with which the dependencies will be installed, in the example we can see that it will be installed with pip3.
 
-En **requirements** es un boleano donde se debe de colocar true si es que el proyecto instala sus dependencias con el archivo requeriments.txt y false si no
+En **requirements** is a boolean where true should be placed if the project installs its dependencies with the requirements.txt file and false if not
 
 In **packages** it is an array where the dependencies are specified, this should not be put if the requirements are set to false.
 
@@ -176,7 +176,7 @@ url = "https://foo.com/bar.tar.gz"
 carpeta = "foo-bar"
 sha256sum = "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" # SALTAR
 ```
-The **url** variable is a string where the package download link is said, it must be compressed in `tar.gz` since it will be extracted with this compression format, but nevertheless in the git versions it has been created the **git** variable that is placed instead of url, when placing git the repository described here will be cloned, or failing that, if you have one of the sources on your computer, you can place its path in the variable **local**
+The **URL** variable is a string where the package download link is said, it must be compressed in `tar.gz` since it will be extracted with this compression format, but nevertheless in the git versions it has been created the **git** variable that is placed instead of URL, when placing git the repository described here will be cloned, or failing that, if you have one of the sources on your computer, you can place its path in the variable **local**
 
 In **folder** the directory that must be accessed once the tar.gz has been extracted or the git cloned is placed
 
@@ -202,17 +202,17 @@ We will find with the **post_install** variable that is no longer a string varia
 In the pre_install variable you will find the path where the bash script is, like the post_install script, it will be considered as failed if it returns an output other than 0
 
 ## Abc
-Su nombre es el acronimo de (spanish):
+His name is the acronym for (Spanish):
 **A**rchivo de
 **B**ash y 
 **C**ompilacion
 
-(english)
+(English)
 **B**ash 
 **F**ile and 
 **C**ompilation
 
-This type of file is based on and/or cloned from the [PKGBUILD](https://wiki.archlinux.org/index.php/PKGBUILD) of archlinux, it is not necessary to explain what this great archlinux model can do, but without However, we will focus on what ApmPKG cannot do with a PKGBUILD because we still cannot have absolute compatibility, but we are working so that it is not so in the future, so we present the limitations in relation to abc
+This type of file is based on and/or cloned from the [PKGBUILD](https://wiki.arch Linux.org/index.php/PKGBUILD) of arch Linux, it is not necessary to explain what this great arch Linux model can do, but without However, we will focus on what ApmPKG cannot do with a PKGBUILD because we still cannot have absolute compatibility, but we are working so that it is not so in the future, so we present the limitations in relation to abc
 ## Complications abc
 We currently do not have support with the following variables
 - groups: We currently do not have groups for packages
@@ -230,11 +230,11 @@ apmpkg crear <abc | adi> <Nombre del paquete a crear>
 So to facilitate the creation of a package
 
 # Frequent questions
-**Do PKGBUILD or .abc files work on any right-handed than archlinux?**
+**Do PKGBUILD or .abc files work on any right-handed than arch Linux?**
 Yes, since a process similar to `makepkg` is carried out, but nevertheless` iiabc` (interpreter for the installation with .abc) does a similar but very different process, like the binaries that are generated are similar to a `pkg. tar.xz` but very different from `adi.tar.gz`
 
 **I have dependency issues! In X distribution the dependencies are installed but in Y not**
-This is a warning, that is to say that a solution will be found as quickly as possible when launching ApmPKG since there are packages with different names in different repositories, an example is the package `openssh` that in archlinux is called` openssh` but in debian it is call `ssh`. A temporary solution would be to modify the name of the dependencies for each distribution, but we are working to eliminate this problem. But with version 1.0.1 the solution was given of being able to ask the user for a package that is not found
+This is a warning, that is to say that a solution will be found as quickly as possible when launching ApmPKG since there are packages with different names in different repositories, an example is the package `openssh` that in arch Linux is called` openssh` but in Debian it is call `ssh`. A temporary solution would be to modify the name of the dependencies for each distribution, but we are working to eliminate this problem. But with version 1.0.1 the solution was given of being able to ask the user for a package that is not found
 
 **Is root permissions required?**
 To install packages you need to be root, but nevertheless to create binaries it is not necessary

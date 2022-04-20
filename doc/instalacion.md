@@ -1,6 +1,11 @@
-# INSTALACION
+# INSTALACIÓN
 
-La opcion mas recomendable es que se dirja a la [seccion de lanzamientos](https://github.com/Kedap/apmpkg/releases/) y descargar los binarios, de igual manera se intentara distribuir para la mayoria de destribuciones y plataformas ¡SE PUEDE INSTALAR DESDE APMPKG! De igual manera en este markdown dara las manera de llevar la instalacion de ApmPKG a tu maquina.
+La opción mas recomendable es que se dirija a la [sección de
+lanzamientos](https://github.com/Kedap/apmpkg/releases/) y descargar los
+binarios, de igual manera se intentara distribuir para la mayoría de
+distribuciones y plataformas ¡SE PUEDE INSTALAR DESDE APMPKG! De igual manera
+en este Markdown dará las manera de llevar la instalación de ApmPKG a tu
+maquina.
 
 [English](./instalacion_en.md)
 
@@ -14,40 +19,55 @@ Tabla de contenido:
 	6. [yay](#yay)
 	7. [apk](#apk)
 	8. [binario](#binario)
-2. [Instalacion manual (compilacion)](#compilacion)
-	1. [Post-Instalacion](#post-instalacion)
+2. [Instalación manual (compilación)](#compilacion)
+	1. [Post-Instalación](#post-instalacion)
 
 # Instalacion de los binarios
-Este es solo una gia de como es recomentable instalar los binarios con los gestores de paquetes a continuacion:
+Este es solo una guia de como es recomendable instalar los binarios con los
+gestores de paquetes a continuación:
 
 ## Apt
-Apt es el gestor de paquetes para debian y sus derivados, para hacer un instalacion utilizando apt solo sobre escribir los siguientes comandos en su terminal:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-amd64.deb; apt install ./apmpkg-1.5.0-amd64.deb`
+Apt es el gestor de paquetes para Debian y sus derivados, para hacer un
+instalación utilizando Apt solo sobre escribir los siguientes comandos en su
+terminal:
 
-De esta manera apt buscara por las dependencias necesarias para ApmPKG
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.1/apmpkg-amd64.deb;
+apt install ./apmpkg-amd64.deb`
+
+De esta manera Apt buscara por las dependencias necesarias para ApmPKG
 
 ## Dnf
-Dnf, la siguiente generacion de yum, recomendamos altamente utilizar dnf para la instalacion de ApmPKG para que sea una instalacion deseada como se debe, en el caso de que no funcione la instalacion con este binario se puede utilizar el otro destinado para zypper, para instalar con esta herramienta es necesario ejecutar lo siguiente:
+Dnf, la siguiente generación de Yum, recomendamos altamente utilizar Dnf para
+la instalación de ApmPKG para que sea una instalación deseada como se debe, en
+el caso de que no funcione la instalación con este binario se puede utilizar el
+otro destinado para Zypper, para instalar con esta herramienta es necesario
+ejecutar lo siguiente:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-1.fc34.x86_64.rpm; dnf localinstall apmpkg-1.5.0-1.fc34.x86_64.rpm`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.1/apmpkg-1.5.1-1.fc34.x86_64.rpm;
+dnf localinstall apmpkg-1.5.1-1.fc34.x86_64.rpm`
 
-De esta manera usted ya tendra instalado ApmPKG en su equipo
+De esta manera usted ya tendrá instalado ApmPKG en su equipo
 
 ## Pacman
-Pacman el gestor de paquetes de archlinux, de igual manera se puede instalar con este gestor, solo falta que ejecute:
+Pacman el gestor de paquetes de archlinux, de igual manera se puede instalar
+con este gestor, solo falta que ejecute:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-1.pkg.tar.zst; pacman -U apmpkg-1.5.0-1.pkg.tar.zst`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.1/apmpkg-1.5.1-1-x86_64.pkg.tar.zst;
+pacman -U apmpkg-1.5.1-1-x86_64.pkg.tar.zst`
 
-O de mejor manera puedes tener las ultimas version con el repositorio [krep0](https://krep0.bitbucket.io/archlinux/), si no lo tienes en tu pacman.conf, deberas de realizar lo siguiente:
-Colocar las siguientes lineas en `/etc/pacman.conf`:
+O de mejor manera puedes tener las ultimas versión con el repositorio
+[krep0](https://krep0.bitbucket.io/archlinux/), si no lo tienes en tu
+pacman.conf, deberás de colocar lo siguiente en `/etc/pacman.conf`:
+
 ```toml
 [krep0]
-Server = https://$repo.bitbucket.io/archlinux/$arch
 Server = http://164.90.155.18/repository/archlinux
+Server = https://$repo.bitbucket.io/archlinux/$arch
 ```
 
-Despues deberas de configurar las llaves publicas con las cuales estan firmados los paquetes, existen dos formas faciles, la manual y la automatizada.
-La forma automatizada es la de ejecutar el siguiente comando:
+Después deberás de configurar las llaves publicas con las cuales están firmados
+los paquetes, existen dos formas fáciles, la manual y la automatizada. La forma
+automatizada es la de ejecutar el siguiente comando:
 
 ```sh
 $ curl -O https://krep0.bitbucket.io/archlinux/key-krep0.sh
@@ -62,13 +82,13 @@ $ curl -O https://krep0.bitbucket.io/archlinux/kedap.pub && sudo pacman-key -a k
 
 Y actualizar con `pacman -Syu`
 
-Una vez que ya tengas krep0 en tu pacman.conf deberas de ejecutar lo siguiente para instalar apmpkg:
+Una vez que ya tengas krep0 en tu pacman.conf deberás de ejecutar lo siguiente para instalar apmpkg:
 
 ```sh
 pacman -S apmpkg
 ```
 
-En el caso de que quieras instalar la version en desarrollo (no recomendado) deberas ejecutar:
+En el caso de que quieras instalar la versión en desarrollo (no recomendado) deberás ejecutar:
 ```sh
 pacman -S apmpkg-dev
 ```
@@ -76,50 +96,59 @@ pacman -S apmpkg-dev
 ## Zypper
 Zypper es el gestor de paquetes de OpenSUSE y para que ApmPKG sea instalado solo falta ejecutar lo siguiente:
 
-`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-1.fc34.x86_64.rpm; zypper in apmpkg-1.5.0-1.fc34.x86_64.rpm`
+`wget https://github.com/Kedap/apmpkg/releases/download/1.5.1/apmpkg-1.5.1-1.fc34.x86_64.rpm;
+zypper in apmpkg-1.5.1-1.fc34.x86_64.rpm`
 
 ## ApmPKG
-Un gestor de paquetes universal para linux escrito en rust y bash. como habiamos dicho antes que para instalar ApmPKG tambien se puede utilizar para descargar ApmPKG, obviamente no va a poder descargar ApmPKG en ApmPKG sin que antes lo tenga instalado, este metodo se utiliza mas para poder actualizar el ApmPKG, pues solo falta que escriba el siguiente comando.
-`apmpkg instalar -u https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0.abi.tar.gz`
+Un gestor de paquetes universal para Linux escrito en Rust y Bash. Como
+habíamos dicho antes que para instalar ApmPKG también se puede utilizar para
+descargar ApmPKG, obviamente no va a poder descargar ApmPKG en ApmPKG sin que
+antes lo tenga instalado, este método se utiliza mas para poder actualizar el
+ApmPKG, pues solo falta que escriba el siguiente comando.
+
+`apmpkg instalar -u https://github.com/Kedap/apmpkg/releases/download/1.5.1/apmpkg-1.5.1.abi.tar.gz`
 
 ## Yay
-*Yet another yogurt* o con cualquier otro ayudador para instalar pauquetes AUR, ApmPKG tambien esta en [AUR](https://aur.archlinux.org/packages/apmpkg) y que mejor manera que instalarlo con yay, con el siguiente comando
+*Yet another yogurt* o con cualquier otro ayudador para instalar paquetes AUR,
+ApmPKG también esta en [AUR](https://aur.archlinux.org/packages/apmpkg) y que
+mejor manera que instalarlo con yay, con el siguiente comando
 
 `yay -S apmpkg`
 
 De igual manera hay mas versiones ApmPKG en AUR.
 
 ## Apk
-Gestor de paquetes de alpine linux, y en esta actualizacion tenemos soporte para esta,
+Gestor de paquetes de alpine Linux, y en esta actualización tenemos soporte para esta,
 por que no lo instalas con:
+
 ```
-wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-1.5.0-r0.apk; apk add --allow-untrusted apmpkg-1.5.0-r0.apk
+wget https://github.com/Kedap/apmpkg/releases/download/1.5.1/apmpkg-1.5.1-r0.apk;
+apk add --allow-untrusted apmpkg-1.5.1-r0.apk
 ```
-Y si quieres tener la documentacion instalada, prueba con:
+
+Y si quieres tener la documentación instalada, prueba con:
+
 ```
-wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-doc-1.5.0-r0.apk;apk apk add --allow-untrusted apmpkg-doc-1.5.0-r0.apk
+wget https://github.com/Kedap/apmpkg/releases/download/1.5.1/apmpkg-doc-1.5.1-r0.apk;
+apk add --allow-untrusted apmpkg-doc-1.5.1-r0.apk
 ```
+
 O en su caso se puede instalar desde la rama testing de [alpine](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Repository_pinning)
 
 ```sh
 apk add apmpkg@testing
 ```
 
-## Binario
-En la seccion de [lanzamientos](https://github.com/Kedap/apmpkg/releases/) puede descargarlo e instalarlo con el siguiente comando:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-bin-x86_64; mv apmpkg-bin-x86_64 /usr/bin/apmpkg`
-Pero si quiere ejecutarlo de manera portable puede hacerlo:
-`wget https://github.com/Kedap/apmpkg/releases/download/1.5.0/apmpkg-bin-x86_64; ./apmpkg-bin-x86_64 --help`
-
-
 # Compilacion
 
-Para la instalacion y compilacion de manera manual debera de cumplir con los siguientes requisitos:
+Para la instalación y compilación de manera manual deberá de cumplir con los siguientes requisitos:
 
-- Dependencias para compilar: git, cargo, pkg-config , openssl y openssl puede variar en diferentes distribuciones, este es necesario para openssl rust, [mas informacion aqui](https://docs.rs/openssl/0.10.33/openssl/index.html#automatic)
+- Dependencias para compilar: git, cargo, pkg-config , openssl y openssl puede
+  variar en diferentes distribuciones, este es necesario para openssl Rust,
+  [mas informacion aqui](https://docs.rs/openssl/0.10.33/openssl/index.html#automatic)
 - Dependencias de ApmPKG: pip3/pip2, bundle, wget, fakeroot, rsync, npm y git
 
-Para empezar con el proceso de compilacion debera de ejecutar lo siguiente:
+Para empezar con el proceso de compilación deberá de ejecutar lo siguiente:
 
 ```
 $ git clone https://github.com/kedap/apmpkg
@@ -130,18 +159,24 @@ $ cargo build --release
 # cp -r src/iiabc /etc/apmpkg/iiabc
 # mkdir -p /etc/apmpkg/paquetes
 ```
+
 ## Post-instalacion
 ### Manual
-Para instalar los manuales solo ejecute al igual se necesita tener instalado man para poder leer las paginas manuales ya que muchas distribuciones no se tiene instalado por defecto
+Para instalar los manuales solo ejecute al igual se necesita tener instalado
+man para poder leer las paginas manuales ya que muchas distribuciones no se
+tiene instalado por defecto
+
 ```
 # mkdir -p /usr/local/share/man/man1
 # cp man/* /usr/local/share/man/man1
 ```
+
 ### Completions
-Para instalar los completions solo necesitas ejecutar lo siguiente segun tu shell
+Para instalar los completions solo necesitas ejecutar lo siguiente según tu shell
 
 #### Bash
-Para instalar los completions de bash deberas ejecutar lo siguiente:
+Para instalar los completions de Bash deberás ejecutar lo siguiente:
+
 ```
 [user@pc-pro]$ install -Dm644 completions/apmpkg.bash-completion /usr/share/bash-completion/completions/apmpkg
 ```
@@ -153,9 +188,11 @@ Para instalar en Zsh
 ```
 
 #### Fish
-Si utiliza la shell de Fish lo que tendra que ejecutar sera lo siguiente:
+Si utiliza la shell de Fish lo que tendrá que ejecutar sera lo siguiente:
+
 ```
 user@pc-pro ~ install -Dm644 completions/apmpkg.fish /usr/share/fish/vendor_completions.d/apmpkg.fish
 ```
+
 ## Ejecucion
 `apmpkg --help`

@@ -24,7 +24,6 @@ tar = "0.4"
 flate2 = "1.0"
 sha2 = "0.10"
 nix = "0.20.0"
-psutil = { git = "https://github.com/mygnu/rust-psutil", branch = "update-dependencies", default-features = false, features = ["host"] }
 exitcode = "1.1.2"
 git2 = "0.13"
 git2_credentials = "0.7"

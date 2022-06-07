@@ -6,7 +6,11 @@ use {
     clap::{load_yaml, App},
     colored::*,
     read_input::prelude::*,
-    std::{env, path::Path, process::Command},
+    std::{
+        env::{self, consts},
+        path::Path,
+        process::Command,
+    },
     toml::Value,
 };
 
@@ -105,8 +109,7 @@ pub fn verificar_arch(datos: AdiPaquete) -> bool {
     if datos.arquitectura == "any" {
         true
     } else {
-        let arquitectura = psutil::host::info().architecture().as_str().to_string();
-        datos.arquitectura == arquitectura
+        datos.arquitectura == consts::ARCH
     }
 }
 

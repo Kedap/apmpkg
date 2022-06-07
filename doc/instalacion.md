@@ -18,7 +18,6 @@ Tabla de contenido:
 	5. [apmpkg](#apmpkg)
 	6. [yay](#yay)
 	7. [apk](#apk)
-	8. [binario](#binario)
 2. [Instalación manual (compilación)](#compilacion)
 	1. [Post-Instalación](#post-instalacion)
 

@@ -671,7 +671,7 @@ impl Adi {
             dependencias: paquete_tabla["dependencias"].as_array().unwrap().to_vec(),
             dependencias_string: {
                 let mut dependencias = String::new();
-                for depend in paquete_tabla["dependencias"].as_array().unwrap().to_vec() {
+                for depend in paquete_tabla["dependencias"].as_array().unwrap() {
                     dependencias.push_str(depend.as_str().unwrap());
                     dependencias.push(' ');
                 }

@@ -229,13 +229,11 @@ pub fn instalar_archivos(adi_instalacion: AdiInstalacion, carpeta_src: &str) {
                     error.print_salir();
                 }
             }
-        } else {
-            if let Err(e) =
-                archive::synchronize(archivo.to_str().unwrap(), destino[i].as_str().unwrap())
-            {
-                let error = MsgError::new(&e.to_string());
-                error.print_salir();
-            }
+        } else if let Err(e) =
+            archive::synchronize(archivo.to_str().unwrap(), destino[i].as_str().unwrap())
+        {
+            let error = MsgError::new(&e.to_string());
+            error.print_salir();
         }
     }
 
@@ -265,14 +263,7 @@ pub fn existe_adi() -> bool {
 }
 
 pub fn binario_completo(adi: Adi) -> bool {
-    let conservar: bool;
-    if let GestoresLenguajes::Ninguno = adi.gestor {
-        conservar = false;
-    } else {
-        conservar = true;
-    }
-
-    conservar
+   !matches!(adi.gestor, GestoresLenguajes::Ninguno)
 }
 
 pub fn construir_binario(adi: Adi, ruta: &Path, ruta_adi: &str) {

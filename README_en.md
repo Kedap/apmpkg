@@ -9,7 +9,7 @@ A Package Manager as a model: PKGBUILD
 [Spanish](./README.md)
 
 # NEWS
-- Version has been released: v1.5.1 For everybody!!!
+- Version has been released: v1.5.2 For everybody!!!
 - Creation of the binaries for all available distributions
 - ApmPKG is uploaded is in [AUR](https://aur.archlinux.org/packages/apmpkg/)
 - Added completions for Bash and Zsh

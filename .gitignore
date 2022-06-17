@@ -2,4 +2,3 @@ target/
 testdir/extraer_tar.d
 testdir/test_descarga.adi
 .tasks
-.vimspector.json

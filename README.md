@@ -40,6 +40,7 @@ crearlo desde un PKGBUILD! Los gestores que son soportado por ApmPKG:
 - [x] Slapt-get
 - [x] Nix
 - [ ] Emerge
+- [ ] Packages / Ports (BSD, pkg_add, pkg_info, pkg_delete, etc...)
 - [ ] Yay
 
 De igual manera se pueden crear binarios para una instalación offline

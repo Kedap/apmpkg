@@ -38,6 +38,7 @@ The managers that are supported by ApmPKG:
 - [x] Slapt-get
 - [x] Nix
 - [ ] Emerge
+- [ ] Packages / Ports (BSD, pkg_add, pkg_info, pkg_delete, etc...)
 - [ ] Yay
 
 In the same way, binaries can be created for an offline installation. [binary](doc/modos_de_instalacion.md/#instalacion-desde-un-archivo-binario-de-instalacion) to know [more information here](doc/modos_de_instalacion.md)

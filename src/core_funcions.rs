@@ -2,8 +2,11 @@
 
 //uses
 use {
-    crate::{archivos, estructuras::*},
-    clap::{load_yaml, App},
+    crate::{
+        archivos,
+        cli::{Cli, Comandos},
+        estructuras::*,
+    },
     colored::*,
     read_input::prelude::*,
     std::{
@@ -28,70 +31,66 @@ pub fn print_banner() {
     );
 }
 
-pub fn leer_argumentos() -> Argumentos {
-    let yaml = load_yaml!("cli.yml");
-    let matches = App::from_yaml(yaml).get_matches();
-
+pub fn leer_argumentos(app: Cli) -> Argumentos {
     Argumentos {
-        subcomand: if let Some(matches) = matches.subcommand_matches("instalar") {
-            if matches.is_present("paquete") {
-                SubComandos::Instalar(matches.value_of("paquete").unwrap().to_string())
-            } else if matches.is_present("url") {
-                SubComandos::InstalarUrl(matches.value_of("url").unwrap().to_string())
-            } else {
-                SubComandos::Ninguno
-            }
-        } else if let Some(matches) = matches.subcommand_matches("remover") {
-            if matches.is_present("paquete") {
-                SubComandos::Remover(matches.value_of("paquete").unwrap().to_string())
-            } else {
-                SubComandos::Ninguno
-            }
-        } else if matches.is_present("dependencia") {
-            SubComandos::InstalarDependencia(matches.value_of("dependencia").unwrap().to_string())
-        } else if let Some(matches) = matches.subcommand_matches("crear") {
-            if matches.is_present("tipo") && matches.is_present("nombre") {
-                SubComandos::Crear {
-                    tipo: matches.value_of("tipo").unwrap().to_string(),
-                    nombre: matches.value_of("nombre").unwrap().to_string(),
-                }
-            } else {
-                SubComandos::Ninguno
-            }
-        } else if let Some(matches) = matches.subcommand_matches("construir") {
-            if matches.is_present("paquete") {
-                SubComandos::Construir(matches.value_of("paquete").unwrap().to_string())
-            } else {
-                SubComandos::Ninguno
-            }
+        subcomand: if !app.dependencia.is_empty() {
+            SubComandos::InstalarDependencia(app.dependencia)
         } else {
-            SubComandos::Ninguno
+            match app.comandos.clone() {
+                Comandos::Instalar {
+                    paquete,
+                    confirmar: _,
+                    url,
+                    binario: _,
+                } => {
+                    if !paquete.is_empty() {
+                        SubComandos::Instalar(paquete)
+                    } else if !url.is_empty() {
+                        SubComandos::InstalarUrl(url)
+                    } else {
+                        SubComandos::Ninguno
+                    }
+                }
+                Comandos::Remover {
+                    paquete,
+                    confirmar: _,
+                } => SubComandos::Remover(paquete),
+                Comandos::Crear { tipo, paquete } => SubComandos::Crear {
+                    tipo,
+                    nombre: paquete,
+                },
+                Comandos::Construir { paquete } => SubComandos::Construir(paquete),
+            }
         },
 
-        flags: if let Some(matches) = matches.subcommand_matches("instalar") {
-            if matches.is_present("confirmar") {
-                if matches.is_present("binario") {
+        flags: match app.comandos {
+            Comandos::Instalar {
+                paquete: _,
+                confirmar,
+                url: _,
+                binario,
+            } => {
+                if binario && confirmar {
                     Banderas::ConfirmarConBinarios
-                } else {
-                    Banderas::ConfirmarInstalacion
-                }
-            } else if matches.is_present("binario") {
-                if matches.is_present("confirmar") {
-                    Banderas::ConfirmarConBinarios
-                } else {
+                } else if binario {
                     Banderas::InstalacionConBinarios
+                } else if confirmar {
+                    Banderas::ConfirmarInstalacion
+                } else {
+                    Banderas::Ninguno
                 }
-            } else {
-                Banderas::Ninguno
             }
-        } else if let Some(matches) = matches.subcommand_matches("remover") {
-            if matches.is_present("confirmar") {
-                Banderas::ConfirmacionRemove
-            } else {
-                Banderas::Ninguno
+            Comandos::Remover {
+                paquete: _,
+                confirmar,
+            } => {
+                if confirmar {
+                    Banderas::ConfirmacionRemove
+                } else {
+                    Banderas::Ninguno
+                }
             }
-        } else {
-            Banderas::Ninguno
+            _ => Banderas::Ninguno,
         },
     }
 }

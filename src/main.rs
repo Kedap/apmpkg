@@ -10,7 +10,8 @@
 
 //use y modulos
 use {
-    apmpkg::{archivos, core_funcions, estructuras::*, metodos_de_instalacion},
+    apmpkg::{archivos, cli::Cli, core_funcions, estructuras::*, metodos_de_instalacion},
+    clap::Parser,
     colored::*,
     nix::unistd::Uid,
     pbr::ProgressBar,
@@ -150,7 +151,8 @@ fn constuir(ruta: &str) {
 
 fn main() {
     core_funcions::print_banner();
-    let info_arg = core_funcions::leer_argumentos();
+    let app = Cli::parse();
+    let info_arg = core_funcions::leer_argumentos(app);
     let flags = info_arg.flags;
 
     //Modificado para no utilizar core_funciones::checkargs

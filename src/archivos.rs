@@ -7,30 +7,19 @@ use {
     git2_credentials::CredentialHandler,
     read_input::prelude::*,
     sha2::{Digest, Sha256},
-    std::{fs, fs::File, io, path::Path, process::Command},
+    std::{fs::{remove_dir_all, self, File}, io, path::Path, process::Command},
     syncre_lib::archive,
     tar::Archive,
+    mime_sniffer::MimeTypeSniffer,
 };
 
 pub fn es_abi(path: &str) -> bool {
-    let comando_file = Command::new("file")
-        .arg("-i")
-        .arg(path)
-        .output()
-        .expect("Ocurrio un error al ejecutar el comando file");
-    let comando_salida = String::from_utf8_lossy(&comando_file.stdout);
 
-    // Tipo de salidas segun los soportados
-    let mut adi_file = String::new();
-    adi_file.push_str(path);
-    adi_file.push_str(": text/plain; charset=us-ascii\n");
-    let mut abi_file = String::new();
-    abi_file.push_str(path);
-    abi_file.push_str(": application/gzip; charset=binary\n");
+    let archivo = &fs::read(path).unwrap()[..];
 
-    if comando_salida == abi_file {
+    if archivo.sniff_mime_type() == Some("application/x-gzip") {
         true
-    } else if comando_salida == adi_file {
+    } else if archivo.sniff_mime_type() == None {
         false
     } else {
         let error = MsgError::new("El archivo no es soportado, prueba con otro");
@@ -124,16 +113,6 @@ pub fn escribir_archivo(nombre: &str, contenido: &[u8]) -> io::Result<()> {
     let mut cont = contenido;
     io::copy(&mut cont, &mut archivo)?;
     Ok(())
-}
-
-pub fn copiar_archivo(desde: &str, destino: &str) {
-    let mut child = Command::new("cp")
-        .arg("-r")
-        .arg(desde)
-        .arg(destino)
-        .spawn()
-        .expect("Algo fallo con cp");
-    let _result = child.wait().unwrap();
 }
 
 pub fn crear_directorio(directorio: &str) -> std::io::Result<()> {
@@ -238,7 +217,7 @@ pub fn instalar_archivos(adi_instalacion: AdiInstalacion, carpeta_src: &str) {
     }
 
     if adi_instalacion.fuente_opt {
-        copiar_archivo(carpeta_src, "/opt/");
+        archive::sync_dir(carpeta_fuente, Path::new("/opt/").join(carpeta_fuente).as_path()).unwrap();
     }
 }
 
@@ -254,12 +233,7 @@ pub fn borrar_archivo(ruta: &str) {
 }
 
 pub fn existe_adi() -> bool {
-    let resultado_cat = Command::new("cat")
-        .arg("install.d/apkg.adi")
-        .output()
-        .expect("Ocurrio un error al ejecutar cat");
-
-    resultado_cat.status.to_string() != "exit status: 1"
+    Path::new("install.d/apkg.adi").exists()
 }
 
 pub fn binario_completo(adi: Adi) -> bool {
@@ -297,7 +271,7 @@ pub fn construir_binario(adi: Adi, ruta: &Path, ruta_adi: &str) {
         }
     }
 
-    copiar_archivo(ruta_adi, "apkg.adi");
+    archive::copy_sync(Path::new(ruta_adi), Path::new("apkg.adi")).unwrap();
     tar.append_path("apkg.adi").unwrap();
     let borrar_archivo = fs::remove_file("apkg.adi");
     match borrar_archivo {
@@ -365,29 +339,21 @@ pub fn remover_archivos(adi: Adi) {
                 let destino_usuario = Path::new("/home")
                     .join(usuario.clone())
                     .join(archivos.as_str().unwrap());
-                remover_rm(destino_usuario.to_str().unwrap());
+                remove_dir_all(destino_usuario.as_path()).unwrap();
             } else {
                 let destino_usuario = Path::new("/home")
                     .join(usuario.clone())
                     .join(archivos.as_str().unwrap());
-                remover_rm(destino_usuario.to_str().unwrap());
+                remove_dir_all(destino_usuario.as_path()).unwrap();
             }
         } else {
-            remover_rm(archivos.as_str().unwrap());
+            remove_dir_all(Path::new(archivos.as_str().unwrap())).unwrap();
         }
     }
 
     if adi_instalacion.fuente_opt {
         let mut opt_ruta = String::from("/opt/");
         opt_ruta.push_str(&adi_descarga.carpeta);
-        remover_rm(&opt_ruta);
+        remove_dir_all(Path::new(&opt_ruta)).unwrap();
     }
-}
-
-pub fn remover_rm(ruta: &str) {
-    Command::new("rm")
-        .arg("-rf")
-        .arg(ruta)
-        .output()
-        .expect("Algo raro sucedio con rm -r");
 }

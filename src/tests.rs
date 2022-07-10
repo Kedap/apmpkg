@@ -1,5 +1,7 @@
 use {
     crate::{archivos, estructuras::Adi},
+    mime_sniffer::MimeTypeSniffer,
+    std::fs::read,
     temp_dir::TempDir,
 };
 
@@ -37,4 +39,11 @@ fn clono_test() {
     )
     .unwrap();
     d.cleanup().unwrap();
+}
+
+#[test]
+fn mime_test() {
+    let archivo = read("testdir/test-tar.tar.gz").unwrap();
+    let archivo = &archivo[..];
+    assert_eq!(archivo.sniff_mime_type(), Some("application/x-gzip"));
 }

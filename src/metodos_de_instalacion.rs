@@ -7,6 +7,7 @@ use {
     pbr::ProgressBar,
     std::path::Path,
     std::{fs, process, process::Command},
+    syncre_lib::archive,
 };
 
 //Instalacion abc
@@ -166,7 +167,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
                     error.print_salir();
                 }
             }
-            archivos::copiar_archivo(&ruta, directorio.join(&acd).to_str().unwrap());
+            archive::copy_sync(Path::new(&ruta), directorio.join(&acd).as_path()).unwrap();
         }
     }
 
@@ -243,7 +244,7 @@ pub fn instalar_adi(ruta_archivo: &str, confirmacion: bool, binario: bool) {
     nombre_adi.push_str(".adi");
     let tmp_adi = Path::new("/etc/apmpkg/paquetes").join(nombre_adi);
     let archivo_adi = tmp_adi.as_path();
-    archivos::copiar_archivo(ruta_archivo, archivo_adi.to_str().unwrap());
+    archive::copy_sync(Path::new(ruta_archivo), archivo_adi).unwrap();
 
     //Creando el binario
     if binario {
@@ -428,10 +429,11 @@ pub fn instalar_abi(ruta: &str, confirmacion: bool) {
         let ruta_adi = Path::new("/etc/apmpkg/paquetes");
         let mut nombre_adi = adi.paquete.nombre;
         nombre_adi.push_str(".adi");
-        archivos::copiar_archivo(
-            "install.d/apkg.adi",
-            ruta_adi.join(nombre_adi).to_str().unwrap(),
-        );
+        archive::copy_sync(
+            Path::new("install.d/apkg.d"),
+            ruta_adi.join(nombre_adi).as_path(),
+        )
+        .unwrap();
         let borrar_dir = fs::remove_dir_all(directorio);
         match borrar_dir {
             Ok(_v) => _v,
@@ -581,7 +583,7 @@ pub fn construir_binario_adi(ruta: &str) {
                     error.print_salir();
                 }
             }
-            archivos::copiar_archivo(&ruta, directorio.join(&acd).to_str().unwrap());
+            archive::copy_sync(Path::new(&ruta), directorio.join(&acd).as_path()).unwrap();
         }
     }
 

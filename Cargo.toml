@@ -14,7 +14,7 @@ debug = true
 
 [dependencies]
 colored = "2"
-clap = {version = "~2.33", features = ["yaml"]}
+clap = { version = "3.2.8", features = ["derive"] }
 reqwest = "0.11"
 tokio = { version = "1", features = ["full"] }
 read_input = "0.8"
@@ -30,4 +30,4 @@ git2_credentials = "0.8"
 syncre_lib = { git = "https://github.com/kedap/syncre" }
 
 [dev-dependencies]
-testdir = "0.4"
+temp-dir = "0.1.11"

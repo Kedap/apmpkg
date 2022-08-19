@@ -200,6 +200,24 @@ If you use the Fish shell, what you will have to execute will be the following:
 user@pc-pro ~ install -Dm644 completions/apmpkg.fish /usr/share/fish/vendor_completions.d/apmpkg.fish
 ```
 
+## Semi-manual
+
+This can be automated by running the following commands to install:
+
+```bash
+make CFLAGS="--release --locked"
+sudo make install
+```
+
+This can be customized, see the `Makefile`
+
+```bash
+make BUILD_DIR=build BUILD_TYPE=debug
+make BUILD_DIR=build test
+make BUILD_DIR=build PREFIX_INSTALL=/my/prefix/install/dir install
+make PREFIX_INSTALL=/my/prefix/install/dir cleaninstall
+```
+
 ## Execution
 
 `apmpkg --help`

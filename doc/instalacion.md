@@ -211,7 +211,7 @@ user@pc-pro ~ install -Dm644 completions/apmpkg.fish /usr/share/fish/vendor_comp
 Esto se puede automatizar ejecutando los siguientes comandos para instalar:
 
 ```bash
-make CFLAGS="--release --locked"
+make CARGOFLAGS="--release --locked"
 sudo make install
 ```
 

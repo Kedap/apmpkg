@@ -4,7 +4,7 @@ BUILD_TYPE ?= release
 BINARY := apmpkg
 
 $(BUILD_DIR):
-	cargo build --target-dir $(BUILD_DIR) $(CFLAGS)
+	cargo build --target-dir $(BUILD_DIR) $(CARGOFLAGS)
 
 install: $(BUILD_DIR)
 	mkdir -p $(PREFIX_INSTALL)
@@ -34,6 +34,6 @@ cleaninstall:
 	rm -f $(PREFIX_INSTALL)/usr/share/fish/vendor_completions.d/$(BINARY).fish
 
 test:
-	cargo test --target-dir $(BUILD_DIR) $(CFLAGS)
+	cargo test --target-dir $(BUILD_DIR) $(CARGOFLAGS)
 
 .PHONY: clean test install cleaninstall

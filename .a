@@ -1,0 +1,46 @@
+@document.meta
+title: ApmPKG 2
+description: El plan para ApmPKG 2
+authors: sno0bwy
+categories: Notas
+created: 2022-08-18
+version: 0.0.12
+@end
+
+* ApmPKG
+  Aquí una descripción de las cosas a hacer
+
+** ApmPKLib
+   Pues obvio es la librería de ApmPKG
+
+** Archivo de Construcción de Paquetes (ACP)
+   Este es un concepto, no es el nombre final
+
+** Firmas GPG
+   Tener soporte para las firmas como los hacen otros gestores
+
+** Mejor compresión de archivos
+   Esto es para la compresión de archivos
+
+** Archivo de configuración en `/etc/apmpkg.conf`
+   Quitar el la ruta que se lleva manejando
+
+*** Almacenamiento en `/var/lib/apmpkg`
+    Por lo mismo de arriba
+
+** Descarga en hilos
+   Ya es hora que aprendas sobre hilos :)
+
+** Diferenciar entre descargar y compilar
+   Esto para que se sepa la cantidad de tiempo invertido en la creación del paquete
+
+** Proxy
+   Tal vez quieras descargar algo con TOR
+
+** Configurar la barra de progreso
+   Como el pacman
+
+** Integración con librerías
+   Esto para utilizar la librerías nativas como `apt`, `pacman`, `dnf` , etc...
+
+** Crear base de datos con los paquetes, tal vez utilizar diesel

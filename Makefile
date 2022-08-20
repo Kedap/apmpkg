@@ -1,14 +1,13 @@
-BUILD_DIR ?= target
 PREFIX_INSTALL ?= /
 BUILD_TYPE ?= release
 BINARY := apmpkg
 
-$(BUILD_DIR):
-	cargo build --target-dir $(BUILD_DIR) $(CARGOFLAGS)
+target:
+	cargo build $(CARGOFLAGS)
 
-install: $(BUILD_DIR)
+install: target
 	mkdir -p $(PREFIX_INSTALL)
-	install -Dm755 $(BUILD_DIR)/$(BUILD_TYPE)/$(BINARY) $(PREFIX_INSTALL)/usr/bin/$(BINARY)
+	install -Dm755 target/$(BUILD_TYPE)/$(BINARY) $(PREFIX_INSTALL)/usr/bin/$(BINARY)
 	mkdir -p $(PREFIX_INSTALL)/etc/$(BINARY)/iiabc
 	cp -r src/iiabc $(PREFIX_INSTALL)/etc/$(BINARY)
 	mkdir -p $(PREFIX_INSTALL)/etc/$(BINARY)/paquetes
@@ -23,7 +22,7 @@ install: $(BUILD_DIR)
 		$(PREFIX_INSTALL)/usr/share/fish/vendor_completions.d/
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf target
 
 cleaninstall:
 	rm -f $(PREFIX_INSTALL)/usr/bin/$(BINARY)
@@ -34,6 +33,6 @@ cleaninstall:
 	rm -f $(PREFIX_INSTALL)/usr/share/fish/vendor_completions.d/$(BINARY).fish
 
 test:
-	cargo test --target-dir $(BUILD_DIR) $(CARGOFLAGS)
+	cargo test $(CARGOFLAGS)
 
 .PHONY: clean test install cleaninstall

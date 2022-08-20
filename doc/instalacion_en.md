@@ -212,9 +212,9 @@ sudo make install
 This can be customized, see the `Makefile`
 
 ```bash
-make BUILD_DIR=build BUILD_TYPE=debug
-make BUILD_DIR=build test
-make BUILD_DIR=build PREFIX_INSTALL=/my/prefix/install/dir install
+make BUILD_TYPE=debug
+make test
+make PREFIX_INSTALL=/my/prefix/install/dir install
 make PREFIX_INSTALL=/my/prefix/install/dir cleaninstall
 ```
 
